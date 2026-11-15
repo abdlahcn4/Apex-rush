@@ -8,6 +8,10 @@ extends RefCounted
 const CAR_DIR := "res://assets/kenney_car_kit/vehicles/"
 const ROAD_DIR := "res://assets/kenney_racing_kit/roads/"
 const PROP_DIR := "res://assets/kenney_racing_kit/props/"
+const VEG_DIR := "res://assets/environment/vegetation/"
+const BLD_DIR := "res://assets/environment/buildings/"
+const SKY_DIR := "res://assets/environment/sky/"
+const CITY_DIR := "res://assets/kenney_city_kit/"
 const CITY_DIR := "res://assets/kenney_city_kit/"
 const TEX_DIR := "res://assets/textures/"
 const AUDIO_DIR := "res://assets/audio/"
@@ -92,6 +96,7 @@ const TEXTURE_SETS := {
 	"grass": "grass",
 	"gravel": "gravel",
 	"ground": "gravel",
+	"wet_asphalt": "wet_asphalt",
 }
 
 const AUDIO := {
@@ -104,7 +109,10 @@ const AUDIO := {
 	"click": "click-button-firm.wav",
 	"hover": "click-hover-soft.wav",
 	"countdown": "click-toggle-on-firm.wav",
-	"skid": "foley-plastic-slide.wav",
+	"skid": "skid_tyre.ogg",
+	"engine_race": "engine_race.ogg",
+	"impact_race": "impact_race.ogg",
+	"wind": "whoosh-slow-medium.wav",
 	"gearshift": "mechanical-latch-heavy.wav",
 	"ratchet": "mechanical-ratchet-light.wav",
 	"whoosh": "whoosh-slow-medium.wav",
@@ -145,6 +153,51 @@ static func _map(kind: String, suffix: String) -> Texture2D:
 	var tex := load(path) as Texture2D
 	_textures[path] = tex
 	return tex
+
+
+## HDRI sky (Poly Haven, CC0). Returns null when the circuit does not define one.
+static func sky(name: String) -> Texture2D:
+	if name.is_empty():
+		return null
+	var path := SKY_DIR + name + ".hdr"
+	if _textures.has(path):
+		return _textures[path] as Texture2D
+	if not ResourceLoader.exists(path):
+		push_error("AssetLibrary: missing sky " + path)
+		return null
+	var tex := load(path) as Texture2D
+	_textures[path] = tex
+	return tex
+
+
+## First mesh inside an imported glTF file, so vegetation and buildings can be instanced
+## through a MultiMesh instead of costing one node each.
+static func first_mesh(path: String) -> Mesh:
+	var scene := instance(path)
+	if scene == null:
+		return null
+	var out: Mesh = null
+	for node in scene.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi != null and mi.mesh != null:
+			out = mi.mesh
+			break
+	scene.free()
+	return out
+
+
+static func first_mesh_material(path: String) -> Material:
+	var scene := instance(path)
+	if scene == null:
+		return null
+	var out: Material = null
+	for node in scene.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi != null and mi.mesh != null and mi.mesh.get_surface_count() > 0:
+			out = mi.get_active_material(0)
+			break
+	scene.free()
+	return out
 
 
 static func texture(kind: String) -> Texture2D:

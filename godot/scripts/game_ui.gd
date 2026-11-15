@@ -35,6 +35,16 @@ var _press_pos := Vector2.ZERO
 var _press_index := -1
 var _touch_seen := false
 var _last_activate_ms := -1000
+# --- showroom (3D vehicle preview behind the menu and in the garage) ----------- #
+var _showroom: SubViewport
+var _showroom_container: SubViewportContainer
+var _showroom_car: Node3D
+var _showroom_spin: Node3D
+var _paint := Color("#2ecc40")
+var paint_color := Color("#2ecc40")
+var has_paint := false
+var quality := 2
+var master_db := 0.0
 # row metrics chosen per screen so every row stays inside a 1280x720 viewport
 var _row_h := 76.0
 var _row_font := 26
@@ -85,6 +95,8 @@ func _ready() -> void:
 	_vbox.add_theme_constant_override("separation", 12)
 	_panel.add_child(_vbox)
 
+	_build_showroom(root)
+
 	_title = _label("APEX RUSH", 44, ACCENT)
 	_sub = _label("", 20, Color(0.72, 0.78, 0.88))
 	_vbox.add_child(_title)
@@ -116,10 +128,222 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _showroom_spin != null and _showroom_container != null and _showroom_container.visible:
+		_showroom_spin.rotation.y += delta * 0.45
 	if _toast_time > 0.0:
 		_toast_time -= delta
 		if _toast_time <= 0.0:
 			_toast.visible = false
+
+
+## A real 3D turntable for the menu and the garage: the shipped car, lit by an HDRI, on a
+## SubViewport behind the UI. Costs one extra world, no textures.
+func _build_showroom(root: Control) -> void:
+	var container := SubViewportContainer.new()
+	container.name = "Showroom"
+	container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	container.stretch = true
+	container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(container)
+	_showroom_container = container
+
+	var vp := SubViewport.new()
+	vp.size = Vector2i(1280, 720)
+	vp.own_world_3d = true
+	vp.transparent_bg = true
+	vp.msaa_3d = Viewport.MSAA_4X
+	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	container.add_child(vp)
+	_showroom = vp
+
+	var env := Environment.new()
+	var hdri := AssetLibrary.sky("urban_street_01_1k")
+	var sky := Sky.new()
+	if hdri != null:
+		var pano := PanoramaSkyMaterial.new()
+		pano.panorama = hdri
+		sky.sky_material = pano
+	else:
+		sky.sky_material = ProceduralSkyMaterial.new()
+	env.background_mode = Environment.BG_SKY
+	env.sky = sky
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	env.ambient_light_energy = 0.75
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+	env.tonemap_exposure = 0.95
+	env.glow_enabled = true
+	env.glow_intensity = 0.25
+	var world_env := WorldEnvironment.new()
+	world_env.environment = env
+	vp.add_child(world_env)
+
+	var key := DirectionalLight3D.new()
+	key.light_color = Color(1.0, 0.96, 0.9)
+	key.light_energy = 1.5
+	key.rotation_degrees = Vector3(-34.0, 148.0, 0.0)
+	key.shadow_enabled = true
+	vp.add_child(key)
+
+	var rim := DirectionalLight3D.new()
+	rim.light_color = Color(0.45, 0.7, 1.0)
+	rim.light_energy = 0.9
+	rim.rotation_degrees = Vector3(-20.0, -40.0, 0.0)
+	vp.add_child(rim)
+
+	var cam := Camera3D.new()
+	cam.position = Vector3(4.6, 1.9, 6.2)
+	cam.fov = 42.0
+	vp.add_child(cam)
+	cam.look_at(Vector3(0.0, 0.55, 0.0), Vector3.UP)
+
+	_showroom_spin = Node3D.new()
+	vp.add_child(_showroom_spin)
+	_refresh_showroom_car()
+
+
+func _refresh_showroom_car() -> void:
+	if _showroom_spin == null:
+		return
+	for child in _showroom_spin.get_children():
+		child.queue_free()
+	var spec := CarBuilder.spec(selected_car)
+	var hero := CarHero.build(spec, _paint)
+	var node := hero.get("root") as Node3D
+	if node == null:
+		return
+	# centre the car in frame and stand it on the floor
+	var length := float(hero.get("length", 4.6))
+	node.position = Vector3(0.0, 0.0, -length * 0.1)
+	_showroom_spin.add_child(node)
+	_showroom_car = node
+
+
+func _set_paint(color: Color) -> void:
+	_paint = color
+	paint_color = color
+	has_paint = true
+	if _showroom_car != null:
+		for n in _showroom_car.find_children("*", "MeshInstance3D", true, false):
+			var mi := n as MeshInstance3D
+			if mi == null or mi.mesh == null:
+				continue
+			for i in range(mi.mesh.get_surface_count()):
+				var std := mi.get_surface_override_material(i) as StandardMaterial3D
+				if std != null and std.resource_name.to_lower().contains("paint"):
+					std.albedo_color = color
+	show_garage()
+
+
+## Settings: master volume, graphics preset, fullscreen. Stored in user://settings.cfg.
+func show_settings() -> void:
+	_set_panel_visible(true)
+	set_showroom_visible(true)
+	_notify_left_race()
+	_title.text = "SETTINGS"
+	_sub.text = "Sound, graphics and display"
+	_plan_rows(4)
+	_clear()
+	_add_button("MASTER VOLUME  ·  %d%%" % int(round(_volume_pct())), _cycle_volume)
+	_add_button("GRAPHICS  ·  " + _quality_name(), _cycle_quality)
+	if not OS.has_feature("mobile"):
+		_add_button("FULLSCREEN  ·  " + ("ON" if _is_fullscreen() else "OFF"), _toggle_fullscreen)
+	_add_button("◂ BACK", show_main)
+
+
+func _volume_pct() -> float:
+	if master_db <= -59.0:
+		return 0.0
+	return clampf((master_db + 60.0) / 60.0, 0.0, 1.0) * 100.0
+
+
+func _quality_name() -> String:
+	match quality:
+		0: return "LOW"
+		1: return "MEDIUM"
+		_: return "HIGH"
+
+
+func _cycle_volume() -> void:
+	var pct := [0.0, 25.0, 50.0, 75.0, 100.0]
+	var idx := 0
+	var cur := _volume_pct()
+	var best := 999.0
+	for i in range(pct.size()):
+		var d := absf(float(pct[i]) - cur)
+		if d < best:
+			best = d
+			idx = i
+	idx = (idx + 1) % pct.size()
+	var target: float = pct[idx]
+	master_db = -60.0 if target <= 0.0 else lerpf(-60.0, 0.0, target / 100.0)
+	_apply_audio()
+	_save_settings()
+	show_settings()
+
+
+func _cycle_quality() -> void:
+	quality = (quality + 1) % 3
+	_apply_quality()
+	_save_settings()
+	show_settings()
+
+
+func _toggle_fullscreen() -> void:
+	var mode := DisplayServer.window_get_mode()
+	if mode == DisplayServer.WINDOW_MODE_FULLSCREEN:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	_save_settings()
+	show_settings()
+
+
+func _is_fullscreen() -> bool:
+	return DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
+
+
+func _apply_audio() -> void:
+	var bus := AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_db(bus, master_db)
+
+
+func _apply_quality() -> void:
+	var vp := get_viewport()
+	if vp != null:
+		vp.msaa_3d = [Viewport.MSAA_DISABLED, Viewport.MSAA_2X, Viewport.MSAA_4X][quality]
+		vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_DISABLED
+
+
+func _save_settings() -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value("audio", "master_db", master_db)
+	cfg.set_value("video", "quality", quality)
+	cfg.set_value("video", "fullscreen", _is_fullscreen())
+	cfg.set_value("car", "paint", paint_color)
+	cfg.set_value("car", "has_paint", has_paint)
+	cfg.save("user://settings.cfg")
+
+
+func load_settings() -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load("user://settings.cfg") != OK:
+		_apply_quality()
+		_apply_audio()
+		_refresh_showroom_car()
+		return
+	master_db = float(cfg.get_value("audio", "master_db", 0.0))
+	quality = int(cfg.get_value("video", "quality", 2))
+	has_paint = bool(cfg.get_value("car", "has_paint", false))
+	paint_color = cfg.get_value("car", "paint", paint_color)
+	_paint = paint_color
+	_apply_quality()
+	_apply_audio()
+	_refresh_showroom_car()
+
+
+func set_showroom_visible(on: bool) -> void:
+	if _showroom_container != null:
+		_showroom_container.visible = on
 
 
 func setup(car_list: Array, map_list: Array) -> void:
@@ -141,11 +365,13 @@ func show_main() -> void:
 	_hint.visible = true
 	_title.text = "APEX RUSH"
 	_sub.text = "Real cars. Real circuits. Real sound."
-	_plan_rows(4)
+	set_showroom_visible(true)
+	_plan_rows(5)
 	_clear()
 	_add_button("RACE", _on_race)
 	_add_button("GARAGE  ·  " + _car_name(selected_car), show_garage)
 	_add_button("CIRCUIT  ·  " + _map_name(selected_map), show_maps)
+	_add_button("SETTINGS", show_settings)
 	_add_button("QUIT", func() -> void: get_tree().quit())
 
 
@@ -154,8 +380,10 @@ func show_garage() -> void:
 	_notify_left_race()
 	_title.text = "GARAGE"
 	_sub.text = "Pick your car — every class handles differently"
-	_plan_rows(cars.size() + 1)
+	set_showroom_visible(true)
+	_plan_rows(cars.size() + 2)
 	_clear()
+	_add_paint_row()
 	for car in cars:
 		var id := String(car.get("id", ""))
 		var mark := "▸ " if id == selected_car else "   "
@@ -165,6 +393,33 @@ func show_garage() -> void:
 			show_garage()
 		)
 	_add_button("◂ BACK", show_main)
+
+
+## Paint picker: the swatches restyle the live 3D preview and the race car.
+func _add_paint_row() -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	var label := _label("PAINT", 16, Color(0.66, 0.72, 0.82))
+	label.custom_minimum_size = Vector2(70.0, 0.0)
+	row.add_child(label)
+	for c in [Color("#2ecc40"), Color("#e63946"), Color("#ffbe0b"), Color("#7b2ff7"),
+			Color("#f1faee"), Color("#111318"), Color("#ff7a18"), Color("#35d3ff")]:
+		var swatch := Button.new()
+		var style := StyleBoxFlat.new()
+		style.bg_color = c
+		style.corner_radius_top_left = 6
+		style.corner_radius_top_right = 6
+		style.corner_radius_bottom_left = 6
+		style.corner_radius_bottom_right = 6
+		swatch.add_theme_stylebox_override("normal", style)
+		swatch.add_theme_stylebox_override("hover", style)
+		swatch.add_theme_stylebox_override("pressed", style)
+		swatch.custom_minimum_size = Vector2(38.0, 26.0)
+		swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var col := c
+		swatch.pressed.connect(func() -> void: _set_paint(col))
+		row.add_child(swatch)
+	_vbox.add_child(row)
 
 
 func show_maps() -> void:
@@ -187,6 +442,7 @@ func show_maps() -> void:
 
 func show_loading(text := "LOADING") -> void:
 	_set_panel_visible(true)
+	set_showroom_visible(false)
 	_title.text = text
 	_sub.text = _map_name(selected_map) + "  ·  " + _car_name(selected_car)
 	_clear()
@@ -195,6 +451,7 @@ func show_loading(text := "LOADING") -> void:
 func show_race() -> void:
 	in_race = true
 	_set_panel_visible(false)
+	set_showroom_visible(false)
 	_hint.visible = false
 	_countdown.visible = false
 

@@ -2,8 +2,9 @@ class_name AudioDirector
 extends Node
 
 ## Every sound is a real recording (see ASSETS.md); nothing is synthesised at runtime.
-##   engine  - two Kenney engine loops played through each other: the low recording carries
-##             the idle rumble, the higher one the upper revs, crossfaded by RPM
+##   engine  - three recorded engine loops played through each other: the low recording
+##             carries the idle rumble, the racing loop the mid range and the circular
+##             loop the top end, crossfaded by RPM and throttle
 ##   skid    - Wyzowl slide recording pushed through a band-pass bus so it reads as rubber
 ##   shift   - Kenney mechanical latch on every gear change
 ##   nitro   - Wyzowl whoosh when the bottle opens
@@ -16,6 +17,8 @@ const SKID_SILENT := -60.0
 
 var engine: AudioStreamPlayer
 var engine_low: AudioStreamPlayer
+var engine_high: AudioStreamPlayer
+var wind: AudioStreamPlayer
 var whoosh: AudioStreamPlayer
 var skid: AudioStreamPlayer
 var ui: AudioStreamPlayer
@@ -28,6 +31,11 @@ var _impact_cooldown := 0.0
 var _last_gear := ""
 var _muted := false
 var _was_nitro := false
+var _was_throttle := 0.0
+var _pop_cooldown := 0.0
+var _skid_bus_enabled := false
+var _bov: AudioStreamPlayer
+var _pop: AudioStreamPlayer
 
 
 func _ready() -> void:
@@ -36,9 +44,12 @@ func _ready() -> void:
 	engine_low = _loop("engine_low", ENGINE_DB_IDLE, 0.55)
 	if engine_low != null:
 		engine_low.pitch_scale = 0.55
+	engine_high = _loop("engine_race", -34.0, 0.8)
+	wind = _loop("wind", SKID_SILENT, 0.75)
+	_skid_bus_enabled = false
 	skid = _loop("skid", SKID_SILENT, 1.35)
-	if skid != null:
-		skid.bus = "Skid"
+	_bov = _one_shot("whoosh", -12.0)
+	_pop = _one_shot("impact_light", -14.0)
 	whoosh = _one_shot("whoosh", -8.0)
 	ui = _one_shot("click", -6.0)
 	shift = _one_shot("gearshift", -9.0)
@@ -52,6 +63,7 @@ func _ready() -> void:
 ## The slide recording is used for tyre scrub; a band-pass takes it from "plastic on a
 ## table" to something closer to rubber on tarmac.
 func _make_skid_bus() -> void:
+	_skid_bus_enabled = true
 	if AudioServer.get_bus_index("Skid") != -1:
 		return
 	var idx := AudioServer.bus_count
@@ -130,6 +142,34 @@ func update(v: ApexVehicle, dt: float) -> void:
 				low_pitch *= 1.05
 			engine_low.pitch_scale = lerpf(engine_low.pitch_scale, low_pitch, blend)
 
+	# top-end layer: only the upper revs, so the engine gains a third, harder timbre
+	if engine_high != null:
+		var rpm01h := clampf((v.rpm - 3400.0) / 4200.0, 0.0, 1.0)
+		var high_db := -60.0 + 52.0 * rpm01h
+		engine_high.volume_db = lerpf(engine_high.volume_db, high_db, blend)
+		engine_high.pitch_scale = lerpf(engine_high.pitch_scale, lerpf(0.82, 1.32, rpm01h), blend)
+
+	# wind rush: real recording, follows road speed and drops under braking
+	if wind != null:
+		var speed01 := clampf(absf(v.vF) / 95.0, 0.0, 1.0)
+		var wind_db := lerpf(SKID_SILENT, -17.0, speed01 * speed01)
+		wind.volume_db = lerpf(wind.volume_db, wind_db, minf(1.0, dt * 4.0))
+		wind.pitch_scale = lerpf(0.7, 1.15, speed01)
+
+	# blow-off valve: throttle lifted high in the revs
+	_pop_cooldown = maxf(0.0, _pop_cooldown - dt)
+	if _was_throttle > 0.55 and v.throttle < 0.1 and v.rpm > 3800.0 and _bov != null:
+		_bov.pitch_scale = 1.35 + randf() * 0.2
+		_bov.volume_db = -13.0
+		_bov.play()
+	# exhaust pop, matched to the flame the VFX layer fires
+	if (v.gear != _last_gear and v.rpm > 4200.0) or (_was_throttle > 0.55 and v.throttle < 0.1 and v.rpm > 4600.0):
+		if _pop_cooldown <= 0.0 and _pop != null:
+			_pop_cooldown = 0.18
+			_pop.pitch_scale = 1.9 + randf() * 0.5
+			_pop.volume_db = -15.0
+			_pop.play()
+
 	if skid != null:
 		var slip := clampf(v.drift, 0.0, 1.0)
 		if v.hand and absf(v.vF) > 6.0:
@@ -144,6 +184,7 @@ func update(v: ApexVehicle, dt: float) -> void:
 		whoosh.pitch_scale = 0.95 + randf() * 0.1
 		whoosh.play()
 	_was_nitro = v.nitro_active
+	_was_throttle = v.throttle
 
 	if v.gear != _last_gear:
 		if _last_gear != "" and v.gear != "N" and v.gear != "R" and shift != null:

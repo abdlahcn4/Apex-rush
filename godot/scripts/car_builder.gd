@@ -86,6 +86,10 @@ static func stats(id: String, upgrades: Dictionary = {}) -> Dictionary:
 
 static func build(id: String, color: Color, quality := 2) -> Dictionary:
 	var s := spec(id)
+	# The detailed CC-BY Khronos car is the shipped vehicle; the Kenney kit path below
+	# stays as a fallback so the game still builds if that asset is ever missing.
+	if CarHero.available():
+		return CarHero.build(s, color)
 	var b: Dictionary = s.body
 	var root := Node3D.new()
 	root.name = "Model"
@@ -192,6 +196,18 @@ static func build(id: String, color: Color, quality := 2) -> Dictionary:
 		(out["lights"] as Array).append(beam)
 
 	return out
+
+
+## Repaint a car that is already built (garage paint picker, race restart).
+static func set_paint(model: Dictionary, color: Color) -> void:
+	if not model.has("paint_materials"):
+		return
+	var list: Array = model.paint_materials
+	for i in range(list.size()):
+		var m := list[i] as StandardMaterial3D
+		if m == null:
+			continue
+		m.albedo_color = color.darkened(0.22) if i % 2 == 1 else color
 
 
 ## Toggle the imported car's headlights (used at night / in the tunnel).

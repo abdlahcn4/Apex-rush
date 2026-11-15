@@ -104,10 +104,17 @@ func update_camera(dt: float, v: ApexVehicle) -> void:
 
 	if mode == 2:
 		var f2 := Vector2(sin(cam_yaw), cos(cam_yaw))
-		var zf := cab_f + 0.35
-		var eye := Vector3(car_x + f2.x * zf, belt_y + 0.42 + orbit_pitch * 0.5, car_z + f2.y * zf)
+		var eye_y := belt_y + 0.42 + orbit_pitch * 0.5
+		var eye := Vector3(car_x + f2.x * (cab_f + 0.35), eye_y, car_z + f2.y * (cab_f + 0.35))
+		# the hero car ships a real interior, so the cockpit camera sits where the driver's
+		# eyes are instead of at a guessed offset
+		var model: Dictionary = v.model
+		var anchor := model.get("cockpit") as Node3D
+		if anchor != null:
+			var p := anchor.global_position
+			eye = Vector3(p.x, p.y + 0.12, p.z)
 		global_position = global_position.lerp(eye, minf(1.0, dt * 26.0))
-		var look := Vector3(car_x + f2.x * 30.0, belt_y + 0.1 + orbit_pitch * 8.0, car_z + f2.y * 30.0)
+		var look := Vector3(car_x + f2.x * 30.0, eye_y + 0.1 + orbit_pitch * 8.0, car_z + f2.y * 30.0)
 		_look(look)
 	else:
 		var far_mode := mode == 1

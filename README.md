@@ -1,84 +1,79 @@
-🏎️ Apex Rush – 3D Racing Game
+# 🏎️ APEX RUSH
 
-Welcome to Apex Rush, an exciting 3D car racing game playable directly in your browser!
+A 3D arcade racer built in **Godot 4.4** and shipped as a real **Android APK** and a real
+**Windows build** from the same source tree.
 
-🎮 Features
+The game began life as a browser prototype. It has since been rebuilt on a proper engine
+with planar vehicle physics, five circuits and an imported-visual pipeline — no code-drawn
+cars, buildings, trees or ground textures anywhere in the shipped scenes.
 
-- 3D driving experience powered by Three.js.
-- Multiple cars to unlock and customize.
-- Free Drive mode.
-- Time Trial mode.
-- AI Racing mode.
-- Traffic Racing mode.
-- Checkpoint Challenge.
-- Car upgrades and customization.
-- Automatic progress saving.
-- Mobile and PC support.
-- Touch controls for smartphones.
-- Keyboard controls for PC.
+---
 
-📱 Platform Support
+## What is in the game
 
-- Desktop: Windows, Linux and macOS browsers.
-- Mobile: Android and iOS browsers.
+**Vehicles.** Six tiers, all driving the imported *Car Concept* model (Khronos glTF Sample
+Assets, CC-BY 4.0): named wheels, rims, brake discs and pads, full interior, working
+steering, suspension travel, brake-light and headlight materials, and a paint picker that
+restyles the live 3D preview in the garage.
 
-🚀 Installation
+**Circuits.** Five, each with its own sky, ground and dressing:
 
-Make sure Node.js is installed.
+| Circuit | Character |
+|---|---|
+| Sunset Ring | Permanent circuit — grandstands, pit lane, kerbs, barriers, golden-hour HDRI |
+| Harbour Night | Night city — towers, wet asphalt with real reflections, street lighting |
+| Dune Pass | Desert highway — dunes, rock formations, dead trees, bleached ground |
+| Cedar Pass | Forest climb — pine forest, ferns, moss-toned ground |
+| Ridge Road | Mountain ridge — guardrail, cliff faces, scattered pines |
 
-npm install
-npm run build
-node server.js
+**Effects.** Exhaust backfire flames emitted from the modelled exhaust tips, blue nitro
+flames from the same tips, tyre and drift smoke on the rear wheels, brake-light emissive
+materials, headlight beams at night, speed-driven FOV.
 
-Then open your browser and visit:
+**Audio.** All recorded samples, mixed live from vehicle state: three-layer engine
+crossfade (idle → mid → top end), tyre scrub, wind rush, gear-shift clunk, blow-off valve on
+lift, exhaust pop on upshift, pooled impacts, countdown and UI clicks.
 
-http://localhost:3000
+**Front end.** Cinematic main menu over a live 3D turntable of the car, garage with paint
+swatches and class stats, circuit select, settings (volume, graphics preset, fullscreen),
+race HUD (circular speedometer, RPM strip with shift light, gear, nitro, lap, timer, best
+lap), pause sheet, results.
 
-🛠️ Technologies
+**Controls.** Keyboard on PC, on-screen controls on touch devices only — the mobile overlay
+is never shown on desktop. `W/S/A/D` or arrows drive, `SPACE` handbrake, `SHIFT` nitro,
+`C` cycles chase / orbit / cockpit, `L` lights, `M` mute, `ESC` pause. Touch uses a steering
+pad, throttle/brake pedals and nitro.
 
-- HTML5
-- CSS3
-- JavaScript
-- Three.js
-- Node.js
-- Socket.IO
+---
 
-🌐 Project
+## Verifying the tree without running it
 
-Apex Rush is designed to deliver an enjoyable racing experience on both desktop and mobile devices.
+```bash
+python3 tools/static_check.py     # resource paths, GLB integrity, class/function contracts, exports
+```
 
-📄 License
+It fails the build on a missing resource, a corrupt GLB, a call to a function that does not
+exist, a vehicle-dictionary key the car does not provide, or a broken export preset.
 
-All rights reserved unless otherwise specified.
+## Building
 
-## Godot port
+Both targets are produced by `.github/workflows/android.yml` on a clean runner:
 
-This game is JavaScript/Three.js and cannot be loaded by Godot as-is — see
-[GODOT_PORT_ASSESSMENT.md](GODOT_PORT_ASSESSMENT.md) for the inspection and why.
+* **Android** — ARM64, touch, mobile renderer (GL compatibility), adaptive icon.
+* **Windows** — 64-bit desktop, identical scenes and assets, no touch overlay.
 
-A real Godot 4 port has been started in [`godot/`](godot/README.md): a playable vertical slice with
-the Sunset Ring circuit, the Vortex GT, the original arcade drift physics, chase camera and HUD.
+## Asset provenance
 
-Open `godot/project.godot` in Godot 4.3+ and press F5.
+Every imported file, its author, its licence and the mirror it came from is listed in
+[`ASSETS.md`](ASSETS.md). The hero car is CC-BY 4.0 and requires attribution; the credit
+ships in `godot/assets/vehicles/carconcept/LICENSE.md` and in-game.
 
-## Controls
+## Honest status
 
-Desktop and phone share one build; the on-screen pads only appear on a device that reports
-a touchscreen.
-
-| Action | Keyboard | Touch |
-|---|---|---|
-| Accelerate | `W` / `Up` | GAS pad |
-| Brake / reverse | `S` / `Down` | BRK pad |
-| Steer | `A` `D` / `Left` `Right` | `<` `>` pads |
-| Handbrake | `Space` | HAND pad |
-| Nitro | `Shift` | NOS pad |
-| Pause | `Esc` / `P` | `II` button |
-| Camera mode | `C` | CAM button |
-| Reset car | `R` | RST button |
-| Mute | `M` | - |
-| **Orbit the camera 360 degrees** | drag with the left mouse button | drag anywhere that is not a pad |
-
-The camera eases back behind the car 2.5 s after you let go of a drag, and all of its
-motion (position, distance, height, look target, field of view) is filtered so high speed
-does not make it vibrate.
+* The project has **not** been runtime-tested by the author of the last round: the build
+  environment has no GPU, display or Android toolchain, and gameplay/screenshot testing was
+  explicitly out of scope. What *is* verified is static — syntax of every GDScript file,
+  existence of every referenced resource, GLB header/payload integrity, the vehicle
+  dictionary contract, and the export configuration.
+* Turbo whistle, blow-off and exhaust-pop samples are Kenney CC0 recordings re-pitched and
+  gated, not dedicated automotive samples — no reachable CC0 source had them.

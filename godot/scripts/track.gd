@@ -320,7 +320,17 @@ func build(parent: Node3D, quality: int) -> Node3D:
 
 	# --- asphalt: real ambientCG PBR set (colour + normal + roughness) on the ribbon.
 	# ribbon() already produces one UV unit per 8 m, so scale 1.9 gives one 5 m tile.
-	var road_mat := AssetLibrary.surface("asphalt", 1.9)
+	# The night circuit asks for the wet scan, which is smoother and picks up the lights.
+	var road_kind := "asphalt"
+	var wet := false
+	if theme.has("road_kind"):
+		road_kind = String(theme.get("road_kind", "asphalt"))
+		wet = road_kind.contains("wet")
+	var road_mat := AssetLibrary.surface(road_kind, 1.9)
+	if wet:
+		road_mat.roughness = 0.35
+		road_mat.metallic = 0.25
+		road_mat.albedo_color = Color(0.82, 0.86, 0.92)
 
 	var road := ribbon([Vector2(-ROAD_HALF, 0.02), Vector2(ROAD_HALF, 0.02)], road_mat, 8.0, true)
 	road.name = "Road"

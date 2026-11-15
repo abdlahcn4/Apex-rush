@@ -69,3 +69,68 @@ below so nothing is oversold:
 
 Everything the player drives past — cars, wheels, barriers, grandstands, billboards, light
 posts, pit buildings, trees — is an imported glTF model.
+
+---
+
+# Remaster round — real vehicles, environments, HDRIs, audio
+
+This round replaced the remaining Kenney-kit stand-ins with film-grade imported content.
+Same rule as above: if a file is listed here it was downloaded into the repo and is shipped.
+
+| Asset set | Upstream author | Licence | Mirror used | Ship size |
+|---|---|---|---|---|
+| **Hero vehicle** — `CarConcept.glb`, 97 meshes, 29 materials, 15 PNG textures, named wheels / rims / brake discs / pads / interior | Khronos Group glTF Sample Assets (model by UX3D) | **CC-BY 4.0 — attribution required** | `github.com/KhronosGroup/glTF-Sample-Assets` → `Models/CarConcept/glTF-Binary/` | 11.8 MB |
+| **Skies** — `kloppenheim_02_puresky`, `urban_street_01`, `urban_alley_01` (1k HDR, 1024×512 after downscale) | Greg Zaal / Poly Haven | CC0 1.0 | `github.com/petroulacl/fps-buildings-env-kit` → `environment/skyboxes/polyhaven-hdri/` | 2.1 MB |
+| **Vegetation** — Pine, Dead Tree, Bush, Bush with Flowers, Grass, Fern, Pebble Round (glTF) | Quaternius / PolyPizza stylised nature pack | CC0 1.0 | same mirror → `environment/vegetation/polypizza-stylized-nature-gltf/` | 0.4 MB |
+| **Buildings** — `building-type-{a,b,c,e,f,g}` suburban kit | Kenney | CC0 1.0 | same mirror → `buildings/kenney-city-kit-suburban/Models/GLB format/` | 0.2 MB |
+| **Race audio** — `engine.ogg`, `skid.ogg`, `impact.ogg` | Kenney Starter Kit Racing | CC0 1.0 | `github.com/KenneyNL/Starter-Kit-Racing` → `audio/` | 0.16 MB |
+| **Wet asphalt** — `street_asphalt_wet` colour / normal / roughness scans, 1024² after downscale | ambientCG (TLS textures mirror) | CC0 1.0 | `github.com/itz019/tls-textures` | 0.7 MB |
+
+### Attribution required
+
+`godot/assets/vehicles/carconcept/LICENSE.md` is the upstream licence for the hero car and
+ships with the model. The car is **CC-BY 4.0**: credit "Car Concept — Khronos glTF Sample
+Assets (UX3D)". That credit is repeated in the in-game pause sheet and in this file.
+
+### What each map now uses
+
+| Map | Sky | Vegetation | Buildings | Road |
+|---|---|---|---|---|
+| Sunset Ring | `kloppenheim_02_puresky_1k` | bushes, flowering bushes, grass | — | ambientCG asphalt |
+| Harbour Night | `urban_alley_01_1k` (energy 0.55) | bushes, grass | 110 Kenney buildings ×3.2 height | **wet** asphalt (smooth, metallic, picks up neon) |
+| Dune Pass | `kloppenheim_02_puresky_1k` (energy 1.15) | pebbles, dead trees, dry grass | — | asphalt |
+| Cedar Pass | `kloppenheim_02_puresky_1k` (energy 0.9) | 190 pines, 110 ferns, 70 bushes | — | asphalt |
+| Ridge Road | `urban_street_01_1k` (energy 0.8) | 150 pines, 55 pebbles, 50 bushes | 26 ridge buildings | asphalt |
+
+Vegetation is instanced through a `MultiMesh` per species (one draw call each) and every
+instance is rejected if it lands within 22 m of the racing line, so nothing grows through
+the tarmac. Buildings keep 40 m of clearance.
+
+### Audio layer (all recorded samples)
+
+| Layer | Recording | Driven by |
+|---|---|---|
+| Engine low | Kenney `spaceEngineLow_000.ogg` | RPM 0–40 %, crossfaded out above |
+| Engine mid | Kenney `engineCircular_000.ogg` | RPM across the whole range |
+| Engine high | Kenney Starter-Kit-Racing `engine.ogg` | RPM > 3 400, thirds timbre |
+| Tyre / skid / drift | Kenney `skid.ogg` (real tyre scrub) | slip + handbrake |
+| Wind | Kenney `whoosh-slow-medium.wav` looped | road speed squared |
+| Gear shift | Kenney `mechanical-latch-heavy.wav` | every gear change |
+| Blow-off valve | Kenney `whoosh` re-pitched 1.35–1.55 | throttle lift above 3 800 rpm |
+| Exhaust pop | Kenney `impact-light-hard.wav` re-pitched 1.9–2.4 | upshift above 4 200 rpm, lift above 4 600 rpm — fires with the VFX flame |
+| Impacts | Kenney impact recordings, pooled ×3 | collision impulse |
+
+### Stated limitations (this round)
+
+- No isolated CC0 **turbo whistle / blow-off / exhaust-pop** recordings were reachable: every
+  repository hosting them declares no licence. The three are therefore Kenney CC0
+  recordings re-pitched and gated, not dedicated samples. This is the honest description.
+- HDRIs ship at 1k (1024×512) to keep the APK inside the size budget; the night map uses a
+  separate HDRI rather than a day/night shader conversion.
+- There is one authored car model (CarConcept). All six tiers drive it, differentiated by
+  paint, ride height and the length/wheelbase from `CarBuilder.SPECS`, so the grid is
+  visually coherent rather than six recolours of a Kenney cube car. The old procedural
+  builder is retained only as a fallback if the GLB is missing, and is never used when the
+  imported model is present.
+- The cockpit camera anchors to the model's `InteriorSteeringWheel01` node, so it sits at
+  the driver's eye point on every car.

@@ -10,6 +10,7 @@ const LAPS_TOTAL := 3
 const COUNTDOWN_FROM := 3.2
 
 var quality := 2
+var paint_override := Color(0, 0, 0, 0)
 
 var maps: Array = []
 var map_def: Dictionary = {}
@@ -25,6 +26,7 @@ var touch: TouchControls
 var audio: AudioDirector
 var ui: GameUI
 
+var vfx: VehicleVFX
 var ground: MeshInstance3D
 var mountains: MultiMeshInstance3D
 
@@ -54,6 +56,9 @@ func _ready() -> void:
 	ui.name = "UI"
 	add_child(ui)
 	ui.setup(_car_list(), _map_list())
+	ui.load_settings()
+	quality = clampi(ui.quality, 0, 2)
+	paint_override = ui.paint_color if ui.has_paint else Color(0, 0, 0, 0)
 	ui.race_requested.connect(_start_race)
 	ui.resume_requested.connect(_resume)
 	ui.restart_requested.connect(_restart)
@@ -172,6 +177,7 @@ func _teardown_world() -> void:
 	touch = null
 	ground = null
 	mountains = null
+	vfx = null
 
 
 func _pause() -> void:
@@ -209,8 +215,9 @@ func _build_world() -> void:
 
 	_build_environment()
 	ground = _build_ground()
-	mountains = _build_treeline()
 	track.build(world, quality)
+	_build_vegetation()
+	_build_city()
 	_spawn_player()
 	_setup_camera()
 	_setup_hud()
@@ -241,7 +248,18 @@ func _build_environment() -> void:
 	sky_mat.sun_curve = 0.12
 
 	var sky := Sky.new()
-	sky.sky_material = sky_mat
+	# A real HDRI (Poly Haven, CC0) where the circuit defines one: it lights the scene and
+	# shows up in the paint, glass and wet asphalt. Falls back to the procedural gradient.
+	var hdri := String(theme.get("sky_hdri", ""))
+	var hdri_tex := AssetLibrary.sky(hdri)
+	if hdri_tex != null:
+		var pano := PanoramaSkyMaterial.new()
+		pano.panorama = hdri_tex
+		pano.energy_multiplier = float(theme.get("sky_energy", 1.0))
+		pano.filter = true
+		sky.sky_material = pano
+	else:
+		sky.sky_material = sky_mat
 	sky.radiance_size = Sky.RADIANCE_SIZE_256
 
 	var night := bool(theme.get("night", false))
@@ -282,6 +300,117 @@ func _build_environment() -> void:
 	var rot: Array = theme.get("sun_rot", [-14.0, 150.0, 0.0])
 	sun.rotation_degrees = Vector3(float(rot[0]), float(rot[1]), float(rot[2]))
 	world.add_child(sun)
+
+
+## Circuit dressing rules: what grows, how much, and which imported models.
+const VEG_PRESETS := {
+	"circuit": [["Bush", 46, 1.0], ["Bush_with_Flowers", 24, 0.9], ["Grass", 150, 1.0]],
+	"forest": [["Pine", 190, 1.05], ["Fern", 110, 1.0], ["Bush", 70, 0.95]],
+	"mountain": [["Pine", 150, 1.2], ["Pebble_Round", 55, 1.7], ["Bush", 50, 0.9]],
+	"desert": [["Pebble_Round", 90, 1.9], ["Dead_Tree", 22, 1.5], ["Grass", 40, 0.7]],
+	"city": [["Bush", 40, 0.9], ["Grass", 70, 1.0]],
+}
+
+const CITY_MODELS := [
+	"building-type-a", "building-type-b", "building-type-c",
+	"building-type-e", "building-type-f", "building-type-g",
+]
+const CITY_KIT := [
+	"building-a", "building-b", "building-c", "building-d", "building-e", "building-f",
+]
+
+
+## Instanced, imported vegetation: Quaternius trees/bushes/rocks (CC0) placed away from the
+## racing line, so the verges are authored models rather than painted texture.
+func _build_vegetation() -> void:
+	var theme := _theme()
+	var preset_name := String(theme.get("veg", "circuit"))
+	var preset: Array = VEG_PRESETS.get(preset_name, VEG_PRESETS["circuit"])
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(map_id)
+
+	for entry in preset:
+		var item: Array = entry
+		var model_name := String(item[0])
+		var count := int(item[1])
+		var scale_hint := float(item[2])
+		var mesh := AssetLibrary.first_mesh(AssetLibrary.VEG_DIR + model_name + ".glb")
+		if mesh == null:
+			continue
+		var mat := AssetLibrary.first_mesh_material(AssetLibrary.VEG_DIR + model_name + ".glb")
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = mesh
+		var placed := 0
+		var attempts := 0
+		var xforms: Array = []
+		while placed < count and attempts < count * 12:
+			attempts += 1
+			var a := rng.randf() * TAU
+			var dist := 28.0 + rng.randf() * 380.0
+			var px := cos(a) * dist
+			var pz := sin(a) * dist
+			if track != null:
+				var pr: Dictionary = track.project(px, pz, -1)
+				if absf(float(pr.get("lat", 0.0))) < 22.0:
+					continue
+			var s := scale_hint * (0.75 + rng.randf() * 0.7)
+			var basis := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(s, s * (0.85 + rng.randf() * 0.5), s))
+			xforms.append(Transform3D(basis, Vector3(px, 0.0, pz)))
+			placed += 1
+		if xforms.is_empty():
+			continue
+		mm.instance_count = xforms.size()
+		for i in range(xforms.size()):
+			mm.set_instance_transform(i, xforms[i])
+		var inst := MultiMeshInstance3D.new()
+		inst.name = "Veg_" + model_name
+		inst.multimesh = mm
+		if mat != null:
+			inst.material_override = mat
+		inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		world.add_child(inst)
+
+
+## City dressing: imported Kenney buildings in blocks around the circuit, scaled into a
+## skyline for the city maps.
+func _build_city() -> void:
+	var theme := _theme()
+	var kind := String(theme.get("city", "none"))
+	if kind == "none":
+		return
+	var count := int(theme.get("city_count", 70 if kind == "city" else 40))
+	var height_mul := float(theme.get("city_height", 1.0))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(map_id + "_city")
+	var placed := 0
+	var attempts := 0
+	while placed < count and attempts < count * 10:
+		attempts += 1
+		var a := rng.randf() * TAU
+		var dist := 120.0 + rng.randf() * 520.0
+		var px := cos(a) * dist
+		var pz := sin(a) * dist
+		if track != null:
+			var pr: Dictionary = track.project(px, pz, -1)
+			if absf(float(pr.get("lat", 0.0))) < 40.0:
+				continue
+		var scene: Node3D = null
+		if rng.randf() < 0.55:
+			var pick: String = CITY_MODELS[rng.randi() % CITY_MODELS.size()]
+			scene = AssetLibrary.instance(AssetLibrary.BLD_DIR + pick + ".glb")
+		else:
+			var pick2: String = CITY_KIT[rng.randi() % CITY_KIT.size()]
+			scene = AssetLibrary.instance(AssetLibrary.CITY_DIR + pick2 + ".glb")
+		if scene == null:
+			continue
+		var s := 1.4 + rng.randf() * 1.6
+		var h := s * height_mul * (0.9 + rng.randf() * 0.6)
+		scene.scale = Vector3(s, h, s)
+		scene.position = Vector3(px, 0.0, pz)
+		scene.rotation = Vector3(0.0, rng.randf() * TAU, 0.0)
+		world.add_child(scene)
+		placed += 1
 
 
 func _build_ground() -> MeshInstance3D:
@@ -358,9 +487,15 @@ func _build_treeline() -> MultiMeshInstance3D:
 func _spawn_player() -> void:
 	var start: Dictionary = track.point_at(-12.0, 3.4)
 	var spec := CarBuilder.spec(car_id)
-	player = ApexVehicle.new(car_id, Color(String(spec.color)), quality)
+	var paint := Color(String(spec.color))
+	if paint_override.a > 0.5:
+		paint = paint_override
+	player = ApexVehicle.new(car_id, paint, quality)
 	world.add_child(player)
 	player.reset(float(start.x), float(start.z), atan2(float(start.tx), float(start.tz)))
+	vfx = VehicleVFX.new()
+	player.add_child(vfx)
+	vfx.setup(player.model, player.model.get("body") as Node3D)
 
 
 func _setup_camera() -> void:
@@ -417,6 +552,8 @@ func _process(delta: float) -> void:
 	if player == null or cam == null:
 		return
 	cam.update_camera(delta, player)
+	if vfx != null:
+		vfx.update(player, delta)
 	if audio != null:
 		audio.update(player, delta)
 	if hud != null:
