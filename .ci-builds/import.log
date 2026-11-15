@@ -8,17 +8,18 @@ first_scan_filesystem: begin: Project initialization steps: 5
 	first_scan_filesystem: step 4: Initializing plugins...
 	first_scan_filesystem: step 5: Starting file scan...
 first_scan_filesystem: end
-update_scripts_classes: begin: Registering global classes... steps: 10
+update_scripts_classes: begin: Registering global classes... steps: 11
 	update_scripts_classes: step 0: AssetLibrary
 	update_scripts_classes: step 1: AudioDirector
 	update_scripts_classes: step 2: ChaseCamera
 	update_scripts_classes: step 3: CarBuilder
 	update_scripts_classes: step 4: 
-	update_scripts_classes: step 5: RaceHUD
-	update_scripts_classes: step 6: MeshKit
-	update_scripts_classes: step 7: TouchControls
-	update_scripts_classes: step 8: ApexTrack
-	update_scripts_classes: step 9: ApexVehicle
+	update_scripts_classes: step 5: GameUI
+	update_scripts_classes: step 6: RaceHUD
+	update_scripts_classes: step 7: MeshKit
+	update_scripts_classes: step 8: TouchControls
+	update_scripts_classes: step 9: ApexTrack
+	update_scripts_classes: step 10: ApexVehicle
 update_scripts_classes: end
 _update_scan_actions: begin: Scanning actions... steps: 132
 	_update_scan_actions: step 0: click-button-firm.wav
@@ -295,6 +296,7 @@ reimport: begin: (Re)Importing Assets steps: 132
 	reimport: step 4: kenney_spaceEngineLarge_000.ogg
 	reimport: step 5: kenney_spaceEngineLow_000.ogg
 	reimport: step 6: kenney_engineCircular_000.ogg
+	reimport: step 7: kenney_engineCircular_001.ogg
 	reimport: step 8: kenney_engineCircular_002.ogg
 	reimport: step 9: kenney_spaceEngineLarge_000.ogg
 	reimport: step 10: colormap.png
@@ -308,6 +310,8 @@ reimport: begin: (Re)Importing Assets steps: 132
 	reimport: step 18: flagCheckers_checkers.png
 	reimport: step 19: asphalt.webp
 	reimport: step 20: kenney_spaceEngineLow_000.ogg
+	reimport: step 21: kenney_engineCircular_000.ogg
+	reimport: step 22: kenney_engineCircular_001.ogg
 	reimport: step 23: kenney_engineCircular_002.ogg
 	reimport: step 24: kenney_spaceEngineLarge_000.ogg
 	reimport: step 25: colormap.png
@@ -1128,23 +1132,24 @@ ERROR: Parameter "t" is null.
 import: end
 	reimport: step 132: Finalizing Asset Import...
 reimport: end
-update_script_paths_documentation: begin: Updating scripts documentation steps: 10
+update_script_paths_documentation: begin: Updating scripts documentation steps: 11
 	update_script_paths_documentation: step 0: asset_library.gd
 	update_script_paths_documentation: step 1: audio_director.gd
 	update_script_paths_documentation: step 2: camera_rig.gd
 	update_script_paths_documentation: step 3: car_builder.gd
 SCRIPT ERROR: Parse Error: Cannot infer the type of "yaw" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:444)
+          at: GDScript::reload (res://scripts/track.gd:445)
 SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
           at: GDScript::reload (res://scripts/game.gd:0)
 ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
    at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 4: game.gd
-	update_script_paths_documentation: step 5: hud.gd
-	update_script_paths_documentation: step 6: mesh_kit.gd
-	update_script_paths_documentation: step 7: touch_controls.gd
-	update_script_paths_documentation: step 8: track.gd
-	update_script_paths_documentation: step 9: vehicle.gd
+	update_script_paths_documentation: step 5: game_ui.gd
+	update_script_paths_documentation: step 6: hud.gd
+	update_script_paths_documentation: step 7: mesh_kit.gd
+	update_script_paths_documentation: step 8: touch_controls.gd
+	update_script_paths_documentation: step 9: track.gd
+	update_script_paths_documentation: step 10: vehicle.gd
 update_script_paths_documentation: end
 update_scene_groups: begin: Updating Scene Groups steps: 102
 	update_scene_groups: step 0: main.tscn
