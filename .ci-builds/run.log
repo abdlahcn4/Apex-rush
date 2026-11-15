@@ -1,15 +1,8 @@
 Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 
-ERROR: Condition "p_child->data.parent != this" is true.
-   at: remove_child (scene/main/node.cpp:1687)
-WARNING: Adding 'wheel-front-right' as child to 'WheelSpin' will make owner 'hatchback-sports' inconsistent. Consider unsetting the owner beforehand.
-     at: add_child (scene/main/node.cpp:1664)
-WARNING: Adding 'wheel-front-left' as child to 'WheelSpin' will make owner 'hatchback-sports' inconsistent. Consider unsetting the owner beforehand.
-     at: add_child (scene/main/node.cpp:1664)
-WARNING: Adding 'wheel-back-right' as child to 'WheelSpin' will make owner 'hatchback-sports' inconsistent. Consider unsetting the owner beforehand.
-     at: add_child (scene/main/node.cpp:1664)
-WARNING: Adding 'wheel-back-left' as child to 'WheelSpin' will make owner 'hatchback-sports' inconsistent. Consider unsetting the owner beforehand.
-     at: add_child (scene/main/node.cpp:1664)
+[autotest] circuit=Sunset Ring samples=1527 length=3053.7m
+[autotest] car=vortex model=hatchback-sports scale=1.579 length=4.50m width=2.05m wheel_radius=0.474m wheels=4 lights=2
+[autotest] props: 8 nodes under world, audio engine=true skid=true
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
 ERROR: 3 resources still in use at exit (run with --verbose for details).
