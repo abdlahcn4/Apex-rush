@@ -263,6 +263,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		_touch_seen = true
 		var touch := event as InputEventScreenTouch
+		touch.position = _view_space(touch.position)
 		if touch.pressed:
 			_press_pos = touch.position
 			_press_index = touch.index
@@ -276,6 +277,7 @@ func _input(event: InputEvent) -> void:
 		_activate_at(touch.position)
 	elif event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
+		mb.position = _view_space(mb.position)
 		if mb.button_index != MOUSE_BUTTON_LEFT:
 			return
 		if _touch_seen:
@@ -287,6 +289,20 @@ func _input(event: InputEvent) -> void:
 		if _press_index == -2:
 			_press_index = -1
 			_activate_at(mb.position)
+
+
+## Node._input reports positions in window space. Controls live in viewport space, and
+## with a stretch mode the two differ by the viewport's final transform (a phone at
+## 2400x1080 against a 1280x720 viewport is ~1.9x). Convert before hit-testing.
+func _view_space(pos: Vector2) -> Vector2:
+	var vp := get_viewport()
+	if vp == null:
+		return pos
+	var xf := vp.get_final_transform()
+	var scale := xf.get_scale()
+	if absf(scale.x) < 0.0001 or absf(scale.y) < 0.0001:
+		return pos
+	return xf.affine_inverse() * pos
 
 
 func _activate_at(pos: Vector2) -> void:
