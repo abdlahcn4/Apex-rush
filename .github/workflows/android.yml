@@ -160,7 +160,14 @@ jobs:
             echo "::error::GDScript errors in the headless run - build rejected"
             exit 1
           fi
-          echo "headless log clean"
+          # a build you cannot tap is not shippable; the autotest proves both surfaces
+          if grep -nE "MENU DOES NOT RESPOND|PADS DO NOT RESPOND|TAP PROBE FAILED|MENU IS TAPPABLE|PADS RESPOND TO TOUCH" run.log | grep -qE "DOES NOT RESPOND|FAILED"; then
+            echo "::error::touch input is not working - build rejected"
+            exit 1
+          fi
+          grep -q "MENU IS TAPPABLE" run.log || { echo "::error::menu tap probe did not run"; exit 1; }
+          grep -q "PADS RESPOND TO TOUCH" run.log || { echo "::error::driving pad probe did not run"; exit 1; }
+          echo "headless log clean, menu and pads respond to touch"
 
       - name: Upload APK
         if: always()

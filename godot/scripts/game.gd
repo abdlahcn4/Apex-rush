@@ -626,6 +626,52 @@ func _run_autotest() -> void:
 	await _probe_menu_touch()
 	_start_race(map_id, car_id)
 	_report_autotest()
+	await _probe_drive_touch()
+
+
+## Same trick as the menu probe, but aimed at the on-screen driving pads: a finger on GAS
+## must raise the throttle and releasing must drop it again.
+func _inject_touch(index: int, viewport_pos: Vector2, pressed: bool) -> void:
+	var ev := InputEventScreenTouch.new()
+	ev.index = index
+	ev.position = get_viewport().get_screen_transform() * viewport_pos
+	ev.pressed = pressed
+	Input.parse_input_event(ev)
+	Input.flush_buffered_events()
+	await get_tree().process_frame
+
+
+func _probe_drive_touch() -> void:
+	if touch == null:
+		print("[autotest] drive probe: touch controls missing")
+		return
+	touch.set_active(true)
+	await get_tree().process_frame
+	var gas := Rect2()
+	var left := Rect2()
+	for b in touch._buttons:
+		if String(b.name) == "gas":
+			gas = b.rect
+		elif String(b.name) == "left":
+			left = b.rect
+	var gas_point := gas.get_center()
+	var left_point := left.get_center()
+	await _inject_touch(0, gas_point, true)
+	var throttle := touch.throttle_axis()
+	await _inject_touch(0, gas_point, false)
+	await get_tree().process_frame
+	var released := touch.throttle_axis()
+	await _inject_touch(1, left_point, true)
+	var steer := touch.steer_axis()
+	await _inject_touch(1, left_point, false)
+	await get_tree().process_frame
+	var ok := throttle > 0.5 and released < 0.05 and absf(steer) > 0.5
+	print("[autotest] drive probe: gas_at=%s throttle=%.2f released=%.2f steer=%.2f" % [
+		str(gas_point), throttle, released, steer,
+	])
+	print("[autotest] drive probe result: %s" % (
+		"ON-SCREEN PADS RESPOND TO TOUCH" if ok else "ON-SCREEN PADS DO NOT RESPOND"
+	))
 
 
 ## Verifies the menu is actually tappable. Two independent checks:
