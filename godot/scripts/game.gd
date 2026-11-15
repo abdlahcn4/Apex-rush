@@ -593,7 +593,7 @@ func _report_autotest() -> void:
 		absf(player.vF) * 3.6, player.gear, player.rpm, travelled, player.drift, player.nitro_charge,
 	])
 
-	var chassis := model.get("root", null)
+	var chassis: Variant = model.get("root", null)
 	if chassis is Node3D:
 		var box := AssetLibrary.bounds(chassis as Node3D)
 		print("[autotest] chassis bounds %.2f x %.2f x %.2f, base_y=%.3f" % [
