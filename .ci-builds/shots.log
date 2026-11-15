@@ -1,0 +1,33 @@
+Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
+WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by the graphics driver.
+     at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:360)
+OpenGL API 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 21.1.8, 256 bits)
+
+SCRIPT ERROR: Parse Error: Cannot find member "TEXTURE_FILTER_ANISOTROPIC" in base "BaseMaterial3D".
+          at: GDScript::reload (res://scripts/asset_library.gd:176)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/track.gd:0)
+SCRIPT ERROR: Parse Error: Cannot find member "TEXTURE_FILTER_ANISOTROPIC" in base "BaseMaterial3D".
+          at: GDScript::reload (res://scripts/asset_library.gd:176)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/car_builder.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/vehicle.gd:0)
+SCRIPT ERROR: Parse Error: Identifier "AudioEffectGainVolume" not declared in the current scope.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "gain" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Parse Error: Identifier "AudioEffectGainVolume" not declared in the current scope.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "gain" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game_ui.gd:0)
+SCRIPT ERROR: Parse Error: Cannot find member "TEXTURE_FILTER_ANISOTROPIC" in base "BaseMaterial3D".
+          at: GDScript::reload (res://scripts/asset_library.gd:176)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game.gd:0)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript.cpp:3022)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+          at: _ready (res://scripts/game.gd:49)

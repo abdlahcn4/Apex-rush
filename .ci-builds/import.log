@@ -21,7 +21,7 @@ update_scripts_classes: begin: Registering global classes... steps: 11
 	update_scripts_classes: step 9: ApexTrack
 	update_scripts_classes: step 10: ApexVehicle
 update_scripts_classes: end
-_update_scan_actions: begin: Scanning actions... steps: 132
+_update_scan_actions: begin: Scanning actions... steps: 138
 	_update_scan_actions: step 0: click-button-firm.wav
 	_update_scan_actions: step 1: click-hover-soft.wav
 	_update_scan_actions: step 2: click-toggle-on-firm.wav
@@ -148,14 +148,20 @@ _update_scan_actions: begin: Scanning actions... steps: 132
 	_update_scan_actions: step 123: roadStraightLong.glb
 	_update_scan_actions: step 124: roadStraightLongMid.glb
 	_update_scan_actions: step 125: roadStraightSkew.glb
-	_update_scan_actions: step 126: asphalt.webp
-	_update_scan_actions: step 127: concrete.webp
-	_update_scan_actions: step 128: grass.webp
-	_update_scan_actions: step 129: gravel.webp
-	_update_scan_actions: step 130: ground.webp
-	_update_scan_actions: step 131: road.webp
+	_update_scan_actions: step 126: asphalt_albedo.jpg
+	_update_scan_actions: step 127: asphalt_normal.jpg
+	_update_scan_actions: step 128: asphalt_rough.jpg
+	_update_scan_actions: step 129: concrete_albedo.jpg
+	_update_scan_actions: step 130: concrete_normal.jpg
+	_update_scan_actions: step 131: concrete_rough.jpg
+	_update_scan_actions: step 132: grass_albedo.jpg
+	_update_scan_actions: step 133: grass_normal.jpg
+	_update_scan_actions: step 134: grass_rough.jpg
+	_update_scan_actions: step 135: gravel_albedo.jpg
+	_update_scan_actions: step 136: gravel_normal.jpg
+	_update_scan_actions: step 137: gravel_rough.jpg
 _update_scan_actions: end
-reimport: begin: (Re)Importing Assets steps: 132
+reimport: begin: (Re)Importing Assets steps: 138
 	reimport: step 0: Preparing files to reimport...
 	reimport: step 1: Preparing files to reimport...
 	reimport: step 2: Preparing files to reimport...
@@ -288,86 +294,50 @@ reimport: begin: (Re)Importing Assets steps: 132
 	reimport: step 129: Preparing files to reimport...
 	reimport: step 130: Preparing files to reimport...
 	reimport: step 131: Preparing files to reimport...
+	reimport: step 132: Preparing files to reimport...
+	reimport: step 133: Preparing files to reimport...
+	reimport: step 134: Preparing files to reimport...
+	reimport: step 135: Preparing files to reimport...
+	reimport: step 136: Preparing files to reimport...
+	reimport: step 137: Preparing files to reimport...
 	reimport: step 0: Executing pre-reimport operations...
-	reimport: step 0: kenney_spaceEngineLow_000.ogg
-	reimport: step 1: kenney_engineCircular_000.ogg
-	reimport: step 2: kenney_engineCircular_001.ogg
-	reimport: step 3: kenney_engineCircular_002.ogg
-	reimport: step 4: kenney_spaceEngineLarge_000.ogg
-	reimport: step 5: kenney_spaceEngineLow_000.ogg
-	reimport: step 6: kenney_engineCircular_000.ogg
-	reimport: step 7: kenney_engineCircular_001.ogg
-	reimport: step 8: kenney_engineCircular_002.ogg
-	reimport: step 9: kenney_spaceEngineLarge_000.ogg
+	reimport: step 0: kenney_engineCircular_000.ogg
+	reimport: step 1: kenney_engineCircular_001.ogg
+	reimport: step 2: kenney_engineCircular_002.ogg
+	reimport: step 3: kenney_spaceEngineLarge_000.ogg
+	reimport: step 4: kenney_spaceEngineLow_000.ogg
+	reimport: step 5: kenney_engineCircular_000.ogg
+	reimport: step 6: kenney_engineCircular_001.ogg
+	reimport: step 7: kenney_engineCircular_002.ogg
+	reimport: step 8: kenney_spaceEngineLarge_000.ogg
+	reimport: step 9: kenney_spaceEngineLow_000.ogg
 	reimport: step 10: colormap.png
 	reimport: step 11: colormap.png
-	reimport: step 12: colormap.png
-	reimport: step 13: colormap.png
-	reimport: step 14: billboard_tankcoBanner.png
-	reimport: step 15: fenceCurved_net.png
-	reimport: step 16: fenceStraight_net.png
-	reimport: step 17: flagCheckersSmall_checkers.png
-	reimport: step 18: flagCheckers_checkers.png
-	reimport: step 19: asphalt.webp
-	reimport: step 20: kenney_spaceEngineLow_000.ogg
-	reimport: step 21: kenney_engineCircular_000.ogg
-	reimport: step 22: kenney_engineCircular_001.ogg
-	reimport: step 23: kenney_engineCircular_002.ogg
-	reimport: step 24: kenney_spaceEngineLarge_000.ogg
-	reimport: step 25: colormap.png
-	reimport: step 26: colormap.png
-	reimport: step 27: colormap.png
-	reimport: step 28: colormap.png
-	reimport: step 29: billboard_tankcoBanner.png
-	reimport: step 30: fenceCurved_net.png
-	reimport: step 31: roadCornerLargeBorder.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 32: roadCornerLarge.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 33: roadCornerBridgeSmall.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 34: roadCornerBridgeLarge.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 35: roadBump.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 36: ramp.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
+	reimport: step 12: billboard_tankcoBanner.png
+	reimport: step 13: fenceCurved_net.png
+	reimport: step 14: fenceStraight_net.png
+	reimport: step 15: flagCheckersSmall_checkers.png
+	reimport: step 16: flagCheckers_checkers.png
+	reimport: step 17: asphalt_albedo.jpg
+	reimport: step 18: colormap.png
+	reimport: step 19: colormap.png
+	reimport: step 20: asphalt_normal.jpg
+	reimport: step 21: asphalt_rough.jpg
+	reimport: step 22: concrete_albedo.jpg
+	reimport: step 23: concrete_normal.jpg
+	reimport: step 24: concrete_rough.jpg
+	reimport: step 25: grass_albedo.jpg
+	reimport: step 26: kenney_engineCircular_000.ogg
+	reimport: step 27: kenney_engineCircular_001.ogg
+	reimport: step 28: kenney_engineCircular_002.ogg
+	reimport: step 29: kenney_spaceEngineLarge_000.ogg
+	reimport: step 30: kenney_spaceEngineLow_000.ogg
+	reimport: step 31: colormap.png
+	reimport: step 32: colormap.png
+	reimport: step 33: billboard_tankcoBanner.png
+	reimport: step 34: fenceCurved_net.png
+	reimport: step 35: fenceStraight_net.png
+	reimport: step 36: flagCheckersSmall_checkers.png
 	reimport: step 37: raceCarWhite.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
@@ -376,7 +346,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 38: raceCarRed.glb
+	reimport: step 38: ramp.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -384,7 +354,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 39: raceCarOrange.glb
+	reimport: step 39: roadBump.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -392,7 +362,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 40: raceCarGreen.glb
+	reimport: step 40: roadCornerBridgeLarge.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -400,7 +370,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 41: treeSmall.glb
+	reimport: step 41: roadCornerBridgeSmall.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -408,7 +378,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 42: treeLarge.glb
+	reimport: step 42: roadCornerLarge.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -416,7 +386,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 43: tentRoof.glb
+	reimport: step 43: roadCornerLargeBorder.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -424,7 +394,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 44: tentLong.glb
+	reimport: step 44: roadCornerLarger.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -432,7 +402,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 45: tentClosed.glb
+	reimport: step 45: roadCornerLargeWall.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -440,7 +410,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 46: tent.glb
+	reimport: step 46: roadCornerSmall.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -448,7 +418,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 47: railDouble.glb
+	reimport: step 47: roadCornerSmallSquare.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -456,7 +426,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 48: rail.glb
+	reimport: step 48: raceCarRed.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -464,7 +434,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 49: pylon.glb
+	reimport: step 49: raceCarOrange.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -472,7 +442,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 50: pitsOfficeRoof.glb
+	reimport: step 50: raceCarGreen.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -480,7 +450,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 51: pitsOffice.glb
+	reimport: step 51: treeSmall.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -488,7 +458,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 52: roadStraightSkew.glb
+	reimport: step 52: treeLarge.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -496,7 +466,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 53: roadStraightLongMid.glb
+	reimport: step 53: tentRoof.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -504,7 +474,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 54: roadStraightLong.glb
+	reimport: step 54: tentLong.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -512,7 +482,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 55: roadStraightBridgeStart.glb
+	reimport: step 55: tentClosed.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -520,7 +490,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 56: roadStraightBridgeMid.glb
+	reimport: step 56: tent.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -528,7 +498,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 57: roadStraightBridge.glb
+	reimport: step 57: railDouble.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -536,7 +506,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 58: roadStraightArrow.glb
+	reimport: step 58: rail.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -544,7 +514,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 59: roadStraight.glb
+	reimport: step 59: ambulance.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -552,7 +522,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 60: roadStartPositions.glb
+	reimport: step 60: roadStraightSkew.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -560,7 +530,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 61: roadStart.glb
+	reimport: step 61: roadStraightLongMid.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -568,7 +538,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 62: roadSplitRound.glb
+	reimport: step 62: roadStraightLong.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -576,7 +546,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 63: roadSplitLarge.glb
+	reimport: step 63: roadStraightBridgeStart.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -584,7 +554,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 64: roadSplit.glb
+	reimport: step 64: roadStraightBridgeMid.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -592,7 +562,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 65: roadSide.glb
+	reimport: step 65: roadStraightBridge.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -600,7 +570,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 66: roadRampLong.glb
+	reimport: step 66: roadStraightArrow.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -608,7 +578,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 67: roadRamp.glb
+	reimport: step 67: roadStraight.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -616,7 +586,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 68: roadPitStraight.glb
+	reimport: step 68: roadStartPositions.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -624,7 +594,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 69: roadPitGarage.glb
+	reimport: step 69: roadStart.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -632,7 +602,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 70: roadPitEntry.glb
+	reimport: step 70: roadSplitRound.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -640,7 +610,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 71: roadEnd.glb
+	reimport: step 71: roadSplitLarge.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -648,7 +618,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 72: roadCurved.glb
+	reimport: step 72: roadSplit.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -656,7 +626,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 73: roadCrossing.glb
+	reimport: step 73: roadSide.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -664,7 +634,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 74: roadCornerSmallSquare.glb
+	reimport: step 74: roadRampLong.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -672,7 +642,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 75: roadCornerSmall.glb
+	reimport: step 75: roadRamp.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -680,7 +650,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 76: roadCornerLargeWall.glb
+	reimport: step 76: roadPitStraight.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -688,7 +658,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 77: roadCornerLarger.glb
+	reimport: step 77: roadPitGarage.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -696,7 +666,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 78: bannerTowerGreen.glb
+	reimport: step 78: roadPitEntry.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -704,7 +674,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 79: building-h.glb
+	reimport: step 79: roadEnd.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -712,7 +682,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 80: building-g.glb
+	reimport: step 80: roadCurved.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -720,7 +690,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 81: building-f.glb
+	reimport: step 81: roadCrossing.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -728,7 +698,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 82: building-e.glb
+	reimport: step 82: billboardLow.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -736,351 +706,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 83: building-d.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 84: building-c.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 85: building-b.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 86: building-a.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 87: ambulance.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 88: wheel-truck.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 89: wheel-racing.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 90: wheel-default.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 91: wheel-dark.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 92: delivery.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 93: van.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 94: truck.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 95: taxi.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 96: suv.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 97: suv-luxury.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 98: sedan.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 99: sedan-sports.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 100: race.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 101: race-future.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 102: police.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 103: kart-ooli.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 104: hatchback-sports.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 105: pitsGarage.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 106: overheadRound.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 107: overheadLights.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 108: overhead.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 109: lightPostModern.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 110: lightPostLarge.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 111: lightColored.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 112: grass.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 113: grandStandRound.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 114: grandStandCoveredRound.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 115: grandStandCovered.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 116: grandStandAwning.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 117: grandStand.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 118: flagRed.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 119: flagGreen.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 120: flagCheckersSmall.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 121: flagCheckers.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 122: fenceStraight.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 123: fenceCurved.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 124: billboardLower.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 125: billboardLow.glb
-import: begin: Import Scene steps: 104
-	import: step 0: Importing Scene...
-	import: step 2: Running Custom Script...
-	import: step 104: Saving...
-ERROR: Parameter "t" is null.
-   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
-import: end
-	reimport: step 126: billboardDouble.glb
+	reimport: step 83: billboardDouble.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 ERROR: Condition "err != OK" is true. Returning: err
@@ -1090,7 +716,7 @@ ERROR: Condition "err != OK" is true. Returning: err
 import: end
 ERROR: Error importing 'res://assets/kenney_racing_kit/props/billboardDouble.glb'.
    at: _reimport_file (editor/editor_file_system.cpp:2991)
-	reimport: step 127: billboard.glb
+	reimport: step 84: billboard.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1098,7 +724,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 128: barrierWhite.glb
+	reimport: step 85: barrierWhite.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1106,7 +732,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 129: barrierWall.glb
+	reimport: step 86: barrierWall.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1114,7 +740,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 130: barrierRed.glb
+	reimport: step 87: barrierRed.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1122,7 +748,7 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 131: bannerTowerRed.glb
+	reimport: step 88: bannerTowerRed.glb
 import: begin: Import Scene steps: 104
 	import: step 0: Importing Scene...
 	import: step 2: Running Custom Script...
@@ -1130,13 +756,445 @@ import: begin: Import Scene steps: 104
 ERROR: Parameter "t" is null.
    at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
 import: end
-	reimport: step 132: Finalizing Asset Import...
+	reimport: step 89: bannerTowerGreen.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 90: building-h.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 91: building-g.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 92: building-f.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 93: building-e.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 94: building-d.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 95: building-c.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 96: building-b.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 97: building-a.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 98: race.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 99: wheel-truck.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 100: wheel-racing.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 101: wheel-default.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 102: wheel-dark.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 103: sedan-sports.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 104: van.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 105: truck.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 106: taxi.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 107: suv.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 108: suv-luxury.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 109: sedan.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 110: pylon.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 111: pitsOfficeRoof.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 112: pitsOffice.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 113: pitsGarage.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 114: overheadRound.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 115: overheadLights.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 116: overhead.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 117: lightPostModern.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 118: lightPostLarge.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 119: lightColored.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 120: grass.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 121: grandStandRound.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 122: grandStandCoveredRound.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 123: grandStandCovered.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 124: grandStandAwning.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 125: grandStand.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 126: flagRed.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 127: flagGreen.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 128: delivery.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 129: hatchback-sports.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 130: flagCheckersSmall.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 131: flagCheckers.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 132: kart-ooli.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 133: fenceStraight.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 134: police.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 135: fenceCurved.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 136: race-future.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 137: billboardLower.glb
+import: begin: Import Scene steps: 104
+	import: step 0: Importing Scene...
+	import: step 2: Running Custom Script...
+	import: step 104: Saving...
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:107)
+import: end
+	reimport: step 138: Finalizing Asset Import...
 reimport: end
 update_script_paths_documentation: begin: Updating scripts documentation steps: 11
+SCRIPT ERROR: Parse Error: Cannot find member "TEXTURE_FILTER_ANISOTROPIC" in base "BaseMaterial3D".
+          at: GDScript::reload (res://scripts/asset_library.gd:176)
+ERROR: Failed to load script "res://scripts/asset_library.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 0: asset_library.gd
+SCRIPT ERROR: Parse Error: Identifier "AudioEffectGainVolume" not declared in the current scope.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "gain" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+ERROR: Failed to load script "res://scripts/audio_director.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 1: audio_director.gd
+SCRIPT ERROR: Parse Error: Cannot find member "TEXTURE_FILTER_ANISOTROPIC" in base "BaseMaterial3D".
+          at: GDScript::reload (res://scripts/asset_library.gd:176)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/car_builder.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/vehicle.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/camera_rig.gd:0)
+ERROR: Failed to load script "res://scripts/camera_rig.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 2: camera_rig.gd
 	update_script_paths_documentation: step 3: car_builder.gd
+SCRIPT ERROR: Parse Error: Cannot find member "TEXTURE_FILTER_ANISOTROPIC" in base "BaseMaterial3D".
+          at: GDScript::reload (res://scripts/asset_library.gd:176)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/track.gd:0)
+SCRIPT ERROR: Parse Error: Identifier "AudioEffectGainVolume" not declared in the current scope.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "gain" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Parse Error: Identifier "AudioEffectGainVolume" not declared in the current scope.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "gain" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/audio_director.gd:65)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game_ui.gd:0)
+SCRIPT ERROR: Parse Error: Cannot find member "TEXTURE_FILTER_ANISOTROPIC" in base "BaseMaterial3D".
+          at: GDScript::reload (res://scripts/asset_library.gd:176)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game.gd:0)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 4: game.gd
 	update_script_paths_documentation: step 5: game_ui.gd
 	update_script_paths_documentation: step 6: hud.gd
@@ -1262,7 +1320,7 @@ ERROR: Condition "packed_scene.is_null()" is true. Returning: HashSet<StringName
 	update_scene_groups: step 100: roadStraightLongMid.glb
 	update_scene_groups: step 101: roadStraightSkew.glb
 update_scene_groups: end
-reimport: begin: (Re)Importing Assets steps: 132
+reimport: begin: (Re)Importing Assets steps: 138
 	reimport: step 0: Executing post-reimport operations...
 reimport: end
 loading_editor_layout: begin: Loading editor steps: 5
