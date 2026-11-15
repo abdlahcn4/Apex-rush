@@ -263,7 +263,6 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		_touch_seen = true
 		var touch := event as InputEventScreenTouch
-		touch.position = _view_space(touch.position)
 		if touch.pressed:
 			_press_pos = touch.position
 			_press_index = touch.index
@@ -277,7 +276,6 @@ func _input(event: InputEvent) -> void:
 		_activate_at(touch.position)
 	elif event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
-		mb.position = _view_space(mb.position)
 		if mb.button_index != MOUSE_BUTTON_LEFT:
 			return
 		if _touch_seen:
@@ -291,18 +289,27 @@ func _input(event: InputEvent) -> void:
 			_activate_at(mb.position)
 
 
-## Node._input reports positions in window space. Controls live in viewport space, and
-## with a stretch mode the two differ by the viewport's final transform (a phone at
-## 2400x1080 against a 1280x720 viewport is ~1.9x). Convert before hit-testing.
-func _view_space(pos: Vector2) -> Vector2:
+## Raw input can reach here in window space or in viewport space depending on the
+## platform layer, and the two differ by the stretch ratio (a 2400x1080 phone against a
+## 1280x720 viewport is ~1.9x; CI's headless window is 20x). Rather than assume one, the
+## tap is tested against every plausible interpretation of the same point.
+func _candidates(pos: Vector2) -> Array:
+	var out: Array = [pos]
 	var vp := get_viewport()
 	if vp == null:
-		return pos
+		return out
+	var vp_size := vp.get_visible_rect().size
+	var win_size := Vector2(DisplayServer.window_get_size())
+	if vp_size.x > 1.0 and vp_size.y > 1.0 and win_size.x > 1.0 and win_size.y > 1.0:
+		var ratio := Vector2(win_size.x / vp_size.x, win_size.y / vp_size.y)
+		if ratio.x > 1.01 or ratio.y > 1.01:
+			out.append(Vector2(pos.x / ratio.x, pos.y / ratio.y))
 	var xf := vp.get_final_transform()
-	var scale := xf.get_scale()
-	if absf(scale.x) < 0.0001 or absf(scale.y) < 0.0001:
-		return pos
-	return xf.affine_inverse() * pos
+	if not xf.is_equal_approx(Transform2D.IDENTITY):
+		var converted := xf.affine_inverse() * pos
+		if not out.has(converted):
+			out.append(converted)
+	return out
 
 
 func _activate_at(pos: Vector2) -> void:
@@ -311,20 +318,24 @@ func _activate_at(pos: Vector2) -> void:
 	var now := Time.get_ticks_msec()
 	if now - _last_activate_ms < 220:
 		return
-	for child in _vbox.get_children():
-		var b := child as Button
-		if b == null or not b.is_visible_in_tree():
-			continue
-		if debug_trace:
-			print("[tap]   test '%s' rect=%s has=%s" % [b.text, str(b.get_global_rect()), str(b.get_global_rect().has_point(pos))])
-		if b.get_global_rect().has_point(pos):
-			_last_activate_ms = now
-			_flash(b)
-			var audio := get_tree().root.find_child("Audio", true, false)
-			if audio is AudioDirector:
-				(audio as AudioDirector).play_ui()
-			b.pressed.emit()
-			return
+	for point in _candidates(pos):
+		for child in _vbox.get_children():
+			var b := child as Button
+			if b == null or not b.is_visible_in_tree():
+				continue
+			# a little slop so a slightly-off conversion still lands on a finger target
+			if b.get_global_rect().grow(14.0).has_point(point):
+				if debug_trace:
+					print("[tap] hit '%s' with %s (from %s)" % [b.text, str(point), str(pos)])
+				_last_activate_ms = now
+				_flash(b)
+				var audio := get_tree().root.find_child("Audio", true, false)
+				if audio is AudioDirector:
+					(audio as AudioDirector).play_ui()
+				b.pressed.emit()
+				return
+	if debug_trace:
+		print("[tap] nothing hit for %s -> %s" % [str(pos), str(_candidates(pos))])
 
 
 func _flash(b: Button) -> void:
