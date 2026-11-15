@@ -1,0 +1,124 @@
+name: Android APK
+
+# Builds the Godot slice into an installable debug APK.
+# Also the first place the project is executed by the real engine (headless smoke test),
+# which catches script/property errors that no offline parser can.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/0a9fee00-apex-rush]
+    paths:
+      - "godot/**"
+      - ".github/workflows/android.yml"
+
+env:
+  GODOT_VERSION: "4.4.1"
+
+jobs:
+  validate:
+    name: Headless smoke test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch Godot
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" godot-bin
+          chmod +x godot-bin
+          ./godot-bin --version
+
+      - name: Import project
+        run: |
+          timeout 300 ./godot-bin --headless --path godot --editor --quit || true
+
+      - name: Run 5 seconds headless
+        run: |
+          set +e
+          timeout 180 ./godot-bin --headless --path godot --quit-after 300 > run.log 2>&1
+          echo "godot exit code: $?"
+          echo "----- engine output -----"
+          cat run.log
+          echo "----- suspicious lines -----"
+          grep -nE "SCRIPT ERROR|Parse Error|Invalid (get|set|call|index)|Nonexistent function|Cannot (call|find|open)" run.log || echo "none found"
+
+  apk:
+    name: Export debug APK
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch Godot
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" godot-bin
+          chmod +x godot-bin
+
+      - name: Install export templates
+        run: |
+          curl -sSL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          mkdir -p "$HOME/.local/share/godot/export_templates"
+          unzip -q templates.tpz -d /tmp/tpl
+          mv /tmp/tpl/templates "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          ls "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable" | head -20
+
+      - name: Configure Android SDK and debug keystore
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls -d "$ANDROID_HOME" 2>/dev/null || true
+          keytool -genkeypair -v -keystore "$HOME/debug.keystore" -storepass android -keypass android \
+            -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+          mkdir -p "$HOME/.config/godot"
+          cat > "$HOME/.config/godot/editor_settings-4.tres" <<EOF
+[gd_resource type="EditorSettings" format=3]
+
+[resource]
+export/android/android_sdk_path = "$ANDROID_HOME"
+export/android/debug_keystore = "$HOME/debug.keystore"
+export/android/debug_keystore_user = "androiddebugkey"
+export/android/debug_keystore_pass = "android"
+EOF
+          cp "$HOME/.config/godot/editor_settings-4.tres" "$HOME/.config/godot/editor_settings-4.4.tres"
+          cat "$HOME/.config/godot/editor_settings-4.tres"
+
+      - name: Import project
+        run: |
+          timeout 300 ./godot-bin --headless --path godot --editor --quit || true
+
+      - name: Export debug APK
+        run: |
+          mkdir -p godot/build
+          set +e
+          ./godot-bin --headless --path godot --export-debug "Android" build/apex-rush-debug.apk 2>&1 | tee export.log
+          code=${PIPESTATUS[0]}
+          echo "export exit code: $code"
+          ls -la godot/build || true
+          echo "----- export log -----"
+          tail -60 export.log
+          test -f godot/build/apex-rush-debug.apk || exit 1
+
+      - name: Upload APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apex-rush-debug-apk
+          path: godot/build/*.apk
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: export-logs
+          path: |
+            export.log
+            godot/build/*.apk.txt
+          if-no-files-found: ignore
+          retention-days: 14

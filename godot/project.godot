@@ -20,6 +20,8 @@ window/stretch/mode="canvas_items"
 [rendering]
 
 renderer/rendering_method="forward_plus"
+; phones: GLES3 so the APK runs on devices without Vulkan
+renderer/rendering_method.mobile="gl_compatibility"
 anti_aliasing/quality/msaa_3d=2
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=2
 environment/defaults/default_clear_color=Color(0.16, 0.2, 0.28, 1)
