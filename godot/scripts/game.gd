@@ -60,9 +60,7 @@ func _ready() -> void:
 	# CI / smoke runs pass `-- --autotest` so the headless build actually drives the
 	# world instead of stopping on the menu.
 	if "--autotest" in OS.get_cmdline_user_args():
-		_start_race(map_id, car_id)
-		_report_autotest()
-		_probe_menu_touch()
+		_run_autotest()
 
 
 # --------------------------------------------------------------------------- #
@@ -621,12 +619,17 @@ func _report_autotest() -> void:
 		])
 
 
+## CI self-test. Probes the menu first, on a tree with no racing world in it, because
+## that is exactly the state the player sees when the app opens.
+func _run_autotest() -> void:
+	await _probe_menu_touch()
+	_start_race(map_id, car_id)
+	_report_autotest()
+
+
 ## Verifies the menu is actually tappable. Two independent checks:
 ##  1. the touch->mouse emulation setting the whole UI depends on is enabled,
-##  2. a synthetic click pushed straight into the viewport reaches the button widget.
-## Headless runs do not flush platform input, so the click is pushed into the viewport
-## rather than through Input; that exercises the same GUI pick/click path a finger does
-## once the display server has turned the touch into a mouse event.
+##  2. a synthetic click pushed into the viewport reaches the button widget.
 func _probe_menu_touch() -> void:
 	var emulate := bool(ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch", true))
 	print("[autotest] emulate_mouse_from_touch=%s" % str(emulate))
@@ -643,9 +646,16 @@ func _probe_menu_touch() -> void:
 	var rect := target.get_global_rect()
 	var point := rect.get_center()
 	var hits := 0
-	var listener := func() -> void:
+	target.pressed.connect(func() -> void:
 		hits += 1
-	target.pressed.connect(listener)
+	)
+
+	# hover first, then click: a real finger produces motion before the contact
+	var move := InputEventMouseMotion.new()
+	move.position = point
+	move.global_position = point
+	get_viewport().push_input(move)
+	await get_tree().process_frame
 
 	for pressed in [true, false]:
 		var ev := InputEventMouseButton.new()
@@ -658,8 +668,10 @@ func _probe_menu_touch() -> void:
 	await get_tree().process_frame
 
 	var screen := String(ui._title.text)
-	print("[autotest] tap probe: button '%s' rect=%s presses=%d screen='%s'" % [
-		target.text, str(rect), hits, screen,
+	var hovered := get_viewport().gui_get_hovered_control()
+	print("[autotest] tap probe: button '%s' rect=%s presses=%d hovered=%s screen='%s'" % [
+		target.text, str(rect), hits, str(hovered), screen,
 	])
-	var ok := hits > 0 and screen == "GARAGE"
-	print("[autotest] tap probe result: %s" % ("MENU IS TAPPABLE" if ok else "MENU DOES NOT RESPOND TO CLICKS"))
+	print("[autotest] tap probe result: %s" % (
+		"MENU IS TAPPABLE" if hits > 0 and screen == "GARAGE" else "MENU DOES NOT RESPOND TO CLICKS"
+	))
