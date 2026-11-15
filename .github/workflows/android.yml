@@ -62,8 +62,24 @@ jobs:
           mv /tmp/tpl/templates "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
           ls "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable" | head -20
 
-      - name: Configure Android SDK and debug keystore
+      - name: Configure Android SDK, JDK 17 and debug keystore
         run: |
+          echo "--- jvms ---"; ls /usr/lib/jvm || true
+          JAVA17=""
+          for d in /usr/lib/jvm/*17*; do
+            if [ -x "$d/bin/java" ]; then JAVA17="$d"; break; fi
+          done
+          if [ -z "$JAVA17" ]; then
+            echo "no JDK 17 found, installing"
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq openjdk-17-jdk-headless
+            for d in /usr/lib/jvm/*17*; do
+              if [ -x "$d/bin/java" ]; then JAVA17="$d"; break; fi
+            done
+          fi
+          echo "JAVA17=$JAVA17"
+          export JAVA_HOME="$JAVA17"
+          "$JAVA17/bin/java" -version
           keytool -genkeypair -v -keystore "$HOME/debug.keystore" -storepass android -keypass android \
             -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
@@ -73,6 +89,7 @@ jobs:
             echo ''
             echo '[resource]'
             echo "export/android/android_sdk_path = \"$ANDROID_HOME\""
+            echo "export/android/java_sdk_path = \"$JAVA17\""
             echo "export/android/debug_keystore = \"$HOME/debug.keystore\""
             echo 'export/android/debug_keystore_user = "androiddebugkey"'
             echo 'export/android/debug_keystore_pass = "android"'
@@ -84,9 +101,10 @@ jobs:
         run: |
           mkdir -p godot/build
           set +e
-          ./godot-bin --headless --path godot --export-debug "Android" "$PWD/godot/build/apex-rush-debug.apk" > export.log 2>&1
+          ./godot-bin --headless --verbose --path godot --export-debug "Android" "$PWD/godot/build/apex-rush-debug.apk" > export.log 2>&1
           echo "export exit: $?"
-          tail -60 export.log
+          echo "----- export.log (full) -----"
+          cat export.log
           ls -la godot/build || true
 
       - name: Publish APK and logs to branch
@@ -103,6 +121,10 @@ jobs:
             ls -la "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable" 2>&1 | head -30
             echo "--- sdk ---"
             ls "$ANDROID_HOME" 2>&1
+            echo "--- platforms ---"
+            ls "$ANDROID_HOME/platforms" 2>&1
+            echo "--- jvms ---"
+            ls /usr/lib/jvm 2>&1
             echo "--- build-tools ---"
             ls "$ANDROID_HOME/build-tools" 2>&1
             echo "--- project build dir ---"
