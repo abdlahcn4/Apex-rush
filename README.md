@@ -50,3 +50,13 @@ Apex Rush is designed to deliver an enjoyable racing experience on both desktop 
 📄 License
 
 All rights reserved unless otherwise specified.
+
+## Godot port
+
+This game is JavaScript/Three.js and cannot be loaded by Godot as-is — see
+[GODOT_PORT_ASSESSMENT.md](GODOT_PORT_ASSESSMENT.md) for the inspection and why.
+
+A real Godot 4 port has been started in [`godot/`](godot/README.md): a playable vertical slice with
+the Sunset Ring circuit, the Vortex GT, the original arcade drift physics, chase camera and HUD.
+
+Open `godot/project.godot` in Godot 4.3+ and press F5.
