@@ -318,14 +318,9 @@ func build(parent: Node3D, quality: int) -> Node3D:
 	root.name = "Track"
 	parent.add_child(root)
 
-	# --- asphalt: imported ambientCG texture on the spline ribbon
-	var road_mat := StandardMaterial3D.new()
-	road_mat.albedo_color = Color(1.0, 1.0, 1.0)
-	road_mat.albedo_texture = AssetLibrary.texture("asphalt")
-	road_mat.roughness = 0.92
-	road_mat.metallic = 0.05
-	road_mat.uv1_scale = Vector3(0.35, 0.35, 1.0)
-	road_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	# --- asphalt: real ambientCG PBR set (colour + normal + roughness) on the ribbon.
+	# ribbon() already produces one UV unit per 8 m, so scale 1.9 gives one 5 m tile.
+	var road_mat := AssetLibrary.surface("asphalt", 1.9)
 
 	var road := ribbon([Vector2(-ROAD_HALF, 0.02), Vector2(ROAD_HALF, 0.02)], road_mat, 8.0, true)
 	road.name = "Road"

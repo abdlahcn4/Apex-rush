@@ -39,6 +39,7 @@ var lap_time := 0.0
 var best_lap := 0.0
 var total_time := 0.0
 var last_s := -1.0
+var _orbit_drag := false
 var _probe_hits := 0
 var _layout_off := 0
 
@@ -144,7 +145,7 @@ func _start_race(next_map: String, next_car: String) -> void:
 	last_s = -1.0
 	ui.show_race()
 	if touch != null:
-		touch.set_active(true)
+		touch.set_active(TouchControls.is_mobile())
 	if hud != null:
 		hud.set_title(String(map_def.get("name", "APEX RUSH")).to_upper())
 		hud.toast(String(map_def.get("name", "")) + " — GET READY", 1.6)
@@ -186,7 +187,7 @@ func _resume() -> void:
 	paused = false
 	ui.show_race()
 	if touch != null:
-		touch.set_active(true)
+		touch.set_active(TouchControls.is_mobile())
 
 
 # --------------------------------------------------------------------------- #
@@ -286,11 +287,15 @@ func _build_ground() -> MeshInstance3D:
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(6000.0, 6000.0)
 
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.95, 0.98, 0.9)
-	mat.roughness = 1.0
-	mat.albedo_texture = AssetLibrary.texture(String(theme.get("ground", "grass")))
-	mat.uv1_scale = Vector3(90.0, 90.0, 1.0)
+	# 6000 m plane: 420 tiles means one 14 m ground tile, which keeps the 1K map crisp
+	# instead of stretching a single tile over the whole field.
+	var tint := Color(1.0, 1.0, 1.0, 1.0)
+	var tint_v: Variant = theme.get("ground_tint", null)
+	if typeof(tint_v) == TYPE_ARRAY:
+		var arr: Array = tint_v
+		if arr.size() >= 3:
+			tint = Color(float(arr[0]), float(arr[1]), float(arr[2]))
+	var mat := AssetLibrary.surface(String(theme.get("ground", "grass")), 420.0, tint)
 
 	var mi := MeshInstance3D.new()
 	mi.name = "Ground"
@@ -527,6 +532,39 @@ func _unhandled_input(event: InputEvent) -> void:
 				_toggle_lights()
 			KEY_M:
 				_toggle_mute()
+	elif _orbit_event(event):
+		return
+
+
+## Drag anywhere that is not a driving pad to orbit the camera around the car. Mouse and
+## finger both work; on Android the emulated mouse stream is ignored so the rotation is
+## never applied twice.
+func _orbit_event(event: InputEvent) -> bool:
+	if not racing or paused or cam == null:
+		return false
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index != MOUSE_BUTTON_LEFT or OS.has_feature("mobile"):
+			return false
+		_orbit_drag = mb.pressed
+		return true
+	if event is InputEventMouseMotion:
+		if _orbit_drag and not OS.has_feature("mobile"):
+			cam.orbit((event as InputEventMouseMotion).relative)
+			return true
+		return false
+	if event is InputEventScreenTouch:
+		var st := event as InputEventScreenTouch
+		if st.pressed:
+			_orbit_drag = touch == null or touch.hit_name(st.position).is_empty()
+		else:
+			_orbit_drag = false
+		return true
+	if event is InputEventScreenDrag:
+		if _orbit_drag:
+			cam.orbit((event as InputEventScreenDrag).relative)
+			return true
+	return false
 
 
 func _reset_car() -> void:
@@ -629,6 +667,47 @@ func _run_autotest() -> void:
 	_report_autotest()
 	await _probe_drive_touch()
 	await _probe_pause_layout()
+	if "--shots" in OS.get_cmdline_user_args():
+		await _capture_shots()
+
+
+## Renders the real 3D view to PNGs in CI (Xvfb + software OpenGL) so the look of the game
+## can be inspected instead of assumed.
+func _capture_shots() -> void:
+	countdown = 0.0
+	go_flash = 0.0
+	ui.set_countdown("")
+	var frames := 90
+	if cam != null:
+		cam.reset_orbit()
+	for i in range(frames):
+		await get_tree().process_frame
+	await _shot("chase")
+
+	if cam != null:
+		cam.orbit(Vector2(-430.0, -30.0))   # a third of the way around the car
+	for i in range(24):
+		await get_tree().process_frame
+	await _shot("orbit")
+
+	if cam != null:
+		cam.orbit(Vector2(0.0, 300.0))      # tilt down onto the surface
+	for i in range(24):
+		await get_tree().process_frame
+	await _shot("surface")
+
+	if cam != null:
+		cam.reset_orbit()
+
+
+func _shot(name: String) -> void:
+	await RenderingServer.frame_post_draw
+	var img := get_viewport().get_texture().get_image()
+	var path := "user://shot_%s.png" % name
+	var err := img.save_png(path)
+	print("[autotest] shot %s err=%d %dx%d -> %s" % [
+		name, err, img.get_width(), img.get_height(), ProjectSettings.globalize_path(path),
+	])
 
 
 ## The pause screen is what a player reaches by tapping PAUSE mid-race, so its rows have

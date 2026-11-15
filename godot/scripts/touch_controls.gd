@@ -35,8 +35,18 @@ func _ready() -> void:
 	set_active(_is_mobile())
 
 
-func _is_mobile() -> bool:
+static func is_mobile() -> bool:
 	return DisplayServer.is_touchscreen_available() or OS.has_feature("mobile") or OS.has_feature("android")
+
+
+func _is_mobile() -> bool:
+	return is_mobile()
+
+
+## Which pad sits under a point, if any. Used so a finger that is steering does not also
+## rotate the camera.
+func hit_name(pos: Vector2) -> String:
+	return _hit(pos)
 
 
 func set_active(on: bool) -> void:

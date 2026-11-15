@@ -82,13 +82,16 @@ const PROP_FILES := {
 	"ramp": "ramp.glb",
 }
 
-const TEXTURES := {
-	"asphalt": "asphalt.webp",
-	"road": "road.webp",
-	"concrete": "concrete.webp",
-	"grass": "grass.webp",
-	"gravel": "gravel.webp",
-	"ground": "ground.webp",
+## Real PBR surface sets: ambientCG 2048px maps, downscaled to 1024 for the mobile build.
+## Every kind has an albedo, a normal (OpenGL convention) and a roughness map.
+const TEXTURE_SETS := {
+	"asphalt": "asphalt",
+	"road": "asphalt",
+	"concrete": "concrete",
+	"kerb": "concrete",
+	"grass": "grass",
+	"gravel": "gravel",
+	"ground": "gravel",
 }
 
 const AUDIO := {
@@ -104,6 +107,7 @@ const AUDIO := {
 	"skid": "foley-plastic-slide.wav",
 	"gearshift": "mechanical-latch-heavy.wav",
 	"ratchet": "mechanical-ratchet-light.wav",
+	"whoosh": "whoosh-slow-medium.wav",
 }
 
 static var _scenes: Dictionary = {}
@@ -130,9 +134,9 @@ static func prop(kind: String) -> PackedScene:
 	return scene(PROP_DIR + file)
 
 
-static func texture(kind: String) -> Texture2D:
-	var file: String = String(TEXTURES.get(kind, TEXTURES["asphalt"]))
-	var path := TEX_DIR + file
+static func _map(kind: String, suffix: String) -> Texture2D:
+	var base: String = String(TEXTURE_SETS.get(kind, TEXTURE_SETS["asphalt"]))
+	var path := TEX_DIR + base + "_" + suffix + ".jpg"
 	if _textures.has(path):
 		return _textures[path] as Texture2D
 	if not ResourceLoader.exists(path):
@@ -141,6 +145,37 @@ static func texture(kind: String) -> Texture2D:
 	var tex := load(path) as Texture2D
 	_textures[path] = tex
 	return tex
+
+
+static func texture(kind: String) -> Texture2D:
+	return _map(kind, "albedo")
+
+
+static func texture_normal(kind: String) -> Texture2D:
+	return _map(kind, "normal")
+
+
+static func texture_rough(kind: String) -> Texture2D:
+	return _map(kind, "rough")
+
+
+## Surface material with the full set: colour, normal detail and measured roughness.
+## uv_scale is tiles per UV unit, tint lets a circuit shift the same surface (sand, night).
+static func surface(kind: String, uv_scale: float, tint := Color.WHITE) -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = tint
+	mat.albedo_texture = texture(kind)
+	mat.normal_enabled = true
+	mat.normal_texture = texture_normal(kind)
+	mat.normal_scale = 0.85
+	mat.roughness_texture = texture_rough(kind)
+	mat.roughness_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_RED
+	mat.roughness = 1.0
+	mat.metallic = 0.0
+	mat.uv1_scale = Vector3(uv_scale, uv_scale, 1.0)
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_ANISOTROPIC
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	return mat
 
 
 static func audio(kind: String) -> AudioStream:
