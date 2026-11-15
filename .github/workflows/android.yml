@@ -115,39 +115,39 @@ jobs:
           echo "windows export exit: $?"
           tail -30 export_win.log
           ls -la godot/build || true
-          # the zip must explain itself if the game still fails to start on a PC
-          printf '@echo off\r\ncd /d "%%~dp0"\r\necho Starting Apex Rush (OpenGL) with full diagnostics...\r\necho.\r\napex-rush.exe --verbose\r\necho.\r\necho ------------------------------------------------------------\r\necho Exit code: %%errorlevel%%\r\necho If the game closed, copy the text above and send it back.\r\necho A log is also written to: %%APPDATA%%\\Godot\\app_userdata\\Apex Rush - Godot Slice\\logs\\godot.log\r\necho ------------------------------------------------------------\r\npause\r\n' > godot/build/run-windows.bat
-          printf '@echo off\r\ncd /d "%%~dp0"\r\necho Starting Apex Rush with the Vulkan (Forward+) renderer...\r\ncd /d "%%~dp0"\r\napex-rush.exe --rendering-method forward_plus --verbose\r\necho.\r\necho Exit code: %%errorlevel%%\r\npause\r\n' > godot/build/run-forward-plus.bat
+          # the zip has to explain itself if the game still fails to start on a PC
+          printf '@echo off\r\ncd /d "%%~dp0"\r\necho Starting Apex Rush (OpenGL) with full diagnostics...\r\necho.\r\napex-rush.exe --verbose\r\necho.\r\necho ------------------------------------------------------------\r\necho Exit code: %%errorlevel%%\r\necho If the game closed, copy the text above and send it back.\r\necho Log file: %%APPDATA%%\\Godot\\app_userdata\\Apex Rush - Godot Slice\\logs\\godot.log\r\necho ------------------------------------------------------------\r\npause\r\n' > godot/build/run-windows.bat
+          printf '@echo off\r\ncd /d "%%~dp0"\r\necho Starting Apex Rush with the Vulkan (Forward+) renderer...\r\napex-rush.exe --rendering-method forward_plus --verbose\r\necho.\r\necho Exit code: %%errorlevel%%\r\npause\r\n' > godot/build/run-forward-plus.bat
           cat > godot/build/READ-ME-FIRST.txt <<'TXT'
-APEX RUSH - Windows build
-=========================
+          APEX RUSH - Windows build
+          =========================
 
-1. Extract the whole zip to a normal folder (not inside the zip preview).
-2. Double-click apex-rush.exe
+          1. Extract the whole zip to a normal folder (not from inside the zip preview).
+          2. Double-click apex-rush.exe
 
-If the window closes immediately, double-click run-windows.bat instead.
-It keeps a console open and prints exactly why the game stopped, and gives
-you a log file to send back:
+          If the window closes immediately, double-click run-windows.bat instead.
+          It keeps a console open, prints exactly why the game stopped, and points
+          at the log file you can send back:
 
-  %APPDATA%\Godot\app_userdata\Apex Rush - Godot Slice\logs\godot.log
+            %APPDATA%\Godot\app_userdata\Apex Rush - Godot Slice\logs\godot.log
 
-Controls
---------
-W / Up ......... accelerate
-S / Down ....... brake, then reverse
-A D / Left Right  steer
-Space .......... handbrake
-Shift .......... nitro
-Esc or P ....... pause
-R .............. reset car
-C .............. camera
-L / M .......... audio
+          Controls
+          --------
+          W / Up ............ accelerate
+          S / Down .......... brake, then reverse
+          A D / Left Right .. steer
+          Space ............. handbrake
+          Shift ............. nitro
+          Esc or P .......... pause
+          R ................. reset car
+          C ................. camera
+          L / M ............. audio
 
-This build uses the OpenGL renderer for maximum compatibility.
-On a machine with a good GPU, run-forward-plus.bat switches to Vulkan.
+          This build uses the OpenGL renderer for maximum compatibility.
+          On a machine with a good GPU, run-forward-plus.bat switches to Vulkan.
 
-Requires 64-bit Windows 10 or newer.
-TXT
+          Requires 64-bit Windows 10 or newer.
+          TXT
           ls -la godot/build
 
       - name: Export Linux build and boot the exported binary
