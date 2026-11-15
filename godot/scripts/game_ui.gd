@@ -203,6 +203,7 @@ func show_pause() -> void:
 	_set_panel_visible(true)
 	_title.text = "PAUSED"
 	_sub.text = _map_name(selected_map) + "  ·  " + _car_name(selected_car)
+	_plan_rows(4)
 	_clear()
 	_add_button("RESUME", func() -> void: resume_requested.emit())
 	_add_button("RESTART", func() -> void: restart_requested.emit())
@@ -214,6 +215,7 @@ func show_results(laps: int, total: float, best: float) -> void:
 	_set_panel_visible(true)
 	_title.text = "FINISH"
 	_sub.text = "%s  ·  %d laps" % [_map_name(selected_map), laps]
+	_plan_rows(3)
 	_clear()
 	_add_stat("TOTAL TIME", _clock(total))
 	_add_stat("BEST LAP", _clock(best))
@@ -364,7 +366,8 @@ func _set_panel_visible(on: bool) -> void:
 ## garage (6 cars + BACK) overflowed a 720 px tall viewport and its last rows could not be
 ## tapped on a phone.
 func _plan_rows(count: int) -> void:
-	const AVAILABLE := 536.0
+	# measured: the panel adds 222 px around the list at 1280x720, leaving ~490 usable
+	const AVAILABLE := 484.0
 	const SEPARATION := 12.0
 	var h := 76.0
 	if count > 0:

@@ -40,6 +40,7 @@ var best_lap := 0.0
 var total_time := 0.0
 var last_s := -1.0
 var _probe_hits := 0
+var _layout_off := 0
 
 
 func _ready() -> void:
@@ -627,6 +628,21 @@ func _run_autotest() -> void:
 	_start_race(map_id, car_id)
 	_report_autotest()
 	await _probe_drive_touch()
+	await _probe_pause_layout()
+
+
+## The pause screen is what a player reaches by tapping PAUSE mid-race, so its rows have
+## to fit just as well.
+func _probe_pause_layout() -> void:
+	ui.show_pause()
+	await get_tree().process_frame
+	var fit := _count_offscreen_buttons(ui)
+	_layout_off += fit
+	print("[autotest] layout check: PAUSED panel=%s offscreen_buttons=%d" % [
+		str(ui._panel.get_global_rect()), fit,
+	])
+	ui.show_race()
+	print("[autotest] layout result: %s" % ("ALL ROWS ON SCREEN" if _layout_off == 0 else "ROWS OFF SCREEN"))
 
 
 ## A row that hangs outside the viewport cannot be tapped, so count those.
@@ -704,6 +720,7 @@ func _probe_menu_touch() -> void:
 		print("[autotest] TAP PROBE FAILED: menu has no buttons")
 		return
 	var main_fit := _count_offscreen_buttons(ui)
+	_layout_off = main_fit
 	print("[autotest] layout check: main screen offscreen_buttons=%d" % main_fit)
 	var target := buttons[1] as Button
 	var target_label := String(target.text)   # the button is freed when the screen changes
@@ -750,12 +767,10 @@ func _probe_menu_touch() -> void:
 			"HIT-TESTING WORKS, only headless delivery is unavailable" if after == "GARAGE" else "HIT-TESTING IS BROKEN",
 		])
 	var garage_fit := _count_offscreen_buttons(ui)
+	_layout_off += garage_fit
 	print("[autotest] layout check: screen='%s' panel=%s offscreen_buttons=%d" % [
 		String(ui._title.text), str(ui._panel.get_global_rect()), garage_fit,
 	])
-	print("[autotest] layout result: %s" % (
-		"ALL ROWS ON SCREEN" if main_fit == 0 and garage_fit == 0 else "ROWS OFF SCREEN"
-	))
 	print("[autotest] tap probe result: %s" % (
 		"MENU IS TAPPABLE" if hits > 0 and screen == "GARAGE" else "MENU DOES NOT RESPOND TO CLICKS"
 	))
