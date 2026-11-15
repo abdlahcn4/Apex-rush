@@ -311,6 +311,7 @@ reimport: begin: (Re)Importing Assets steps: 132
 	reimport: step 19: asphalt.webp
 	reimport: step 20: kenney_spaceEngineLow_000.ogg
 	reimport: step 21: kenney_engineCircular_000.ogg
+	reimport: step 22: kenney_engineCircular_001.ogg
 	reimport: step 23: kenney_engineCircular_002.ogg
 	reimport: step 24: kenney_spaceEngineLarge_000.ogg
 	reimport: step 25: colormap.png
@@ -1136,10 +1137,6 @@ update_script_paths_documentation: begin: Updating scripts documentation steps: 
 	update_script_paths_documentation: step 1: audio_director.gd
 	update_script_paths_documentation: step 2: camera_rig.gd
 	update_script_paths_documentation: step 3: car_builder.gd
-SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
-          at: GDScript::reload (res://scripts/game.gd:596)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 4: game.gd
 	update_script_paths_documentation: step 5: game_ui.gd
 	update_script_paths_documentation: step 6: hud.gd
