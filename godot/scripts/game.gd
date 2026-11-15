@@ -12,6 +12,7 @@ var track: ApexTrack
 var player: ApexVehicle
 var cam: ChaseCamera
 var hud: RaceHUD
+var touch: TouchControls
 
 var ground: MeshInstance3D
 var mountains: MultiMeshInstance3D
@@ -179,6 +180,9 @@ func _setup_hud() -> void:
 	hud = RaceHUD.new()
 	hud.name = "HUD"
 	add_child(hud)
+	touch = TouchControls.new()
+	touch.name = "TouchControls"
+	hud.add_child(touch)
 
 
 # --------------------------------------------------------------------------- #
@@ -224,6 +228,11 @@ func _read_input() -> Dictionary:
 
 	var analog := false
 	var hand := Input.is_physical_key_pressed(KEY_SPACE)
+	if touch != null and touch.visible:
+		steer += touch.steer_axis()
+		throttle = maxf(throttle, touch.throttle_axis())
+		brake = maxf(brake, touch.brake_axis())
+		hand = hand or touch.handbrake()
 	var pads := Input.get_connected_joypads()
 	if pads.size() > 0:
 		var pad: int = pads[0]
