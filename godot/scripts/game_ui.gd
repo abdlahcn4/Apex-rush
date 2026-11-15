@@ -727,14 +727,15 @@ func _set_panel_visible(on: bool) -> void:
 func _plan_rows(count: int) -> void:
 	const SEPARATION := 12.0
 	_last_rows = maxi(1, count)
-	# the list gets whatever the panel has left after the title block and padding
-	var available := 484.0
-	if _panel != null and _panel.size.y > 0.0:
-		available = maxf(210.0, _panel.size.y - 205.0)
+	# Sized from the viewport, never from the panel's current height: reading the panel
+	# while the panel is growing to fit its rows feeds back and inflates both.
+	var vp := get_viewport().get_visible_rect().size
+	var panel_h := clampf(vp.y * 0.84, 300.0, 640.0)
+	var available := maxf(150.0, panel_h - 215.0)
 	var h := 76.0
 	if count > 0:
 		h = (available - SEPARATION * float(count - 1)) / float(count)
-	_row_h = clampf(h, 34.0, 76.0)
+	_row_h = clampf(h, 30.0, 76.0)
 	_row_font = int(clampf(_row_h * 0.36, 13.0, 26.0))
 
 
