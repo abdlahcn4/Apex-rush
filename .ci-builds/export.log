@@ -138,6 +138,12 @@ ADDING: resources.arsc
 	export: step 1: Adding files...
 Loading resource: res://scenes/main.tscn
 Loading resource: res://scripts/game.gd
+SCRIPT ERROR: Parse Error: Cannot infer the type of "yaw" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/track.gd:444)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game.gd:0)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)
 	export: step 103: Aligning APK...
 	export: step 104: Signing debug APK...
 Starting signing of the APK binary using /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
