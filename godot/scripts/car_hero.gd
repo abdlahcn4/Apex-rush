@@ -100,7 +100,7 @@ static func build(spec: Dictionary, paint: Color) -> Dictionary:
 		spin.add_child(node)
 		node.transform = Transform3D(rel.basis, Vector3.ZERO)
 		# wheels turn the other way in glTF space on the right-hand side
-		var front := wheel_name.contains("Front")
+		var front: bool = String(wheel_name).contains("Front")
 		out["wheels"].append({"pivot": pivot, "spin": spin, "front": front})
 		wheel_radius = maxf(wheel_radius, box.size.y * 0.5)
 	out["wr"] = maxf(0.12, wheel_radius * factor)

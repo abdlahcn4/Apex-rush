@@ -172,6 +172,19 @@ for path in gd_files():
                 f"(first defined on line {funcs[m.group(1)]})"
             )
         funcs[m.group(1)] = line_no
+    # a loop variable over an untyped Array is a Variant: inferring from its members fails
+    loop_vars = set()
+    for line in src.splitlines():
+        m = re.match(r"^\s*for (\w+) in ", line)
+        if m:
+            loop_vars.add(m.group(1))
+    for line_no, line in enumerate(src.splitlines(), 1):
+        m = re.match(r"^\s*var (\w+) :?= *([\w.]+)", line)
+        if m and ":=" in line and m.group(2).split(".")[0] in loop_vars and " as " not in line:
+            warnings.append(
+                f"{os.path.basename(path)}:{line_no}: ':=' from loop variable "
+                f"'{m.group(2)}' — declare the type explicitly"
+            )
     # ':=' infers a type; inferring from a Variant is a compile error in GDScript 4
     for line_no, line in enumerate(src.splitlines(), 1):
         if " as " in line:

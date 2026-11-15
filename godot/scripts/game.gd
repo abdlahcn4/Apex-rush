@@ -344,7 +344,7 @@ func _build_vegetation() -> void:
 		var placed := 0
 		var attempts := 0
 		var xforms: Array = []
-		while placed < count and attempts < count * 12:
+		while placed < count and attempts < count * 6:
 			attempts += 1
 			var a := rng.randf() * TAU
 			var dist := 28.0 + rng.randf() * 380.0
@@ -385,7 +385,7 @@ func _build_city() -> void:
 	rng.seed = hash(map_id + "_city")
 	var placed := 0
 	var attempts := 0
-	while placed < count and attempts < count * 10:
+	while placed < count and attempts < count * 6:
 		attempts += 1
 		var a := rng.randf() * TAU
 		var dist := 120.0 + rng.randf() * 520.0

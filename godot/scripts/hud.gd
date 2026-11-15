@@ -120,14 +120,14 @@ func _draw_speedo(s: float, size: Vector2) -> void:
 	var start := deg_to_rad(140.0)
 	var sweep := deg_to_rad(260.0)
 
-	draw_circle(centre, radius + 16.0 * s, PANEL)
+	_panel.draw_circle(centre, radius + 16.0 * s, PANEL)
 	# unlit track
-	draw_arc(centre, radius, start, start + sweep, 64, TRACK_BG, 13.0 * s, true)
+	_panel.draw_arc(centre, radius, start, start + sweep, 64, TRACK_BG, 13.0 * s, true)
 	# lit arc, colour shifts to red near the top of the range
 	var lit_end := start + sweep * _needle
 	if _needle > 0.02:
 		var col := ACCENT.lerp(ACCENT_HOT, _needle)
-		draw_arc(centre, radius, start, lit_end, 64, col, 13.0 * s, true)
+		_panel.draw_arc(centre, radius, start, lit_end, 64, col, 13.0 * s, true)
 	# tick marks
 	var ticks := 10
 	for i in range(ticks + 1):
@@ -136,11 +136,11 @@ func _draw_speedo(s: float, size: Vector2) -> void:
 		var outer := radius - 10.0 * s
 		var p1 := centre + Vector2(cos(a), sin(a)) * inner
 		var p2 := centre + Vector2(cos(a), sin(a)) * outer
-		draw_line(p1, p2, Color(1, 1, 1, 0.35), 2.0 * s, true)
+		_panel.draw_line(p1, p2, Color(1, 1, 1, 0.35), 2.0 * s, true)
 	# needle
 	var na := start + sweep * _needle
 	var tip := centre + Vector2(cos(na), sin(na)) * (radius - 6.0 * s)
-	draw_line(centre, tip, ACCENT_HOT, 3.0 * s, true)
+	_panel.draw_line(centre, tip, ACCENT_HOT, 3.0 * s, true)
 
 	var speed_text := str(int(round(_smooth_kmh)))
 	var speed_size := 54.0 * s
@@ -161,7 +161,7 @@ func _draw_speedo(s: float, size: Vector2) -> void:
 	var seg_gap := 3.0 * s
 	var seg_w := (strip_w - seg_gap * 19.0) / 20.0
 	var rpm01 := clampf((_smooth_rpm - 800.0) / 6800.0, 0.0, 1.0)
-	draw_rect(Rect2(strip_pos, Vector2(strip_w, 12.0 * s)), Color(1, 1, 1, 0.06), true)
+	_panel.draw_rect(Rect2(strip_pos, Vector2(strip_w, 12.0 * s)), Color(1, 1, 1, 0.06), true)
 	for i in range(20):
 		var lit := rpm01 * 20.0 > float(i) + 0.35
 		var col := CYAN
@@ -171,11 +171,11 @@ func _draw_speedo(s: float, size: Vector2) -> void:
 			col = ACCENT
 		if not lit:
 			col = Color(1, 1, 1, 0.10)
-		draw_rect(Rect2(strip_pos + Vector2(float(i) * (seg_w + seg_gap), 0.0), Vector2(seg_w, 12.0 * s)), col, true)
+		_panel.draw_rect(Rect2(strip_pos + Vector2(float(i) * (seg_w + seg_gap), 0.0), Vector2(seg_w, 12.0 * s)), col, true)
 	if rpm01 > 0.93:
 		# shift light flash
 		var pulse := 0.55 + 0.45 * sin(Time.get_ticks_msec() * 0.02)
-		draw_rect(Rect2(strip_pos + Vector2(0, -18.0 * s), Vector2(strip_w, 6.0 * s)), Color(1.0, 0.2, 0.1, pulse), true)
+		_panel.draw_rect(Rect2(strip_pos + Vector2(0, -18.0 * s), Vector2(strip_w, 6.0 * s)), Color(1.0, 0.2, 0.1, pulse), true)
 
 
 func _draw_nitro(s: float, size: Vector2) -> void:
