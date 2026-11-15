@@ -14,6 +14,7 @@ var length := 0.0
 var N := 0
 var step := 2.0
 var checkpoint_radius := 26.0
+var theme: Dictionary = {}
 
 var _grid: Dictionary = {}
 var _min_x := 0.0
@@ -392,7 +393,7 @@ func _build_scenery(root: Node3D, quality: int) -> void:
 
 	# --- imported trees, scattered off the racing surface
 	var counts := [140, 360, 700, 1300]
-	var want: int = counts[clampi(quality, 0, 3)]
+	var want: int = int(float(counts[clampi(quality, 0, 3)]) * clampf(float(theme.get("vegetation", 1.0)), 0.0, 3.0))
 	var big_path := AssetLibrary.PROP_DIR + "treeLarge.glb"
 	var small_path := AssetLibrary.PROP_DIR + "treeSmall.glb"
 	var big_scale := AssetLibrary.height_scale(big_path, 8.0)
@@ -427,7 +428,7 @@ func _build_scenery(root: Node3D, quality: int) -> void:
 		"building-e", "building-f", "building-g", "building-h"]
 	var centers := [Vector2(360, 330), Vector2(-330, 150), Vector2(880, -240), Vector2(280, -900), Vector2(1040, 820)]
 	var per_cluster := [8, 14, 22, 30]
-	var count: int = per_cluster[clampi(quality, 0, 3)]
+	var count: int = int(float(per_cluster[clampi(quality, 0, 3)]) * clampf(float(theme.get("urban", 1.0)), 0.0, 2.0))
 	for bi in range(blocks.size()):
 		var path: String = AssetLibrary.CITY_DIR + String(blocks[bi]) + ".glb"
 		if not AssetLibrary.has_model(path):

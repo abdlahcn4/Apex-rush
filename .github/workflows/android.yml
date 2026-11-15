@@ -47,7 +47,7 @@ jobs:
       - name: Headless smoke test
         run: |
           set +e
-          timeout 180 ./godot-bin --headless --path godot --quit-after 300 > run.log 2>&1
+          timeout 240 ./godot-bin --headless --path godot --quit-after 420 -- --autotest > run.log 2>&1
           echo "run exit: $?"
           echo "----- engine output -----"
           cat run.log

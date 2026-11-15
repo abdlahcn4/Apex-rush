@@ -17,6 +17,14 @@ var _toast_text := ""
 var _toast_time := 0.0
 var _toast_duration := 1.2
 
+var _lap := 0
+var _laps_total := 3
+var _lap_time := 0.0
+var _best := 0.0
+var _nitro := 1.0
+var _nitro_on := false
+var _title_text := "APEX RUSH"
+
 
 func _ready() -> void:
 	layer = 10
@@ -37,6 +45,24 @@ func update_stats(kmh: float, gear: String, rpm: float, drift: float) -> void:
 	if _toast_time > 0.0:
 		_toast_time -= get_process_delta_time()
 	_panel.queue_redraw()
+
+
+func set_title(text: String) -> void:
+	_title_text = text
+
+
+## Lap / timing block driven by game.gd
+func set_race(lap: int, total: int, lap_time: float, best: float) -> void:
+	_lap = lap
+	_laps_total = total
+	_lap_time = lap_time
+	_best = best
+
+
+## Nitro charge (0..1) and whether the boost is firing right now.
+func set_nitro(charge: float, active: bool) -> void:
+	_nitro = charge
+	_nitro_on = active
 
 
 func toast(text: String, secs := 1.2) -> void:
@@ -77,16 +103,36 @@ func _on_draw() -> void:
 		_panel.draw_string(_font, Vector2(w - 400.0, h - 130.0), "DRIFT",
 			HORIZONTAL_ALIGNMENT_RIGHT, 340.0, 30, Color(1.0, 0.35, 0.15, clampf(_drift, 0.0, 1.0)))
 
-	# --- hints
-	_panel.draw_string(_font, Vector2(28.0, 42.0), "APEX RUSH - GODOT SLICE",
-		HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(1, 1, 1, 0.75))
-	_panel.draw_string(_font, Vector2(28.0, 70.0), "W/S or UP/DOWN  throttle - brake    A/D or LEFT/RIGHT  steer",
-		HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color(1, 1, 1, 0.45))
-	_panel.draw_string(_font, Vector2(28.0, 94.0), "SPACE  handbrake    C  camera    R  reset    ESC  quit",
-		HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color(1, 1, 1, 0.45))
+	# --- nitro bar
+	var nitro_bar := Rect2(Vector2(w - 330.0, h - 126.0), Vector2(250.0, 9.0))
+	_panel.draw_rect(nitro_bar, Color(1, 1, 1, 0.12))
+	var nf := clampf(_nitro, 0.0, 1.0)
+	if nf > 0.01:
+		var ncol := Color(0.35, 0.85, 1.0) if _nitro_on else Color(0.25, 0.55, 0.75)
+		_panel.draw_rect(Rect2(nitro_bar.position, Vector2(nitro_bar.size.x * nf, nitro_bar.size.y)), ncol)
+	_panel.draw_string(_font, Vector2(w - 330.0, h - 132.0), "NOS",
+		HORIZONTAL_ALIGNMENT_LEFT, 60.0, 16, Color(0.6, 0.85, 1.0, 0.8))
+
+	# --- session / lap block
+	_panel.draw_string(_font, Vector2(28.0, 44.0), _title_text,
+		HORIZONTAL_ALIGNMENT_LEFT, -1, 26, Color(1, 1, 1, 0.92))
+	var lap_line := "LAP %d / %d      %s" % [_lap, _laps_total, _clock(_lap_time)]
+	_panel.draw_string(_font, Vector2(28.0, 78.0), lap_line,
+		HORIZONTAL_ALIGNMENT_LEFT, -1, 22, ACCENT)
+	if _best > 0.0:
+		_panel.draw_string(_font, Vector2(28.0, 104.0), "BEST  " + _clock(_best),
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 19, Color(0.75, 0.85, 1.0, 0.85))
 
 	# --- toast
 	if _toast_time > 0.0:
 		var a := clampf(_toast_time / maxf(0.001, _toast_duration), 0.0, 1.0)
 		_panel.draw_string(_font, Vector2(0.0, 160.0), _toast_text,
 			HORIZONTAL_ALIGNMENT_CENTER, w, 34, Color(1, 1, 1, a))
+
+
+func _clock(seconds: float) -> String:
+	var t := maxf(0.0, seconds)
+	var m := int(t / 60.0)
+	var sec := int(t) % 60
+	var cs := int((t - floor(t)) * 100.0)
+	return "%d:%02d.%02d" % [m, sec, cs]
