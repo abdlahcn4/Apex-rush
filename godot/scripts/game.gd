@@ -631,6 +631,7 @@ func _run_autotest() -> void:
 ##  1. the touch->mouse emulation setting the whole UI depends on is enabled,
 ##  2. a synthetic click pushed into the viewport reaches the button widget.
 func _probe_menu_touch() -> void:
+	print("[autotest] probe build=v3")
 	var emulate := bool(ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch", true))
 	print("[autotest] emulate_mouse_from_touch=%s" % str(emulate))
 

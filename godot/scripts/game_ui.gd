@@ -298,21 +298,18 @@ func _candidates(pos: Vector2) -> Array:
 	var vp := get_viewport()
 	if vp == null:
 		return out
-	var vp_size := vp.get_visible_rect().size
-	var win_size := Vector2(DisplayServer.window_get_size())
-	if vp_size.x > 1.0 and vp_size.y > 1.0 and win_size.x > 1.0 and win_size.y > 1.0:
-		var ratio := Vector2(win_size.x / vp_size.x, win_size.y / vp_size.y)
-		# Depending on the platform layer the point can arrive scaled up or down
-		# relative to the viewport, so both directions are tried.
-		if ratio.x > 1.01 or ratio.y > 1.01:
-			out.append(Vector2(pos.x / ratio.x, pos.y / ratio.y))
-		elif ratio.x < 0.99 or ratio.y < 0.99:
-			out.append(Vector2(pos.x * ratio.x, pos.y * ratio.y))
-	var xf := vp.get_final_transform()
-	if not xf.is_equal_approx(Transform2D.IDENTITY):
-		var converted := xf.affine_inverse() * pos
-		if not out.has(converted):
-			out.append(converted)
+	# The canonical conversion from platform (screen) coordinates into viewport
+	# coordinates. This is the transform Godot itself uses to place a finger.
+	var screen := vp.get_screen_transform()
+	if not screen.is_equal_approx(Transform2D.IDENTITY):
+		var p1 := screen.affine_inverse() * pos
+		if not out.has(p1):
+			out.append(p1)
+	var final := vp.get_final_transform()
+	if not final.is_equal_approx(Transform2D.IDENTITY):
+		var p2 := final.affine_inverse() * pos
+		if not out.has(p2):
+			out.append(p2)
 	return out
 
 
