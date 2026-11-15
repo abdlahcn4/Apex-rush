@@ -302,8 +302,12 @@ func _candidates(pos: Vector2) -> Array:
 	var win_size := Vector2(DisplayServer.window_get_size())
 	if vp_size.x > 1.0 and vp_size.y > 1.0 and win_size.x > 1.0 and win_size.y > 1.0:
 		var ratio := Vector2(win_size.x / vp_size.x, win_size.y / vp_size.y)
+		# Depending on the platform layer the point can arrive scaled up or down
+		# relative to the viewport, so both directions are tried.
 		if ratio.x > 1.01 or ratio.y > 1.01:
 			out.append(Vector2(pos.x / ratio.x, pos.y / ratio.y))
+		elif ratio.x < 0.99 or ratio.y < 0.99:
+			out.append(Vector2(pos.x * ratio.x, pos.y * ratio.y))
 	var xf := vp.get_final_transform()
 	if not xf.is_equal_approx(Transform2D.IDENTITY):
 		var converted := xf.affine_inverse() * pos
