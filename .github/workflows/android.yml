@@ -107,6 +107,15 @@ jobs:
           cat export.log
           ls -la godot/build || true
 
+      - name: Export Windows build
+        run: |
+          set +e
+          mkdir -p godot/build
+          ./godot-bin --headless --path godot --export-release "Windows Desktop" "$PWD/godot/build/apex-rush.exe" > export_win.log 2>&1
+          echo "windows export exit: $?"
+          tail -30 export_win.log
+          ls -la godot/build || true
+
       - name: Publish APK and logs to branch
         if: always()
         run: |
@@ -133,6 +142,18 @@ jobs:
             find "$PWD" -name "*.apk" -size +1k 2>/dev/null | head
           } > .ci-builds/env.txt 2>&1
           cp run.log import.log export.log .ci-builds/ 2>/dev/null || true
+          cp export_win.log .ci-builds/ 2>/dev/null || true
+          # a PC build, so the game can be opened by double-clicking an .exe
+          if ls godot/build/*.exe >/dev/null 2>&1; then
+            rm -f .ci-builds/apex-rush-windows.zip
+            ( cd godot/build && zip -q -9 "$OLDPWD/.ci-builds/apex-rush-windows.zip" apex-rush.exe )
+            size=$(stat -c%s .ci-builds/apex-rush-windows.zip)
+            echo "windows zip size: $size"
+            if [ "$size" -ge 90000000 ]; then
+              rm -f .ci-builds/apex-rush-windows.zip
+              echo "windows zip too large to commit: $size bytes" >> .ci-builds/env.txt
+            fi
+          fi
           if ls godot/build/*.apk >/dev/null 2>&1; then
             size=$(stat -c%s godot/build/apex-rush-debug.apk)
             echo "apk size: $size"
