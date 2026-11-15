@@ -209,7 +209,7 @@ func _build_world() -> void:
 
 	_build_environment()
 	ground = _build_ground()
-	mountains = _build_mountains()
+	mountains = _build_treeline()
 	track.build(world, quality)
 	_spawn_player()
 	_setup_camera()
@@ -249,16 +249,16 @@ func _build_environment() -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = 1.25 if night else 1.0
+	env.tonemap_exposure = 1.05 if night else 0.92
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = float(theme.get("ambient", 1.0))
+	env.ambient_light_energy = float(theme.get("ambient", 1.0)) * 0.62
 	env.fog_enabled = true
 	env.fog_light_color = Color(String(theme.get("fog", "#f0a878")))
 	env.fog_density = float(theme.get("fog_density", 0.00035))
-	env.fog_sun_scatter = 0.2
+	env.fog_sun_scatter = 0.08
 	env.glow_enabled = true
-	env.glow_intensity = 0.9 if night else 0.35
-	env.glow_bloom = 0.12 if night else 0.05
+	env.glow_intensity = 0.7 if night else 0.16
+	env.glow_bloom = 0.08 if night else 0.02
 	env.ssao_enabled = false
 	env.adjustment_enabled = night
 	if night:
@@ -273,13 +273,86 @@ func _build_environment() -> void:
 	var sun := DirectionalLight3D.new()
 	sun.name = "Sun"
 	sun.light_color = Color(String(theme.get("sun", "#ffc78e")))
-	sun.light_energy = float(theme.get("sun_energy", 2.0))
+	# theme values were authored against the old over-bright setup; scale them down so the
+	# ACES curve keeps detail instead of clipping the road and the sky to white
+	sun.light_energy = float(theme.get("sun_energy", 2.0)) * 0.58
 	sun.shadow_enabled = not night
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	sun.directional_shadow_max_distance = 260.0
 	var rot: Array = theme.get("sun_rot", [-14.0, 150.0, 0.0])
 	sun.rotation_degrees = Vector3(float(rot[0]), float(rot[1]), float(rot[2]))
 	world.add_child(sun)
+
+
+func _build_ground() -> MeshInstance3D:
+	var theme := _theme()
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(6000.0, 6000.0)
+
+	# 6000 m plane: 420 tiles means one 14 m ground tile, which keeps the 1K map crisp
+	# instead of stretching a single tile over the whole field.
+	var tint := Color(1.0, 1.0, 1.0, 1.0)
+	var tint_v: Variant = theme.get("ground_tint", null)
+	if typeof(tint_v) == TYPE_ARRAY:
+		var arr: Array = tint_v
+		if arr.size() >= 3:
+			tint = Color(float(arr[0]), float(arr[1]), float(arr[2]))
+	var mat := AssetLibrary.surface(String(theme.get("ground", "grass")), 420.0, tint)
+
+	var mi := MeshInstance3D.new()
+	mi.name = "Ground"
+	mi.mesh = plane
+	mi.material_override = mat
+	mi.position = Vector3(0.0, -0.05, 0.0)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	world.add_child(mi)
+	return mi
+
+
+## The horizon used to be 46 stretched cones, which read as pale pyramids and were the
+## only primitive geometry left in the world. It is now a tree line instanced from the
+## imported Kenney tree model, so the distance is made of the same authored assets as
+## everything else.
+func _build_treeline() -> MultiMeshInstance3D:
+	var scene := AssetLibrary.instance(AssetLibrary.PROP_DIR + "treeLarge.glb")
+	if scene == null:
+		return null
+	var source: Mesh = null
+	var source_mat: Material = null
+	for node in scene.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi != null and mi.mesh != null:
+			source = mi.mesh
+			if mi.mesh.get_surface_count() > 0:
+				source_mat = mi.get_active_material(0)
+			break
+	if source == null:
+		scene.free()
+		return null
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 90210
+	var count := 260
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = source
+	mm.instance_count = count
+	for i in range(count):
+		var a := rng.randf() * TAU
+		var dist := 180.0 + rng.randf() * 420.0
+		var s := 2.4 + rng.randf() * 2.2
+		var basis := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(s, s * (0.9 + rng.randf() * 0.4), s))
+		mm.set_instance_transform(i, Transform3D(basis, Vector3(cos(a) * dist, 0.0, sin(a) * dist)))
+
+	var inst := MultiMeshInstance3D.new()
+	inst.name = "Treeline"
+	inst.multimesh = mm
+	if source_mat != null:
+		inst.material_override = source_mat
+	inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	scene.free()
+	world.add_child(inst)
+	return inst
 
 
 func _build_ground() -> MeshInstance3D:
@@ -777,6 +850,7 @@ func _probe_drive_touch() -> void:
 	print("[autotest] drive probe: gas_at=%s throttle=%.2f released=%.2f steer=%.2f" % [
 		str(gas_point), throttle, released, steer,
 	])
+	touch.set_active(TouchControls.is_mobile())
 	print("[autotest] drive probe result: %s" % (
 		"ON-SCREEN PADS RESPOND TO TOUCH" if ok else "ON-SCREEN PADS DO NOT RESPOND"
 	))

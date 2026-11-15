@@ -162,6 +162,8 @@ static func build(id: String, color: Color, quality := 2) -> Dictionary:
 		wheel_radius = maxf(wheel_radius, box.size.y * 0.5)
 	out["wr"] = maxf(0.1, wheel_radius * factor)
 
+	_polish(model)
+
 	# --- lamps: thin emissive lenses sitting on the authored rear/front faces
 	var rear_z := ext.position.z
 	var front_z := ext.position.z + ext.size.z
@@ -214,6 +216,29 @@ static func _lens(w: float, h: float, mat: Material) -> MeshInstance3D:
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
+
+
+## The kit models ship with flat matte materials, which read as painted plastic under any
+## light. Giving the authored surfaces a metallic sheen turns them into car paint without
+## touching the geometry or the authored colour map. Wheels are skipped: tyres stay matte.
+static func _polish(model: Node) -> void:
+	for node in model.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		if mi.name.to_lower().begins_with("wheel"):
+			continue
+		for i in range(mi.mesh.get_surface_count()):
+			var src := mi.get_active_material(i)
+			var base := src as StandardMaterial3D
+			if base == null:
+				continue
+			var m := base.duplicate() as StandardMaterial3D
+			m.metallic = 0.5
+			m.metallic_specular = 0.62
+			m.roughness = 0.34
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+			mi.set_surface_override_material(i, m)
 
 
 static func _lamp_mat(glow: Color) -> StandardMaterial3D:
