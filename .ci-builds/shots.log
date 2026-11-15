@@ -3,27 +3,45 @@ WARNING: Could not set V-Sync mode, as changing V-Sync mode is not supported by 
      at: set_use_vsync (platform/linuxbsd/x11/gl_manager_x11.cpp:360)
 OpenGL API 4.5 (Core Profile) Mesa 26.0.8-1ubuntu0.3 - Compatibility - Using Device: Mesa - llvmpipe (LLVM 21.1.8, 256 bits)
 
-[autotest] probe build=v3
-[autotest] emulate_mouse_from_touch=true
-[autotest] layout check: main screen offscreen_buttons=0
-[autotest] probe injects screen=(640.0, 372.0) for viewport=(640.0, 372.0)
-[autotest] tap probe: button 'GARAGE  ·  Vortex GT' rect=[P: (360.0, 334.0), S: (560.0, 76.0)] events_seen=4 presses=1 screen='GARAGE'
-[autotest] layout check: screen='GARAGE' panel=[P: (326.0, 38.0), S: (628.0, 643.0)] offscreen_buttons=0
-[autotest] tap probe result: MENU IS TAPPABLE
-[autotest] circuit=Sunset Ring samples=1527 length=3053.7m
-[autotest] car=vortex model=hatchback-sports scale=1.579 length=4.50m width=2.05m wheel_radius=0.474m wheels=4 lights=2
-[autotest] props: 8 nodes under world, audio engine=true skid=true
-[autotest] drove 10s: 82.0 km/h gear=2 rpm=2687 travelled=239m drift=0.13 nitro=0.02
-[autotest] chassis bounds 1.30 x 1.10 x 2.87, base_y=0.000
-[autotest] map sunset_ring    points=15 theme_keys=13 night=false
-[autotest] map harbour_night  points=24 theme_keys=13 night=true
-[autotest] map dune_pass      points=24 theme_keys=13 night=false
-[autotest] map cedar_forest   points=24 theme_keys=13 night=false
-[autotest] map ridge_road     points=24 theme_keys=13 night=false
-[autotest] drive probe: gas_at=(1139.2, 540.0) throttle=1.00 released=0.00 steer=-1.00
-[autotest] drive probe result: ON-SCREEN PADS RESPOND TO TOUCH
-[autotest] layout check: PAUSED panel=[P: (326.0, 107.0), S: (628.0, 505.0)] offscreen_buttons=0
-[autotest] layout result: ALL ROWS ON SCREEN
-[autotest] shot chase err=0 1280x720 -> /home/runner/.local/share/godot/app_userdata/Apex Rush - Godot Slice/shot_chase.png
-[autotest] shot orbit err=0 1280x720 -> /home/runner/.local/share/godot/app_userdata/Apex Rush - Godot Slice/shot_orbit.png
-[autotest] shot surface err=0 1280x720 -> /home/runner/.local/share/godot/app_userdata/Apex Rush - Godot Slice/shot_surface.png
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:105)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:254)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "hdri_tex" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:254)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:337)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:337)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "mesh" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:337)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:340)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:340)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "mat" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:340)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:401)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:401)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:404)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:404)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:429)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "mat" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:429)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:446)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:446)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "scene" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:446)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:800)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "box" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:800)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)

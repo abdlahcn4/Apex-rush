@@ -138,6 +138,48 @@ ADDING: resources.arsc
 	export: step 1: Adding files...
 Loading resource: res://scenes/main.tscn
 Loading resource: res://scripts/game.gd
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:105)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:254)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "hdri_tex" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:254)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:337)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:337)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "mesh" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:337)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:340)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:340)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "mat" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:340)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:401)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:401)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:404)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:404)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:429)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "mat" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:429)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:446)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:446)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "scene" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:446)
+SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
+          at: GDScript::reload (res://scripts/game.gd:800)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "box" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:800)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)
 	export: step 103: Aligning APK...
 	export: step 104: Signing debug APK...
 Starting signing of the APK binary using /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
