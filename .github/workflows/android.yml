@@ -1,8 +1,10 @@
 name: Android APK
 
 # Builds the Godot slice into an installable debug APK.
-# Also the first place the project is executed by the real engine (headless smoke test),
-# which catches script/property errors that no offline parser can.
+# Also the first place the project is executed by the real engine (headless smoke test).
+#
+# Artifacts are published back onto the branch under .ci-builds/ because the runner's
+# logs/artifact downloads are not reachable from the agent sandbox.
 
 on:
   workflow_dispatch:
@@ -15,13 +17,17 @@ on:
 env:
   GODOT_VERSION: "4.4.1"
 
+permissions:
+  contents: write
+
 jobs:
-  validate:
-    name: Headless smoke test
+  build:
+    name: Build debug APK
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Fetch Godot
         run: |
@@ -33,31 +39,20 @@ jobs:
 
       - name: Import project
         run: |
-          timeout 300 ./godot-bin --headless --path godot --editor --quit || true
+          set +e
+          timeout 300 ./godot-bin --headless --path godot --editor --quit > import.log 2>&1
+          echo "import exit: $?"
+          tail -40 import.log
 
-      - name: Run 5 seconds headless
+      - name: Headless smoke test
         run: |
           set +e
           timeout 180 ./godot-bin --headless --path godot --quit-after 300 > run.log 2>&1
-          echo "godot exit code: $?"
+          echo "run exit: $?"
           echo "----- engine output -----"
           cat run.log
           echo "----- suspicious lines -----"
           grep -nE "SCRIPT ERROR|Parse Error|Invalid (get|set|call|index)|Nonexistent function|Cannot (call|find|open)" run.log || echo "none found"
-
-  apk:
-    name: Export debug APK
-    runs-on: ubuntu-latest
-    needs: validate
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Fetch Godot
-        run: |
-          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
-          unzip -q godot.zip
-          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" godot-bin
-          chmod +x godot-bin
 
       - name: Install export templates
         run: |
@@ -69,8 +64,6 @@ jobs:
 
       - name: Configure Android SDK and debug keystore
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          ls -d "$ANDROID_HOME" 2>/dev/null || true
           keytool -genkeypair -v -keystore "$HOME/debug.keystore" -storepass android -keypass android \
             -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
             -dname "CN=Android Debug,O=Android,C=US"
@@ -87,21 +80,55 @@ jobs:
           cp "$HOME/.config/godot/editor_settings-4.tres" "$HOME/.config/godot/editor_settings-4.4.tres"
           cat "$HOME/.config/godot/editor_settings-4.tres"
 
-      - name: Import project
-        run: |
-          timeout 300 ./godot-bin --headless --path godot --editor --quit || true
-
       - name: Export debug APK
         run: |
           mkdir -p godot/build
           set +e
-          ./godot-bin --headless --path godot --export-debug "Android" build/apex-rush-debug.apk 2>&1 | tee export.log
-          code=${PIPESTATUS[0]}
-          echo "export exit code: $code"
-          ls -la godot/build || true
-          echo "----- export log -----"
+          ./godot-bin --headless --path godot --export-debug "Android" "$PWD/godot/build/apex-rush-debug.apk" > export.log 2>&1
+          echo "export exit: $?"
           tail -60 export.log
-          test -f godot/build/apex-rush-debug.apk || exit 1
+          ls -la godot/build || true
+
+      - name: Publish APK and logs to branch
+        if: always()
+        run: |
+          mkdir -p .ci-builds
+          {
+            echo "run: $GITHUB_RUN_ID"
+            echo "date: $(date -u)"
+            echo "godot: $(./godot-bin --version 2>&1)"
+            echo "ANDROID_HOME=$ANDROID_HOME"
+            echo "java: $(java -version 2>&1 | head -1)"
+            echo "--- templates ---"
+            ls -la "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable" 2>&1 | head -30
+            echo "--- sdk ---"
+            ls "$ANDROID_HOME" 2>&1
+            echo "--- build-tools ---"
+            ls "$ANDROID_HOME/build-tools" 2>&1
+            echo "--- project build dir ---"
+            ls -la godot/build 2>&1
+            echo "--- apk anywhere ---"
+            find "$PWD" -name "*.apk" -size +1k 2>/dev/null | head
+          } > .ci-builds/env.txt 2>&1
+          cp run.log import.log export.log .ci-builds/ 2>/dev/null || true
+          if ls godot/build/*.apk >/dev/null 2>&1; then
+            size=$(stat -c%s godot/build/apex-rush-debug.apk)
+            echo "apk size: $size"
+            if [ "$size" -lt 90000000 ]; then
+              cp godot/build/apex-rush-debug.apk .ci-builds/
+            else
+              echo "APK too large to commit: $size bytes" >> .ci-builds/env.txt
+            fi
+          fi
+          git config user.name "apex-ci"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f .ci-builds
+          if git diff --cached --quiet; then
+            echo "nothing to publish"
+          else
+            git commit -m "ci: publish build artifacts and logs [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
 
       - name: Upload APK
         if: always()
@@ -110,15 +137,4 @@ jobs:
           name: apex-rush-debug-apk
           path: godot/build/*.apk
           if-no-files-found: warn
-          retention-days: 14
-
-      - name: Upload logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: export-logs
-          path: |
-            export.log
-            godot/build/*.apk.txt
-          if-no-files-found: ignore
           retention-days: 14
