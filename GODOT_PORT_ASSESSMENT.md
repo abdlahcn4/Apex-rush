@@ -135,8 +135,11 @@ only zero-change outcome.
 
 ## 5. Notes on verification
 
-- Godot is not installed in this workspace and cannot be fetched from the allowed package
-  registries, so no Godot project was built or launched here. The engine limitations above are
+- Godot's engine binary is not installable in this workspace (its release CDN is outside the
+  allowed hosts), so the engine itself has not been launched here. The limitations above are
   documented Godot 4 behaviour, not guesses.
-- The game itself was inspected statically. I did not run `npm install` / `next build`, so the
-  browser build is unverified at runtime — that's a separate, quick check if wanted.
+- The game was inspected statically. `npm install` / `next build` were not run, so the browser
+  build is unverified at runtime — a separate, quick check if wanted.
+- A real Godot 4 port has since been started in [`godot/`](godot/README.md) (vertical slice:
+  circuit + one car + ported physics + camera + HUD), with the spline and physics cross-checked
+  numerically against the original JavaScript.

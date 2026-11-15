@@ -463,7 +463,8 @@ func _build_scenery(root: Node3D, quality: int) -> void:
 		leaf_cols.append(Color.from_hsv(h, 0.45 + rng.randf() * 0.2, 0.13 + rng.randf() * 0.10))
 
 	var trunk_mat := MeshKit.solid(Color(0.20, 0.15, 0.11), 0.95)
-	var leaf_mat := MeshKit.solid(Color(0.13, 0.26, 0.11), 0.9)
+	# per-instance colours are multiplied by the albedo, so keep it white
+	var leaf_mat := MeshKit.solid(Color(1, 1, 1), 0.9)
 	leaf_mat.vertex_color_use_as_albedo = true
 
 	root.add_child(_multimesh(trunk_mesh, trunk_mat, trunk_xf))
@@ -489,7 +490,7 @@ func _build_scenery(root: Node3D, quality: int) -> void:
 			var basis := Basis(Vector3.UP, floor(rng.randf() * 4.0) * 0.4) * Basis().scaled(Vector3(w, hgt, d))
 			box_xf.append(Transform3D(basis, Vector3(x, hgt * 0.5, z)))
 			box_cols.append(Color.from_hsv(0.08 + float(box_xf.size() % 7) * 0.02, 0.15, 0.45 + float(box_xf.size() % 3) * 0.10))
-	var box_mat := MeshKit.solid(Color(0.7, 0.66, 0.62), 0.85)
+	var box_mat := MeshKit.solid(Color(1, 1, 1), 0.85)
 	box_mat.vertex_color_use_as_albedo = true
 	root.add_child(_multimesh(box_mesh, box_mat, box_xf, box_cols))
 
