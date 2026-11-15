@@ -1,44 +1,36 @@
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:105)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:254)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "hdri_tex" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:254)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:337)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:337)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mesh" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:337)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:340)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:340)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mat" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:340)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:401)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:401)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:404)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:404)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:429)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mat" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:429)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:446)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:446)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "scene" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:446)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:800)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "box" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:800)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
+SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/car_hero.gd:103)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/car_builder.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/vehicle.gd:0)
+SCRIPT ERROR: Parse Error: Function "draw_circle()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:123)
+SCRIPT ERROR: Parse Error: Function "draw_arc()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:125)
+SCRIPT ERROR: Parse Error: Function "draw_arc()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:130)
+SCRIPT ERROR: Parse Error: Function "draw_line()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:139)
+SCRIPT ERROR: Parse Error: Function "draw_line()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:143)
+SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:164)
+SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:174)
+SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:178)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/car_hero.gd:103)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game_ui.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game.gd:0)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Compilation failed".
    at: load (modules/gdscript/gdscript.cpp:3022)
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2378)
+ERROR: 9 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
 Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 

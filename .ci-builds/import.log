@@ -356,7 +356,6 @@ reimport: begin: (Re)Importing Assets steps: 160
 	reimport: step 6: kenney_engineCircular_001.ogg
 	reimport: step 7: kenney_engineCircular_002.ogg
 	reimport: step 8: engine_race.ogg
-	reimport: step 9: skid_tyre.ogg
 	reimport: step 10: kenney_spaceEngineLow_000.ogg
 	reimport: step 11: kenney_spaceEngineLarge_000.ogg
 	reimport: step 12: impact_race.ogg
@@ -387,7 +386,6 @@ reimport: begin: (Re)Importing Assets steps: 160
 	reimport: step 37: kenney_spaceEngineLow_000.ogg
 	reimport: step 38: kenney_spaceEngineLarge_000.ogg
 	reimport: step 39: impact_race.ogg
-	reimport: step 40: kenney_engineCircular_000.ogg
 	reimport: step 41: kenney_engineCircular_001.ogg
 	reimport: step 42: kenney_engineCircular_002.ogg
 	reimport: step 43: asphalt_albedo.jpg
@@ -1332,127 +1330,21 @@ import: end
 	reimport: step 160: Finalizing Asset Import...
 reimport: end
 update_script_paths_documentation: begin: Updating scripts documentation steps: 13
-SCRIPT ERROR: Parse Error: Function "first_mesh" has the same name as a previously declared function.
-          at: GDScript::reload (res://scripts/asset_library.gd:311)
-ERROR: Failed to load script "res://scripts/asset_library.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 0: asset_library.gd
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/audio_director.gd:85)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "stream" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/audio_director.gd:85)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/audio_director.gd:110)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "stream" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/audio_director.gd:110)
-ERROR: Failed to load script "res://scripts/audio_director.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
-	update_script_paths_documentation: step 1: audio_director.gd
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_builder.gd:115)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_builder.gd:115)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_builder.gd:115)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "model" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_builder.gd:115)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_builder.gd:122)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "ext" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_builder.gd:122)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_builder.gd:149)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "rel" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_builder.gd:149)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "rear_z" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_builder.gd:172)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "front_z" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_builder.gd:173)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/car_hero.gd:103)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/car_builder.gd:0)
 SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
           at: GDScript::reload (res://scripts/vehicle.gd:0)
 SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/camera_rig.gd:0)
-ERROR: Failed to load script "res://scripts/camera_rig.gd" with error "Parse error".
+          at: GDScript::reload (res://scripts/audio_director.gd:0)
+ERROR: Failed to load script "res://scripts/audio_director.gd" with error "Parse error".
    at: load (modules/gdscript/gdscript.cpp:3022)
+	update_script_paths_documentation: step 1: audio_director.gd
 	update_script_paths_documentation: step 2: camera_rig.gd
 	update_script_paths_documentation: step 3: car_builder.gd
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_hero.gd:49)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "scene" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:49)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_hero.gd:60)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "ext" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:60)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_hero.gd:87)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "rel" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:87)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "centre" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:88)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:103)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "rear_z" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:109)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "half_w" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:110)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/car_hero.gd:123)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "front_z" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:128)
-ERROR: Failed to load script "res://scripts/car_hero.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 4: car_hero.gd
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:105)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:254)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "hdri_tex" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:254)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:337)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:337)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mesh" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:337)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:340)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:340)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mat" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:340)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:401)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:401)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:404)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:404)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:429)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mat" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:429)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:446)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:446)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "scene" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:446)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game.gd:800)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "box" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:800)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
-	update_script_paths_documentation: step 5: game.gd
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/game_ui.gd:160)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "hdri" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game_ui.gd:160)
-ERROR: Failed to load script "res://scripts/game_ui.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
-	update_script_paths_documentation: step 6: game_ui.gd
 SCRIPT ERROR: Parse Error: Function "draw_circle()" not found in base self.
           at: GDScript::reload (res://scripts/hud.gd:123)
 SCRIPT ERROR: Parse Error: Function "draw_arc()" not found in base self.
@@ -1469,161 +1361,19 @@ SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
           at: GDScript::reload (res://scripts/hud.gd:174)
 SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
           at: GDScript::reload (res://scripts/hud.gd:178)
-ERROR: Failed to load script "res://scripts/hud.gd" with error "Parse error".
+SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/car_hero.gd:103)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game_ui.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game.gd:0)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
    at: load (modules/gdscript/gdscript.cpp:3022)
+	update_script_paths_documentation: step 5: game.gd
+	update_script_paths_documentation: step 6: game_ui.gd
 	update_script_paths_documentation: step 7: hud.gd
 	update_script_paths_documentation: step 8: mesh_kit.gd
 	update_script_paths_documentation: step 9: touch_controls.gd
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:329)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "road_mat" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:329)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:402)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "big_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:402)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:403)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "small_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:403)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:404)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "big_scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:404)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:405)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "small_scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:405)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:424)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "trees_big" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:424)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:427)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "trees_small" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:427)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:438)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:439)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:441)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:441)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:455)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mm" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:455)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:464)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:464)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:465)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:465)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:477)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "mm" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:477)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:491)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "pit_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:491)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:492)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "pit_scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:492)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:496)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "node" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:496)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:500)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "office_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:500)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:502)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:501)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "office" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:501)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:507)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "stand_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:507)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:508)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "stand_scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:508)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:516)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "stand" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:516)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:521)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "post_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:521)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:522)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "post_scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:522)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:535)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "posts" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:535)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:540)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "bill_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:540)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:541)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "bill_scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:541)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:552)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "bills" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:552)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:557)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "flag_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:557)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:558)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "flag_scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:558)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:561)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "flag" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:561)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:568)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "sz" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:568)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:609)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "gantry_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:609)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:612)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:611)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "gantry" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:611)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:617)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "tower_path" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:617)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:618)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "tower_scale" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:618)
-SCRIPT ERROR: Parse Error: Could not resolve class "AssetLibrary", because of a parser error.
-          at: GDScript::reload (res://scripts/track.gd:621)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "tower" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:621)
-ERROR: Failed to load script "res://scripts/track.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 10: track.gd
 	update_script_paths_documentation: step 11: vehicle.gd
 	update_script_paths_documentation: step 12: vfx.gd
@@ -1751,3 +1501,4 @@ reimport: end
 loading_editor_layout: begin: Loading editor steps: 5
 	loading_editor_layout: step 0: Loading editor layout...
 loading_editor_layout: end
+cannot connect to daemon at tcp:5037: Connection refused
