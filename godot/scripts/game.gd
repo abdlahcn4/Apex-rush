@@ -644,6 +644,7 @@ func _probe_menu_touch() -> void:
 		print("[autotest] TAP PROBE FAILED: menu has no buttons")
 		return
 	var target := buttons[1] as Button
+	var target_label := String(target.text)   # the button is freed when the screen changes
 	var rect := target.get_global_rect()
 	var point := rect.get_center()
 	var hits := 0
@@ -673,7 +674,7 @@ func _probe_menu_touch() -> void:
 	var seen := ui.debug_input_events
 	var ok := hits > 0 and screen == "GARAGE"
 	print("[autotest] tap probe: button '%s' rect=%s events_seen=%d presses=%d screen='%s'" % [
-		target.text, str(rect), seen, hits, screen,
+		target_label, str(rect), seen, hits, screen,
 	])
 	if not ok:
 		# Even if headless refuses to deliver platform events, prove the hit-testing and
