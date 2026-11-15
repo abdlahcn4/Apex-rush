@@ -39,6 +39,7 @@ var lap_time := 0.0
 var best_lap := 0.0
 var total_time := 0.0
 var last_s := -1.0
+var _probe_hits := 0
 
 
 func _ready() -> void:
@@ -647,9 +648,9 @@ func _probe_menu_touch() -> void:
 	var target_label := String(target.text)   # the button is freed when the screen changes
 	var rect := target.get_global_rect()
 	var point := rect.get_center()
-	var hits := 0
+	_probe_hits = 0
 	target.pressed.connect(func() -> void:
-		hits += 1
+		_probe_hits += 1
 	)
 
 	# Inject the way the platform does: a raw touch through Input, then flush. This is
@@ -672,6 +673,7 @@ func _probe_menu_touch() -> void:
 
 	var screen := String(ui._title.text)
 	var seen := ui.debug_input_events
+	var hits := _probe_hits
 	var ok := hits > 0 and screen == "GARAGE"
 	print("[autotest] tap probe: button '%s' rect=%s events_seen=%d presses=%d screen='%s'" % [
 		target_label, str(rect), seen, hits, screen,

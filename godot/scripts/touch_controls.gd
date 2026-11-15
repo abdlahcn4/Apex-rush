@@ -48,7 +48,8 @@ func set_active(on: bool) -> void:
 	_active = on
 	visible = on
 	# An inactive layer must not eat taps meant for the menu behind it.
-	mouse_filter = Control.MOUSE_FILTER_STOP if on else Control.MOUSE_FILTER_IGNORE
+	# never take part in GUI picking; tap handling is done in _input
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if not on:
 		_owners.clear()
 		_refresh()
@@ -99,7 +100,9 @@ func _layout() -> void:
 
 
 # --- input ---------------------------------------------------------------- #
-func _gui_input(event: InputEvent) -> void:
+## Raw input instead of Control._gui_input: a finger is delivered to Node._input on every
+## platform, so the driving pads cannot be lost to GUI picking or canvas-layer ordering.
+func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		if touch.pressed:
