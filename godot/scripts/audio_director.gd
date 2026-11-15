@@ -62,8 +62,8 @@ func _make_skid_bus() -> void:
 	band.cutoff_hz = 1500.0
 	band.resonance = 0.7
 	AudioServer.add_bus_effect(idx, band)
-	var gain := AudioEffectGainVolume.new()
-	gain.gain_db = 3.0
+	var gain := AudioEffectAmplify.new()
+	gain.volume_db = 3.0
 	AudioServer.add_bus_effect(idx, gain)
 
 

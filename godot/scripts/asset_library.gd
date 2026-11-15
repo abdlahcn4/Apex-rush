@@ -173,7 +173,7 @@ static func surface(kind: String, uv_scale: float, tint := Color.WHITE) -> Stand
 	mat.roughness = 1.0
 	mat.metallic = 0.0
 	mat.uv1_scale = Vector3(uv_scale, uv_scale, 1.0)
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_ANISOTROPIC
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	return mat
 
