@@ -20,7 +20,7 @@ Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 [autotest] map dune_pass      points=24 theme_keys=12 night=false
 [autotest] map cedar_forest   points=24 theme_keys=12 night=false
 [autotest] map ridge_road     points=24 theme_keys=12 night=false
-[autotest] drive probe: gas_at=(0.0, 0.0) throttle=0.00 released=0.00 steer=0.00
+[autotest] drive probe: gas_at=(1139.2, 540.0) throttle=1.00 released=1.00 steer=-1.00
 [autotest] drive probe result: ON-SCREEN PADS DO NOT RESPOND
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
