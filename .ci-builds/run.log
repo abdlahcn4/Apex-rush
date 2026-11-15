@@ -2,15 +2,14 @@ Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 
 [autotest] probe build=v3
 [autotest] emulate_mouse_from_touch=true
-[tap] mouse pos=(12800.0, 7739.999) down=true press_index=-1 touch_seen=false
-[tap] touch pos=(12800.0, 7739.999) down=true press_index=-2 touch_seen=false
-[tap] mouse pos=(12800.0, 7739.999) down=false press_index=0 touch_seen=true
-[tap] touch pos=(12800.0, 7739.999) down=false press_index=0 touch_seen=true
-[tap] nothing hit for (12800.0, 7739.999) -> [(12800.0, 7739.999), (256000.0, 154520.0)]
-[autotest] tap probe: button 'GARAGE  ·  Vortex GT' rect=[P: (360.0, 362.0), S: (560.0, 78.0)] events_seen=4 presses=0 screen='APEX RUSH'
-[tap] hit 'GARAGE  ·  Vortex GT' with (640.0, 401.0) (from (640.0, 401.0))
-[autotest] direct hit-test at (640.0, 401.0) -> screen='GARAGE' presses=0 (HIT-TESTING WORKS, only headless delivery is unavailable)
-[autotest] tap probe result: MENU DOES NOT RESPOND TO CLICKS
+[autotest] probe injects screen=(32.0, 34.05) for viewport=(640.0, 401.0)
+[tap] mouse pos=(639.9999, 401.0) down=true press_index=-1 touch_seen=false
+[tap] touch pos=(639.9999, 401.0) down=true press_index=-2 touch_seen=false
+[tap] mouse pos=(639.9999, 401.0) down=false press_index=0 touch_seen=true
+[tap] touch pos=(639.9999, 401.0) down=false press_index=0 touch_seen=true
+[tap] hit 'GARAGE  ·  Vortex GT' with (639.9999, 401.0) (from (639.9999, 401.0))
+SCRIPT ERROR: Invalid access to property or key 'text' on a base object of type 'previously freed'.
+          at: _probe_menu_touch (res://scripts/game.gd:675)
 [autotest] circuit=Sunset Ring samples=1527 length=3053.7m
 [autotest] car=vortex model=hatchback-sports scale=1.579 length=4.50m width=2.05m wheel_radius=0.474m wheels=4 lights=2
 [autotest] props: 8 nodes under world, audio engine=true skid=true
