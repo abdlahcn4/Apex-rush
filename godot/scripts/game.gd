@@ -355,65 +355,6 @@ func _build_treeline() -> MultiMeshInstance3D:
 	return inst
 
 
-func _build_ground() -> MeshInstance3D:
-	var theme := _theme()
-	var plane := PlaneMesh.new()
-	plane.size = Vector2(6000.0, 6000.0)
-
-	# 6000 m plane: 420 tiles means one 14 m ground tile, which keeps the 1K map crisp
-	# instead of stretching a single tile over the whole field.
-	var tint := Color(1.0, 1.0, 1.0, 1.0)
-	var tint_v: Variant = theme.get("ground_tint", null)
-	if typeof(tint_v) == TYPE_ARRAY:
-		var arr: Array = tint_v
-		if arr.size() >= 3:
-			tint = Color(float(arr[0]), float(arr[1]), float(arr[2]))
-	var mat := AssetLibrary.surface(String(theme.get("ground", "grass")), 420.0, tint)
-
-	var mi := MeshInstance3D.new()
-	mi.name = "Ground"
-	mi.mesh = plane
-	mi.material_override = mat
-	mi.position = Vector3(0.0, -0.05, 0.0)
-	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	world.add_child(mi)
-	return mi
-
-
-func _build_mountains() -> MultiMeshInstance3D:
-	var cone := CylinderMesh.new()
-	cone.top_radius = 0.0
-	cone.bottom_radius = 1.0
-	cone.height = 1.0
-	cone.radial_segments = 7
-
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 1337
-	var count := 46
-
-	var mm := MultiMesh.new()
-	mm.transform_format = MultiMesh.TRANSFORM_3D
-	mm.mesh = cone
-	mm.instance_count = count
-	for i in range(count):
-		var a := (float(i) / float(count)) * TAU + rng.randf() * 0.1
-		var dist := 2300.0 + rng.randf() * 900.0
-		var hgt := 220.0 + rng.randf() * 520.0
-		var rad := 260.0 + rng.randf() * 420.0
-		var basis := Basis().scaled(Vector3(rad, hgt, rad))
-		var pos := Vector3(cos(a) * dist, hgt * 0.5 - 20.0, sin(a) * dist)
-		mm.set_instance_transform(i, Transform3D(basis, pos))
-
-	var mat := MeshKit.solid(Color(0.36, 0.33, 0.47), 1.0)
-	var inst := MultiMeshInstance3D.new()
-	inst.name = "Mountains"
-	inst.multimesh = mm
-	inst.material_override = mat
-	inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	world.add_child(inst)
-	return inst
-
-
 func _spawn_player() -> void:
 	var start: Dictionary = track.point_at(-12.0, 3.4)
 	var spec := CarBuilder.spec(car_id)
