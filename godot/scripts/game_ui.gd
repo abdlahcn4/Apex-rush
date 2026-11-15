@@ -35,6 +35,7 @@ var _press_pos := Vector2.ZERO
 var _press_index := -1
 var _touch_seen := false
 var _last_activate_ms := -1000
+var debug_input_events := 0
 
 
 func _ready() -> void:
@@ -242,6 +243,7 @@ func _notify_left_race() -> void:
 func _input(event: InputEvent) -> void:
 	if _panel == null or not _panel.visible:
 		return
+	debug_input_events += 1
 	if event is InputEventScreenTouch:
 		_touch_seen = true
 		var touch := event as InputEventScreenTouch

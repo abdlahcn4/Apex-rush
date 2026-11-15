@@ -650,32 +650,35 @@ func _probe_menu_touch() -> void:
 		hits += 1
 	)
 
-	# A headless window never receives a mouse-enter, so the viewport considers the
-	# pointer outside itself and drops every GUI event. Tell it the pointer is inside.
-	get_viewport().notification(Viewport.NOTIFICATION_VP_MOUSE_ENTER)
-
-	# hover first, then click: a real finger produces motion before the contact
-	var move := InputEventMouseMotion.new()
-	move.position = point
-	move.global_position = point
-	get_viewport().push_input(move)
-	await get_tree().process_frame
-
+	# Inject the way the platform does: a raw touch through Input, then flush. This is
+	# exactly the path Android uses, and it reaches Node._input on every device.
+	ui.debug_input_events = 0
 	for pressed in [true, false]:
-		var ev := InputEventMouseButton.new()
-		ev.button_index = MOUSE_BUTTON_LEFT
-		ev.pressed = pressed
+		var ev := InputEventScreenTouch.new()
+		ev.index = 0
 		ev.position = point
-		ev.global_position = point
-		get_viewport().push_input(ev)
+		ev.pressed = pressed
+		Input.parse_input_event(ev)
+		Input.flush_buffered_events()
 		await get_tree().process_frame
 	await get_tree().process_frame
 
 	var screen := String(ui._title.text)
-	var hovered := get_viewport().gui_get_hovered_control()
-	print("[autotest] tap probe: button '%s' rect=%s viewport=%s presses=%d hovered=%s screen='%s'" % [
-		target.text, str(rect), str(get_viewport().get_visible_rect()), hits, str(hovered), screen,
+	var seen := ui.debug_input_events
+	var ok := hits > 0 and screen == "GARAGE"
+	print("[autotest] tap probe: button '%s' rect=%s events_seen=%d presses=%d screen='%s'" % [
+		target.text, str(rect), seen, hits, screen,
 	])
+	if not ok:
+		# Even if headless refuses to deliver platform events, prove the hit-testing and
+		# navigation logic itself works by calling it with the same coordinates.
+		ui._activate_at(point)
+		await get_tree().process_frame
+		var after := String(ui._title.text)
+		print("[autotest] direct hit-test at %s -> screen='%s' presses=%d (%s)" % [
+			str(point), after, hits,
+			"HIT-TESTING WORKS, only headless delivery is unavailable" if after == "GARAGE" else "HIT-TESTING IS BROKEN",
+		])
 	print("[autotest] tap probe result: %s" % (
 		"MENU IS TAPPABLE" if hits > 0 and screen == "GARAGE" else "MENU DOES NOT RESPOND TO CLICKS"
 	))
