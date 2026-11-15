@@ -653,6 +653,7 @@ func _probe_menu_touch() -> void:
 	# Inject the way the platform does: a raw touch through Input, then flush. This is
 	# exactly the path Android uses, and it reaches Node._input on every device.
 	ui.debug_input_events = 0
+	ui.debug_trace = true
 	for pressed in [true, false]:
 		var ev := InputEventScreenTouch.new()
 		ev.index = 0

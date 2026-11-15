@@ -36,6 +36,7 @@ var _press_index := -1
 var _touch_seen := false
 var _last_activate_ms := -1000
 var debug_input_events := 0
+var debug_trace := false
 
 
 func _ready() -> void:
@@ -244,6 +245,21 @@ func _input(event: InputEvent) -> void:
 	if _panel == null or not _panel.visible:
 		return
 	debug_input_events += 1
+	if debug_trace:
+		var kind := "?"
+		var where := Vector2.ZERO
+		var down := false
+		if event is InputEventScreenTouch:
+			kind = "touch"
+			where = (event as InputEventScreenTouch).position
+			down = (event as InputEventScreenTouch).pressed
+		elif event is InputEventMouseButton:
+			kind = "mouse"
+			where = (event as InputEventMouseButton).position
+			down = (event as InputEventMouseButton).pressed
+		print("[tap] %s pos=%s down=%s press_index=%d touch_seen=%s" % [
+			kind, str(where), str(down), _press_index, str(_touch_seen),
+		])
 	if event is InputEventScreenTouch:
 		_touch_seen = true
 		var touch := event as InputEventScreenTouch
@@ -283,6 +299,8 @@ func _activate_at(pos: Vector2) -> void:
 		var b := child as Button
 		if b == null or not b.is_visible_in_tree():
 			continue
+		if debug_trace:
+			print("[tap]   test '%s' rect=%s has=%s" % [b.text, str(b.get_global_rect()), str(b.get_global_rect().has_point(pos))])
 		if b.get_global_rect().has_point(pos):
 			_last_activate_ms = now
 			_flash(b)
