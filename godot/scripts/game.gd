@@ -13,6 +13,9 @@ var player: ApexVehicle
 var cam: ChaseCamera
 var hud: RaceHUD
 var touch: TouchControls
+var audio: AudioDirector
+
+var headlights := false
 
 var ground: MeshInstance3D
 var mountains: MultiMeshInstance3D
@@ -30,6 +33,7 @@ func _ready() -> void:
 	_spawn_player()
 	_setup_camera()
 	_setup_hud()
+	_setup_audio()
 	if hud != null:
 		hud.toast("SUNSET RING — FREE DRIVE", 2.0)
 
@@ -104,18 +108,10 @@ func _build_ground() -> MeshInstance3D:
 	plane.size = Vector2(6000.0, 6000.0)
 
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.30, 0.31, 0.20)
+	mat.albedo_color = Color(0.95, 0.98, 0.9)
 	mat.roughness = 1.0
-	var noise := FastNoiseLite.new()
-	noise.frequency = 0.03
-	noise.fractal_octaves = 3
-	var tex := NoiseTexture2D.new()
-	tex.width = 256
-	tex.height = 256
-	tex.seamless = true
-	tex.noise = noise
-	mat.albedo_texture = tex
-	mat.uv1_scale = Vector3(120.0, 120.0, 1.0)
+	mat.albedo_texture = AssetLibrary.texture("grass")
+	mat.uv1_scale = Vector3(90.0, 90.0, 1.0)
 
 	var mi := MeshInstance3D.new()
 	mi.name = "Ground"
@@ -176,6 +172,12 @@ func _setup_camera() -> void:
 	cam.setup(player)
 
 
+func _setup_audio() -> void:
+	audio = AudioDirector.new()
+	audio.name = "Audio"
+	add_child(audio)
+
+
 func _setup_hud() -> void:
 	hud = RaceHUD.new()
 	hud.name = "HUD"
@@ -200,6 +202,8 @@ func _process(delta: float) -> void:
 	if player == null or cam == null:
 		return
 	cam.update_camera(delta, player)
+	if audio != null:
+		audio.update(player, delta)
 	if hud != null:
 		hud.update_stats(absf(player.vF) * 3.6, player.gear, player.rpm, player.drift)
 	# keep world followers centred on the camera
@@ -228,11 +232,13 @@ func _read_input() -> Dictionary:
 
 	var analog := false
 	var hand := Input.is_physical_key_pressed(KEY_SPACE)
+	var nitro := Input.is_physical_key_pressed(KEY_SHIFT)
 	if touch != null and touch.visible:
 		steer += touch.steer_axis()
 		throttle = maxf(throttle, touch.throttle_axis())
 		brake = maxf(brake, touch.brake_axis())
 		hand = hand or touch.handbrake()
+		nitro = nitro or touch.nitro()
 	var pads := Input.get_connected_joypads()
 	if pads.size() > 0:
 		var pad: int = pads[0]
@@ -249,6 +255,8 @@ func _read_input() -> Dictionary:
 			brake = 1.0
 		if Input.is_joy_button_pressed(pad, JOY_BUTTON_X):
 			hand = true
+		if Input.is_joy_button_pressed(pad, JOY_BUTTON_Y):
+			nitro = true
 
 	return {
 		"throttle": throttle,
@@ -256,6 +264,7 @@ func _read_input() -> Dictionary:
 		"steer": clampf(steer, -1.0, 1.0),
 		"analog": analog,
 		"handbrake": hand,
+		"nitro": nitro,
 	}
 
 
@@ -271,6 +280,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				_reset_car()
 			KEY_C:
 				_cycle_camera()
+			KEY_L:
+				_toggle_lights()
+			KEY_M:
+				_toggle_mute()
 
 
 func _reset_car() -> void:
@@ -287,6 +300,22 @@ func _reset_car() -> void:
 		cam.cam_yaw = player.h
 	if hud != null:
 		hud.toast("CAR RESET", 0.8)
+
+
+func _toggle_lights() -> void:
+	headlights = not headlights
+	if player != null:
+		CarBuilder.set_headlights(player.model, headlights)
+	if hud != null:
+		hud.toast("HEADLIGHTS " + ("ON" if headlights else "OFF"), 0.7)
+
+
+func _toggle_mute() -> void:
+	if audio == null:
+		return
+	audio.set_muted(not audio.is_muted())
+	if hud != null:
+		hud.toast("SOUND " + ("OFF" if audio.is_muted() else "ON"), 0.7)
 
 
 func _cycle_camera() -> void:

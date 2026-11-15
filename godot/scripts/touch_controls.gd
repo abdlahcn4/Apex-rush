@@ -11,6 +11,7 @@ var _steer := 0.0
 var _throttle := 0.0
 var _brake := 0.0
 var _hand := false
+var _nitro := false
 
 
 func _ready() -> void:
@@ -32,6 +33,7 @@ func _layout() -> void:
 		{"name": "gas", "rect": Rect2(w * 0.80, h * 0.60, w * 0.17, h * 0.32), "label": "GAS"},
 		{"name": "brake", "rect": Rect2(w * 0.62, h * 0.70, w * 0.16, h * 0.22), "label": "BRK"},
 		{"name": "hand", "rect": Rect2(w * 0.62, h * 0.52, w * 0.16, h * 0.14), "label": "HAND"},
+		{"name": "nitro", "rect": Rect2(w * 0.80, h * 0.42, w * 0.17, h * 0.14), "label": "NOS"},
 	]
 	queue_redraw()
 
@@ -51,6 +53,10 @@ func brake_axis() -> float:
 
 func handbrake() -> bool:
 	return _hand
+
+
+func nitro() -> bool:
+	return _nitro
 
 
 # --- input ---------------------------------------------------------------- #
@@ -104,6 +110,7 @@ func _refresh() -> void:
 	_throttle = 0.0
 	_brake = 0.0
 	_hand = false
+	_nitro = false
 	for key in _owners.keys():
 		match String(_owners[key]):
 			"left":
@@ -116,6 +123,8 @@ func _refresh() -> void:
 				_brake = 1.0
 			"hand":
 				_hand = true
+			"nitro":
+				_nitro = true
 	queue_redraw()
 
 

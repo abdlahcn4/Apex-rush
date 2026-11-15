@@ -44,6 +44,10 @@ var pv := 0.0
 var rv := 0.0
 var wheel_rot := 0.0
 
+# nitro (boost) state, surfaced to the HUD and the audio director
+var nitro_charge := 1.0
+var nitro_active := false
+
 var hint := -1
 
 
@@ -65,6 +69,7 @@ func reset(nx: float, nz: float, nh: float) -> void:
 	steer = 0.0
 	drift = 0.0
 	hint = -1
+	nitro_active = false
 	rpm = 900.0
 	gear = "N"
 	vF = 0.0
@@ -95,6 +100,15 @@ func update_physics(dt: float, inp: Dictionary, track, frozen := false) -> void:
 	throttle = 0.0 if frozen else float(inp.throttle)
 	brake_in = 0.0 if frozen else float(inp.brake)
 	hand = (not frozen) and bool(inp.handbrake)
+
+	# --- nitro: burns charge while held, trickles back when released
+	nitro_active = (not frozen) and bool(inp.get("nitro", false)) and throttle > 0.0 and nitro_charge > 0.02
+	if nitro_active:
+		top *= 1.12
+		accel_rate *= 1.55
+		nitro_charge = maxf(0.0, nitro_charge - dt * 0.30)
+	else:
+		nitro_charge = minf(1.0, nitro_charge + dt * 0.06)
 
 	# --- yaw
 	var dir := 1.0 if vf >= 0.0 else -1.0

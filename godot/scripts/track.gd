@@ -317,21 +317,14 @@ func build(parent: Node3D, quality: int) -> Node3D:
 	root.name = "Track"
 	parent.add_child(root)
 
-	# --- asphalt
+	# --- asphalt: imported ambientCG texture on the spline ribbon
 	var road_mat := StandardMaterial3D.new()
-	road_mat.albedo_color = Color(0.28, 0.28, 0.31)
-	road_mat.roughness = 0.95
+	road_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	road_mat.albedo_texture = AssetLibrary.texture("asphalt")
+	road_mat.roughness = 0.92
+	road_mat.metallic = 0.05
+	road_mat.uv1_scale = Vector3(0.35, 0.35, 1.0)
 	road_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	var noise := FastNoiseLite.new()
-	noise.frequency = 0.06
-	noise.fractal_octaves = 4
-	var noise_tex := NoiseTexture2D.new()
-	noise_tex.width = 256
-	noise_tex.height = 256
-	noise_tex.seamless = true
-	noise_tex.noise = noise
-	road_mat.albedo_texture = noise_tex
-	road_mat.uv1_scale = Vector3(1.0, 1.0, 1.0)
 
 	var road := ribbon([Vector2(-ROAD_HALF, 0.02), Vector2(ROAD_HALF, 0.02)], road_mat, 8.0, true)
 	road.name = "Road"
@@ -383,25 +376,9 @@ func build(parent: Node3D, quality: int) -> Node3D:
 	dash_inst.name = "LaneDashes"
 	root.add_child(dash_inst)
 
-	# --- walls
-	var wall_mat := StandardMaterial3D.new()
-	wall_mat.albedo_color = Color(0.55, 0.56, 0.58)
-	wall_mat.roughness = 0.9
-	wall_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	for side_v in [-1.0, 1.0]:
-		var side := float(side_v)
-		var a := side * WALL
-		var b := side * (WALL + 0.55)
-		var cross: Array = [
-			Vector2(b, 0.0),
-			Vector2(b, 1.0),
-			Vector2(a, 0.95),
-			Vector2(a, 0.0),
-		]
-		var wall := ribbon(cross, wall_mat, 8.0)
-		wall.name = "Wall"
-		wall.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(wall)
+	# --- barriers, light posts, grandstands, pits and billboards are imported models
+	_build_barriers(root)
+	_build_track_furniture(root)
 
 	_build_scenery(root, quality)
 	_build_start_gantry(root)
@@ -413,88 +390,177 @@ func _build_scenery(root: Node3D, quality: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 42
 
-	# --- trees
-	var tree_counts := [120, 400, 800, 1600]
-	var want: int = tree_counts[clampi(quality, 0, 3)]
-	var spots: Array = []
+	# --- imported trees, scattered off the racing surface
+	var counts := [140, 360, 700, 1300]
+	var want: int = counts[clampi(quality, 0, 3)]
+	var big_path := AssetLibrary.PROP_DIR + "treeLarge.glb"
+	var small_path := AssetLibrary.PROP_DIR + "treeSmall.glb"
+	var big_scale := AssetLibrary.height_scale(big_path, 8.0)
+	var small_scale := AssetLibrary.height_scale(small_path, 4.5)
+	var big_spots: Array = []
+	var small_spots: Array = []
 	var guard := 0
-	while spots.size() < want and guard < want * 12:
+	while big_spots.size() + small_spots.size() < want and guard < want * 14:
 		guard += 1
 		var x := _min_x - 450.0 + rng.randf() * (_max_x - _min_x + 900.0)
 		var z := _min_z - 450.0 + rng.randf() * (_max_z - _min_z + 900.0)
 		var d := dist_to_road(x, z)
-		if d < 19.0:
+		if d < 18.0:
 			continue
-		if d > 120.0 and rng.randf() < 0.55:
+		if d > 150.0 and rng.randf() < 0.5:
 			continue
-		spots.append({"x": x, "z": z, "s": 0.8 + rng.randf() * 0.9, "r": rng.randf()})
+		var xform := Transform3D(Basis(Vector3.UP, rng.randf() * TAU), Vector3(x, 0.0, z))
+		if rng.randf() < 0.5:
+			big_spots.append({"xform": xform, "scale": big_scale * (0.8 + rng.randf() * 0.6)})
+		else:
+			small_spots.append({"xform": xform, "scale": small_scale * (0.8 + rng.randf() * 0.6)})
 
-	var trunk_mesh := CylinderMesh.new()
-	trunk_mesh.top_radius = 0.25
-	trunk_mesh.bottom_radius = 0.35
-	trunk_mesh.height = 2.4
-	trunk_mesh.radial_segments = 5
+	var trees_big := AssetLibrary.prop_multimesh(big_path, big_spots, "TreesLarge")
+	if trees_big != null:
+		root.add_child(trees_big)
+	var trees_small := AssetLibrary.prop_multimesh(small_path, small_spots, "TreesSmall")
+	if trees_small != null:
+		root.add_child(trees_small)
 
-	# cones = cylinders with a zero top radius (ConeMesh only exposes `radius`)
-	var leaf_low := CylinderMesh.new()
-	leaf_low.top_radius = 0.0
-	leaf_low.bottom_radius = 2.4
-	leaf_low.height = 5.5
-	leaf_low.radial_segments = 7
+	# --- imported city blocks behind the barriers
+	var blocks := ["building-a", "building-b", "building-c", "building-d",
+		"building-e", "building-f", "building-g", "building-h"]
+	var centers := [Vector2(360, 330), Vector2(-330, 150), Vector2(880, -240), Vector2(280, -900), Vector2(1040, 820)]
+	var per_cluster := [8, 14, 22, 30]
+	var count: int = per_cluster[clampi(quality, 0, 3)]
+	for bi in range(blocks.size()):
+		var path: String = AssetLibrary.CITY_DIR + String(blocks[bi]) + ".glb"
+		if not AssetLibrary.has_model(path):
+			continue
+		var scale := AssetLibrary.height_scale(path, 16.0 + 18.0 * float(bi % 3))
+		var spots: Array = []
+		for c in centers:
+			var centre: Vector2 = c
+			for k in range(count):
+				var x := centre.x + (rng.randf() - 0.5) * 340.0
+				var z := centre.y + (rng.randf() - 0.5) * 340.0
+				if dist_to_road(x, z) < 52.0:
+					continue
+				var yaw := floor(rng.randf() * 4.0) * 0.4
+				spots.append({
+					"xform": Transform3D(Basis(Vector3.UP, yaw), Vector3(x, 0.0, z)),
+					"scale": scale * (0.75 + rng.randf() * 0.7),
+				})
+		var mm := AssetLibrary.prop_multimesh(path, spots, "City" + str(bi))
+		if mm != null:
+			root.add_child(mm)
 
-	var leaf_high := CylinderMesh.new()
-	leaf_high.top_radius = 0.0
-	leaf_high.bottom_radius = 1.6
-	leaf_high.height = 4.0
-	leaf_high.radial_segments = 7
 
-	var trunk_xf: Array = []
-	var low_xf: Array = []
-	var high_xf: Array = []
-	var leaf_cols: Array = []
-	for p in spots:
-		var s := float(p.s)
-		var sy := s * (0.9 + float(p.r) * 0.4)
-		var yaw := float(p.r) * TAU
-		var basis := Basis(Vector3.UP, yaw) * Basis().scaled(Vector3(s, sy, s))
-		var base := Vector3(float(p.x), 0.0, float(p.z))
-		trunk_xf.append(Transform3D(basis, base + Vector3(0.0, 1.2 * sy, 0.0)))
-		low_xf.append(Transform3D(basis, base + Vector3(0.0, 2.75 * sy, 0.0)))
-		high_xf.append(Transform3D(basis, base + Vector3(0.0, 6.2 * sy, 0.0)))
-		var h := 0.24 + rng.randf() * 0.10
-		leaf_cols.append(Color.from_hsv(h, 0.45 + rng.randf() * 0.2, 0.13 + rng.randf() * 0.10))
+## Solid barrier line down both edges of the racing surface (imported models).
+func _build_barriers(root: Node3D) -> void:
+	var spacing := 4.0
+	var stride := maxi(1, int(round(spacing / step)))
+	var path := AssetLibrary.PROP_DIR + "barrierWall.glb"
+	var scale := AssetLibrary.span_scale(path, spacing)
+	var axis := _long_axis_fix(path)
+	var spots: Array = []
+	var i := 0
+	while i < N:
+		var smp: Dictionary = samples[i]
+		var yaw := atan2(float(smp.tx), float(smp.tz)) + axis
+		for side_v in [-1.0, 1.0]:
+			var lat := float(side_v) * (WALL - 0.35)
+			var pos := Vector3(float(smp.x) + float(smp.nx) * lat, 0.0, float(smp.z) + float(smp.nz) * lat)
+			spots.append({"xform": Transform3D(Basis(Vector3.UP, yaw), pos), "scale": scale})
+		i += stride
+	var mm := AssetLibrary.prop_multimesh(path, spots, "TrackBarriers")
+	if mm != null:
+		root.add_child(mm)
 
-	var trunk_mat := MeshKit.solid(Color(0.20, 0.15, 0.11), 0.95)
-	# per-instance colours are multiplied by the albedo, so keep it white
-	var leaf_mat := MeshKit.solid(Color(1, 1, 1), 0.9)
-	leaf_mat.vertex_color_use_as_albedo = true
 
-	root.add_child(_multimesh(trunk_mesh, trunk_mat, trunk_xf))
-	root.add_child(_multimesh(leaf_low, leaf_mat, low_xf, leaf_cols))
-	root.add_child(_multimesh(leaf_high, leaf_mat, high_xf, leaf_cols))
+## Grandstands, pit garages, light posts, billboards, flags: the circuit furniture.
+func _build_track_furniture(root: Node3D) -> void:
+	var start_smp: Dictionary = samples[0]
+	var start_pos := Vector3(float(start_smp.x), 0.0, float(start_smp.z))
+	var start_yaw := atan2(float(start_smp.tx), float(start_smp.tz))
+	var start_n := Vector3(float(start_smp.nx), 0.0, float(start_smp.nz))
+	var forward := Vector3(float(start_smp.tx), 0.0, float(start_smp.tz))
 
-	# --- buildings
-	var centers := [Vector2(300, 300), Vector2(-260, 120), Vector2(760, -200), Vector2(250, -800), Vector2(900, 700)]
-	var per_cluster := [10, 18, 26, 34]
-	var box_mesh := BoxMesh.new()
-	box_mesh.size = Vector3(1, 1, 1)
-	var box_xf: Array = []
-	var box_cols: Array = []
-	for c in centers:
-		for k in range(int(per_cluster[clampi(quality, 0, 3)])):
-			var x := float(c.x) + (rng.randf() - 0.5) * 320.0
-			var z := float(c.y) + (rng.randf() - 0.5) * 320.0
-			if dist_to_road(x, z) < 45.0:
-				continue
-			var w := 14.0 + rng.randf() * 22.0
-			var hgt := 12.0 + rng.randf() * (90.0 if rng.randf() < 0.2 else 35.0)
-			var d := 14.0 + rng.randf() * 22.0
-			var basis := Basis(Vector3.UP, floor(rng.randf() * 4.0) * 0.4) * Basis().scaled(Vector3(w, hgt, d))
-			box_xf.append(Transform3D(basis, Vector3(x, hgt * 0.5, z)))
-			box_cols.append(Color.from_hsv(0.08 + float(box_xf.size() % 7) * 0.02, 0.15, 0.45 + float(box_xf.size() % 3) * 0.10))
-	var box_mat := MeshKit.solid(Color(1, 1, 1), 0.85)
-	box_mat.vertex_color_use_as_albedo = true
-	root.add_child(_multimesh(box_mesh, box_mat, box_xf, box_cols))
+	# --- pit garages and offices along the start straight
+	var pit_path := AssetLibrary.PROP_DIR + "pitsGarage.glb"
+	var pit_scale := AssetLibrary.height_scale(pit_path, 5.0)
+	var pit_yaw := start_yaw + _long_axis_fix(pit_path)
+	for k in range(4):
+		var pos := start_pos + forward * (16.0 + 11.0 * float(k)) + start_n * (WALL + 8.0)
+		var node := AssetLibrary.placed(pit_path, pos, pit_yaw, pit_scale)
+		if node != null:
+			root.add_child(node)
+
+	var office_path := AssetLibrary.PROP_DIR + "pitsOffice.glb"
+	var office := AssetLibrary.placed(office_path, start_pos + forward * 64.0 + start_n * (WALL + 13.0),
+		start_yaw + _long_axis_fix(office_path), AssetLibrary.height_scale(office_path, 6.5))
+	if office != null:
+		root.add_child(office)
+
+	# --- grandstands: main straight plus three corners
+	var stand_path := AssetLibrary.PROP_DIR + "grandStand.glb"
+	var stand_scale := AssetLibrary.height_scale(stand_path, 7.5)
+	var stand_yaw := start_yaw + _long_axis_fix(stand_path) + PI * 0.5
+	var stand_at := [0, int(N * 0.22), int(N * 0.55), int(N * 0.78)]
+	for idx in stand_at:
+		var smp: Dictionary = samples[clampi(int(idx), 0, N - 1)]
+		var yaw := atan2(float(smp.tx), float(smp.tz)) + _long_axis_fix(stand_path) + PI * 0.5
+		var lat := WALL + 10.0
+		var pos := Vector3(float(smp.x) + float(smp.nx) * lat, 0.0, float(smp.z) + float(smp.nz) * lat)
+		var stand := AssetLibrary.placed(stand_path, pos, yaw, stand_scale)
+		if stand != null:
+			root.add_child(stand)
+
+	# --- light posts, alternating sides, single draw call
+	var post_path := AssetLibrary.PROP_DIR + "lightPostLarge.glb"
+	var post_scale := AssetLibrary.height_scale(post_path, 8.5)
+	var post_spots: Array = []
+	var pstride := maxi(1, int(round(46.0 / step)))
+	var flip := 1.0
+	var i := 0
+	while i < N:
+		var smp: Dictionary = samples[i]
+		var yaw := atan2(float(smp.tx), float(smp.tz))
+		var lat := flip * (WALL + 3.2)
+		var pos := Vector3(float(smp.x) + float(smp.nx) * lat, 0.0, float(smp.z) + float(smp.nz) * lat)
+		post_spots.append({"xform": Transform3D(Basis(Vector3.UP, yaw), pos), "scale": post_scale})
+		flip = -flip
+		i += pstride
+	var posts := AssetLibrary.prop_multimesh(post_path, post_spots, "LightPosts")
+	if posts != null:
+		root.add_child(posts)
+
+	# --- billboards facing the track
+	var bill_path := AssetLibrary.PROP_DIR + "billboard.glb"
+	var bill_scale := AssetLibrary.height_scale(bill_path, 6.5)
+	var bill_spots: Array = []
+	var bstride := maxi(1, int(round(260.0 / step)))
+	var j := 0
+	while j < N:
+		var smp: Dictionary = samples[j]
+		var yaw := atan2(float(smp.tx), float(smp.tz)) + PI * 0.5
+		var lat := WALL + 12.0
+		var pos := Vector3(float(smp.x) + float(smp.nx) * lat, 0.0, float(smp.z) + float(smp.nz) * lat)
+		bill_spots.append({"xform": Transform3D(Basis(Vector3.UP, yaw), pos), "scale": bill_scale})
+		j += bstride
+	var bills := AssetLibrary.prop_multimesh(bill_path, bill_spots, "Billboards")
+	if bills != null:
+		root.add_child(bills)
+
+	# --- flags and pylons at the start line
+	var flag_path := AssetLibrary.PROP_DIR + "flagCheckers.glb"
+	var flag_scale := AssetLibrary.height_scale(flag_path, 3.2)
+	for side_v in [-1.0, 1.0]:
+		var pos := start_pos + start_n * (float(side_v) * (WALL + 1.5))
+		var flag := AssetLibrary.placed(flag_path, pos, stand_yaw, flag_scale)
+		if flag != null:
+			root.add_child(flag)
+
+
+## Kenney models run their length along X; align that with the track tangent.
+func _long_axis_fix(path: String) -> float:
+	var sz := AssetLibrary.native_size(path)
+	return PI * 0.5 if sz.x >= sz.z else 0.0
 
 
 func _multimesh(mesh: Mesh, mat: Material, xforms: Array, colors: Array = []) -> MultiMeshInstance3D:
@@ -519,10 +585,11 @@ func _build_start_gantry(root: Node3D) -> void:
 	var yaw := atan2(float(s.tx), float(s.tz))
 	var base := Vector3(float(s.x), 0.0, float(s.z))
 
-	# start line
+	# painted start line (a road marking, not an object)
 	var line_mat := StandardMaterial3D.new()
 	line_mat.albedo_color = Color(0.93, 0.93, 0.93)
 	line_mat.roughness = 0.6
+	line_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	var line_mesh := BoxMesh.new()
 	line_mesh.size = Vector3(ROAD_HALF * 1.8, 0.02, 1.6)
 	var line := MeshInstance3D.new()
@@ -532,22 +599,19 @@ func _build_start_gantry(root: Node3D) -> void:
 	line.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(line)
 
-	# gantry
-	var steel := MeshKit.solid(Color(0.16, 0.17, 0.19), 0.5, 0.6)
-	var pillar_mesh := BoxMesh.new()
-	pillar_mesh.size = Vector3(0.8, 8.0, 0.8)
-	var beam_mesh := BoxMesh.new()
-	beam_mesh.size = Vector3(WALL * 2.0 + 3.2, 1.6, 0.5)
+	# imported overhead light gantry spanning the full road
+	var gantry_path := AssetLibrary.PROP_DIR + "overheadLights.glb"
+	var span := (WALL + 1.5) * 2.0
+	var gantry := AssetLibrary.placed(gantry_path, base, yaw + _long_axis_fix(gantry_path),
+		AssetLibrary.span_scale(gantry_path, span))
+	if gantry != null:
+		root.add_child(gantry)
+
+	# imported banner towers either side of the line
+	var tower_path := AssetLibrary.PROP_DIR + "bannerTowerRed.glb"
+	var tower_scale := AssetLibrary.height_scale(tower_path, 9.0)
 	for side_v in [-1.0, 1.0]:
-		var side := float(side_v)
-		var pillar := MeshInstance3D.new()
-		pillar.mesh = pillar_mesh
-		pillar.material_override = steel
-		var off := Vector3(float(s.nx), 0.0, float(s.nz)) * (side * (WALL + 1.2))
-		pillar.transform = Transform3D(Basis(Vector3.UP, yaw), base + off + Vector3(0.0, 4.0, 0.0))
-		root.add_child(pillar)
-	var beam := MeshInstance3D.new()
-	beam.mesh = beam_mesh
-	beam.material_override = steel
-	beam.transform = Transform3D(Basis(Vector3.UP, yaw), base + Vector3(0.0, 7.6, 0.0))
-	root.add_child(beam)
+		var off := Vector3(float(s.nx), 0.0, float(s.nz)) * (float(side_v) * (WALL + 3.0))
+		var tower := AssetLibrary.placed(tower_path, base + off, yaw, tower_scale)
+		if tower != null:
+			root.add_child(tower)

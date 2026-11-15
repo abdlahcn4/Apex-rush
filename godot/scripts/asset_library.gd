@@ -8,6 +8,7 @@ extends RefCounted
 const CAR_DIR := "res://assets/kenney_car_kit/vehicles/"
 const ROAD_DIR := "res://assets/kenney_racing_kit/roads/"
 const PROP_DIR := "res://assets/kenney_racing_kit/props/"
+const CITY_DIR := "res://assets/kenney_city_kit/"
 const TEX_DIR := "res://assets/textures/"
 const AUDIO_DIR := "res://assets/audio/"
 
@@ -99,6 +100,10 @@ const AUDIO := {
 	"impact_light": "impact-light-hard.wav",
 	"click": "click-button-firm.wav",
 	"hover": "click-hover-soft.wav",
+	"countdown": "click-toggle-on-firm.wav",
+	"skid": "foley-plastic-slide.wav",
+	"gearshift": "mechanical-latch-heavy.wav",
+	"ratchet": "mechanical-ratchet-light.wav",
 }
 
 static var _scenes: Dictionary = {}
@@ -180,3 +185,128 @@ static func instance(path: String) -> Node3D:
 
 static func has_model(path: String) -> bool:
 	return ResourceLoader.exists(path)
+
+
+# --------------------------------------------------------------------------- #
+# geometry helpers — imported models are measured, never assumed
+# --------------------------------------------------------------------------- #
+
+static var _sizes: Dictionary = {}
+
+
+## Bounds of every authored mesh inside `root`, in root-local space.
+static func bounds(root: Node3D) -> AABB:
+	var box := AABB()
+	var first := true
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		var space := relative_to(mi, root) * mi.get_aabb()
+		if first:
+			box = space
+			first = false
+		else:
+			box = box.merge(space)
+	return box
+
+
+static func relative_to(node: Node3D, ancestor: Node3D) -> Transform3D:
+	var t := Transform3D()
+	var n: Node = node
+	while n != null and n != ancestor:
+		if n is Node3D:
+			t = (n as Node3D).transform * t
+		n = n.get_parent()
+	return t
+
+
+static func first_mesh(root: Node3D) -> MeshInstance3D:
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi != null and mi.mesh != null:
+			return mi
+	return null
+
+
+## Native size of an imported model in its own units (cached).
+static func native_size(path: String) -> Vector3:
+	if _sizes.has(path):
+		return _sizes[path] as Vector3
+	var node := instance(path)
+	if node == null:
+		return Vector3.ONE
+	var box := bounds(node)
+	node.free()
+	_sizes[path] = box.size
+	return box.size
+
+
+## Uniform scale that makes a model's longest horizontal side `target` metres.
+static func span_scale(path: String, target: float) -> float:
+	var sz := native_size(path)
+	var longest := maxf(sz.x, sz.z)
+	return 1.0 if longest < 0.001 else target / longest
+
+
+## Uniform scale that makes a model `target` metres tall.
+static func height_scale(path: String, target: float) -> float:
+	var sz := native_size(path)
+	return 1.0 if sz.y < 0.001 else target / sz.y
+
+
+## Transform that centres a model on X/Z and drops its base onto y = 0.
+static func grounding(path: String) -> Transform3D:
+	var node := instance(path)
+	if node == null:
+		return Transform3D()
+	var box := bounds(node)
+	node.free()
+	return Transform3D(Basis(), Vector3(-(box.position.x + box.size.x * 0.5), -box.position.y, -(box.position.z + box.size.z * 0.5)))
+
+
+## One instance of an imported model, centred, seated on y = 0 and scaled by `scale`.
+static func placed(path: String, pos: Vector3, yaw: float, scale: float) -> Node3D:
+	var node := instance(path)
+	if node == null:
+		return null
+	var inner := Node3D.new()
+	inner.name = String(path.get_file().get_basename())
+	node.scale = Vector3.ONE * scale
+	inner.add_child(node)
+	node.transform = grounding(path)
+	inner.position = pos
+	inner.rotation = Vector3(0.0, yaw, 0.0)
+	return inner
+
+
+## Many instances of the same imported model in a single draw call.
+## spots: [{xform: Transform3D at the model's base, scale: float}]
+static func prop_multimesh(path: String, spots: Array, name := "") -> MultiMeshInstance3D:
+	if spots.is_empty():
+		return null
+	var node := instance(path)
+	if node == null:
+		return null
+	var mi := first_mesh(node)
+	if mi == null:
+		node.free()
+		return null
+	var mesh: Mesh = mi.mesh
+	var inner := relative_to(mi, node)
+	var norm := grounding(path) * inner
+	node.free()
+
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = mesh
+	mm.instance_count = spots.size()
+	for i in range(spots.size()):
+		var spot: Dictionary = spots[i]
+		var base: Transform3D = spot.xform
+		var s := float(spot.get("scale", 1.0))
+		mm.set_instance_transform(i, base * Transform3D(Basis().scaled(Vector3.ONE * s), Vector3.ZERO) * norm)
+	var inst := MultiMeshInstance3D.new()
+	inst.name = name if not name.is_empty() else String(path.get_file().get_basename())
+	inst.multimesh = mm
+	return inst

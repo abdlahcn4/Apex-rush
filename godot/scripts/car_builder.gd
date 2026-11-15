@@ -115,7 +115,7 @@ static func build(id: String, color: Color, quality := 2) -> Dictionary:
 	out["model"] = model.name
 
 	# --- measure the authored model, then scale it to the physics spec length
-	var ext := _bounds(model)
+	var ext := AssetLibrary.bounds(model)
 	if ext.size.z < 0.05 or ext.size.y < 0.05:
 		push_error("CarBuilder: empty bounds for car model " + id)
 		root.add_child(model)
@@ -143,7 +143,7 @@ static func build(id: String, color: Color, quality := 2) -> Dictionary:
 			continue
 		if not mi.name.to_lower().begins_with("wheel"):
 			continue
-		var rel := _relative_to(mi, model)
+		var rel := AssetLibrary.relative_to(mi, model)
 		var box := mi.get_aabb()
 		var centre: Vector3 = rel * box.get_center()
 		var pivot := Node3D.new()
@@ -214,33 +214,6 @@ static func _lens(w: float, h: float, mat: Material) -> MeshInstance3D:
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
-
-
-## Axis-aligned bounds of every authored mesh, expressed in `root`'s local space.
-static func _bounds(root: Node3D) -> AABB:
-	var box := AABB()
-	var first := true
-	for node in root.find_children("*", "MeshInstance3D", true, false):
-		var mi := node as MeshInstance3D
-		if mi == null or mi.mesh == null:
-			continue
-		var space := _relative_to(mi, root) * mi.get_aabb()
-		if first:
-			box = space
-			first = false
-		else:
-			box = box.merge(space)
-	return box
-
-
-static func _relative_to(node: Node3D, ancestor: Node3D) -> Transform3D:
-	var t := Transform3D()
-	var n: Node = node
-	while n != null and n != ancestor:
-		if n is Node3D:
-			t = (n as Node3D).transform * t
-		n = n.get_parent()
-	return t
 
 
 static func _lamp_mat(glow: Color) -> StandardMaterial3D:
