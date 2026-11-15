@@ -197,7 +197,7 @@ func point_at(sd: float, lat: float = 0.0) -> Dictionary:
 	var s0 := fposmod(sd, length)
 	var f := s0 / step
 	var i := int(floor(f))
-	var t := f - floor(f)
+	var t := f - floorf(f)
 	var a: Dictionary = sample_at(i)
 	var b: Dictionary = sample_at(i + 1)
 	var x := lerpf(float(a.x), float(b.x), t)
@@ -346,7 +346,8 @@ func build(parent: Node3D, quality: int) -> Node3D:
 	line_mat.emission = Color(0.25, 0.25, 0.24)
 	line_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 
-	for side in [-1.0, 1.0]:
+	for side_v in [-1.0, 1.0]:
+		var side := float(side_v)
 		var a := 9.0 * side
 		var b := 9.35 * side
 		var cross: Array = [Vector2(minf(a, b), 0.035), Vector2(maxf(a, b), 0.035)]
@@ -387,7 +388,8 @@ func build(parent: Node3D, quality: int) -> Node3D:
 	wall_mat.albedo_color = Color(0.55, 0.56, 0.58)
 	wall_mat.roughness = 0.9
 	wall_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	for side in [-1.0, 1.0]:
+	for side_v in [-1.0, 1.0]:
+		var side := float(side_v)
 		var a := side * WALL
 		var b := side * (WALL + 0.55)
 		var cross: Array = [
@@ -536,7 +538,8 @@ func _build_start_gantry(root: Node3D) -> void:
 	pillar_mesh.size = Vector3(0.8, 8.0, 0.8)
 	var beam_mesh := BoxMesh.new()
 	beam_mesh.size = Vector3(WALL * 2.0 + 3.2, 1.6, 0.5)
-	for side in [-1.0, 1.0]:
+	for side_v in [-1.0, 1.0]:
+		var side := float(side_v)
 		var pillar := MeshInstance3D.new()
 		pillar.mesh = pillar_mesh
 		pillar.material_override = steel

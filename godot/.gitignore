@@ -1,7 +1,6 @@
 # Godot import cache / editor state
 .godot/
 
-# Local export config and build output
-export_presets.cfg
+# Build output (export_presets.cfg IS tracked - CI needs it)
 build/
 *.pck

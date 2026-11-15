@@ -21,15 +21,15 @@ static func extrude_profile(profile: PackedVector2Array, depth: float) -> ArrayM
 	var hw := depth * 0.5
 	var area := 0.0
 	for i in range(n):
-		var a := profile[i]
-		var b := profile[(i + 1) % n]
+		var a: Vector2 = profile[i]
+		var b: Vector2 = profile[(i + 1) % n]
 		area += a.x * b.y - b.x * a.y
 	var sgn := 1.0 if area >= 0.0 else -1.0
 
 	# --- side walls
 	for i in range(n):
-		var a := profile[i]
-		var b := profile[(i + 1) % n]
+		var a: Vector2 = profile[i]
+		var b: Vector2 = profile[(i + 1) % n]
 		var d := b - a
 		if d.length_squared() < 0.0000001:
 			continue
@@ -47,9 +47,9 @@ static func extrude_profile(profile: PackedVector2Array, depth: float) -> ArrayM
 	if idx.size() >= 3:
 		var k := 0
 		while k + 2 < idx.size():
-			var pa := profile[idx[k]]
-			var pb := profile[idx[k + 1]]
-			var pc := profile[idx[k + 2]]
+			var pa: Vector2 = profile[idx[k]]
+			var pb: Vector2 = profile[idx[k + 1]]
+			var pc: Vector2 = profile[idx[k + 2]]
 			_tri(st, Vector3(hw, pa.y, pa.x), Vector3(hw, pb.y, pb.x), Vector3(hw, pc.y, pc.x), Vector3(1, 0, 0))
 			_tri(st, Vector3(-hw, pa.y, pa.x), Vector3(-hw, pb.y, pb.x), Vector3(-hw, pc.y, pc.x), Vector3(-1, 0, 0))
 			k += 3
