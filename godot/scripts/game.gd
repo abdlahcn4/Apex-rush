@@ -61,6 +61,7 @@ func _ready() -> void:
 	# world instead of stopping on the menu.
 	if "--autotest" in OS.get_cmdline_user_args():
 		_start_race(map_id, car_id)
+		_report_autotest()
 
 
 # --------------------------------------------------------------------------- #
@@ -553,3 +554,28 @@ func _cycle_camera() -> void:
 	var label: String = cam.cycle()
 	if hud != null:
 		hud.toast(label, 0.9)
+
+
+## Diagnostic dump for CI: proves what the engine actually assembled, so a build is not
+## accepted on trust. Printed only under `-- --autotest`.
+func _report_autotest() -> void:
+	if player == null or track == null:
+		print("[autotest] FAILED: no player/track")
+		return
+	var model: Dictionary = player.model
+	print("[autotest] circuit=%s samples=%d length=%.1fm" % [String(map_def.get("name", "?")), track.N, track.length])
+	print("[autotest] car=%s model=%s scale=%.3f length=%.2fm width=%.2fm wheel_radius=%.3fm wheels=%d lights=%d" % [
+		car_id,
+		String(model.get("model", "?")),
+		float(model.get("scale", 0.0)),
+		float(model.get("length", 0.0)),
+		float(model.get("width", 0.0)),
+		float(model.get("wr", 0.0)),
+		(model.get("wheels", []) as Array).size(),
+		(model.get("lights", []) as Array).size(),
+	])
+	print("[autotest] props: %d nodes under world, audio engine=%s skid=%s" % [
+		world.get_child_count() if world != null else 0,
+		str(audio != null and audio.engine != null and audio.engine.stream != null),
+		str(audio != null and audio.skid != null and audio.skid.stream != null),
+	])

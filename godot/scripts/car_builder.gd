@@ -131,7 +131,6 @@ static func build(id: String, color: Color, quality := 2) -> Dictionary:
 	var fix := Node3D.new()
 	fix.name = "GroundFix"
 	fix.position = Vector3(0.0, -ext.position.y, 0.0)
-	body.remove_child(model)
 	body.add_child(fix)
 	fix.add_child(model)
 
@@ -153,8 +152,9 @@ static func build(id: String, color: Color, quality := 2) -> Dictionary:
 		var spin := Node3D.new()
 		spin.name = "WheelSpin"
 		pivot.add_child(spin)
+		mi.owner = null
 		var holder := mi.get_parent()
-		if holder != null:
+		if holder != null and mi.get_parent() == holder:
 			holder.remove_child(mi)
 		spin.add_child(mi)
 		mi.transform = Transform3D(Basis(), -box.get_center())
