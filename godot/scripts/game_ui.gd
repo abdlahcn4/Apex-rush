@@ -91,6 +91,7 @@ func _ready() -> void:
 	style.content_margin_top = 26.0
 	style.content_margin_bottom = 26.0
 	_panel.add_theme_stylebox_override("panel", style)
+	_panel.resized.connect(_keep_panel_inside)
 
 	_vbox = VBoxContainer.new()
 	_vbox.add_theme_constant_override("separation", 12)
@@ -230,7 +231,7 @@ func _layout() -> void:
 	var margin := clampf(vp.x * 0.035, 12.0, 56.0)
 	if landscape:
 		var panel_w := clampf(vp.x * 0.40, 330.0, 590.0)
-		var panel_h := clampf(vp.y * 0.88, 320.0, 660.0)
+		var panel_h := clampf(vp.y * 0.84, 300.0, 640.0)
 		_panel.size = Vector2(panel_w, panel_h)
 		_panel.position = Vector2(margin, (vp.y - panel_h) * 0.5)
 		_dim.size = Vector2(panel_w + margin * 2.0, vp.y)
@@ -247,6 +248,18 @@ func _layout() -> void:
 		_showcase_shift = Vector2(0.0, panel_h * 0.62)
 	_apply_showcase_framing()
 	_fit_rows()
+	_keep_panel_inside()
+
+
+## If the rows need more height than the panel was given, the panel grows; this keeps the
+## grown panel inside the window instead of hanging off the bottom edge.
+func _keep_panel_inside() -> void:
+	if _panel == null:
+		return
+	var vp := get_viewport().get_visible_rect().size
+	var margin := clampf(vp.x * 0.03, 8.0, 48.0)
+	var max_y := maxf(margin, vp.y - _panel.size.y - margin)
+	_panel.position.y = clampf(_panel.position.y, margin, max_y)
 
 
 ## Keep the car inside the showcase half by aiming the camera off-centre.
