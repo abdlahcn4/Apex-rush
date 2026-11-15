@@ -172,7 +172,6 @@ export: end
 loading_editor_layout: begin: Loading editor steps: 5
 	loading_editor_layout: step 0: Loading editor layout...
 loading_editor_layout: end
-cannot connect to daemon at tcp:5037: Connection refused
 EditorSettings: Save OK!
 XR: Clearing primary interface
 XR: Removed interface "Native mobile"
