@@ -33,14 +33,6 @@ func _ready() -> void:
 	resized.connect(_layout)
 	_layout()
 	set_active(_is_mobile())
-	set_process(true)
-
-
-func _process(_delta: float) -> void:
-	# Some Android builds only report a touchscreen after the first touch, so keep
-	# checking until it shows up rather than staying hidden forever.
-	if not _active and _is_mobile():
-		set_active(true)
 
 
 func _is_mobile() -> bool:
@@ -113,6 +105,9 @@ func _layout() -> void:
 ## Raw input instead of Control._gui_input: a finger is delivered to Node._input on every
 ## platform, so the driving pads cannot be lost to GUI picking or canvas-layer ordering.
 func _input(event: InputEvent) -> void:
+	# Hidden pads must not eat taps aimed at the pause menu or the results screen.
+	if not _active:
+		return
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		if touch.pressed:
