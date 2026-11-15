@@ -1,39 +1,21 @@
 Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 
-SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:103)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/car_builder.gd:0)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/vehicle.gd:0)
-SCRIPT ERROR: Parse Error: Function "draw_circle()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:123)
-SCRIPT ERROR: Parse Error: Function "draw_arc()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:125)
-SCRIPT ERROR: Parse Error: Function "draw_arc()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:130)
-SCRIPT ERROR: Parse Error: Function "draw_line()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:139)
-SCRIPT ERROR: Parse Error: Function "draw_line()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:143)
-SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:164)
-SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:174)
-SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:178)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:103)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/game_ui.gd:0)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/game.gd:0)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Compilation failed".
-   at: load (modules/gdscript/gdscript.cpp:3022)
-SCRIPT ERROR: Invalid call. Nonexistent function 'build' in base 'GDScript'.
-          at: GameUI._refresh_showroom_car (res://scripts/game_ui.gd:210)
-SCRIPT ERROR: Invalid call. Nonexistent function 'build' in base 'GDScript'.
-          at: GameUI._refresh_showroom_car (res://scripts/game_ui.gd:210)
+WARNING: Adding 'WheelFrontL' as child to 'Spin_WheelFrontL' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelFrontR' as child to 'Spin_WheelFrontR' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelRearL' as child to 'Spin_WheelRearL' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelRearR' as child to 'Spin_WheelRearR' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelFrontL' as child to 'Spin_WheelFrontL' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelFrontR' as child to 'Spin_WheelFrontR' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelRearL' as child to 'Spin_WheelRearL' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelRearR' as child to 'Spin_WheelRearR' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
 [autotest] probe build=v3
 [autotest] emulate_mouse_from_touch=true
 [autotest] layout check: main screen offscreen_buttons=0
@@ -41,386 +23,28 @@ SCRIPT ERROR: Invalid call. Nonexistent function 'build' in base 'GDScript'.
 [autotest] tap probe: button 'GARAGE  ·  Vortex GT' rect=[P: (360.0, 320.0), S: (560.0, 76.0)] events_seen=4 presses=1 screen='GARAGE'
 [autotest] layout check: screen='GARAGE' panel=[P: (326.0, 3.0), S: (628.0, 713.0)] offscreen_buttons=0
 [autotest] tap probe result: MENU IS TAPPABLE
-SCRIPT ERROR: Invalid call. Nonexistent function 'available' in base 'GDScript'.
-          at: build (res://scripts/car_builder.gd:91)
-SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
-          at: ApexVehicle._init (res://scripts/vehicle.gd:59)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
-          at: _setup_hud (res://scripts/game.gd:509)
+WARNING: Adding 'WheelFrontL' as child to 'Spin_WheelFrontL' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelFrontR' as child to 'Spin_WheelFrontR' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelRearL' as child to 'Spin_WheelRearL' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'WheelRearR' as child to 'Spin_WheelRearR' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
 [autotest] circuit=Sunset Ring samples=1527 length=3053.7m
-[autotest] car=vortex model=? scale=0.000 length=0.00m width=0.00m wheel_radius=0.000m wheels=0 lights=0
-[autotest] props: 9 nodes under world, audio engine=true skid=true
+[autotest] car=vortex model=CarConcept scale=1.033 length=4.50m width=2.82m wheel_radius=0.397m wheels=4 lights=2
+[autotest] props: 10 nodes under world, audio engine=true skid=true
 [autotest] drove 10s: 82.0 km/h gear=2 rpm=2687 travelled=239m drift=0.13 nitro=0.02
+[autotest] chassis bounds 2.73 x 1.31 x 4.36, base_y=0.000
 [autotest] map sunset_ring    points=15 theme_keys=17 night=false
 [autotest] map harbour_night  points=24 theme_keys=20 night=true
 [autotest] map dune_pass      points=24 theme_keys=18 night=false
 [autotest] map cedar_forest   points=24 theme_keys=18 night=false
 [autotest] map ridge_road     points=24 theme_keys=20 night=false
-[autotest] drive probe: touch controls missing
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
+[autotest] drive probe: gas_at=(1139.2, 540.0) throttle=1.00 released=0.00 steer=-1.00
+[autotest] drive probe result: ON-SCREEN PADS RESPOND TO TOUCH
 [autotest] layout check: PAUSED panel=[P: (326.0, 78.0), S: (628.0, 564.0)] offscreen_buttons=0
 [autotest] layout result: ALL ROWS ON SCREEN
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
-SCRIPT ERROR: Invalid access to property or key 'wr' on a base object of type 'Dictionary'.
-          at: ApexVehicle.apply_visual (res://scripts/vehicle.gd:235)
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
 ERROR: 9 resources still in use at exit (run with --verbose for details).

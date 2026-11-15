@@ -356,6 +356,7 @@ reimport: begin: (Re)Importing Assets steps: 160
 	reimport: step 6: kenney_engineCircular_001.ogg
 	reimport: step 7: kenney_engineCircular_002.ogg
 	reimport: step 8: engine_race.ogg
+	reimport: step 9: skid_tyre.ogg
 	reimport: step 10: kenney_spaceEngineLow_000.ogg
 	reimport: step 11: kenney_spaceEngineLarge_000.ogg
 	reimport: step 12: impact_race.ogg
@@ -386,6 +387,7 @@ reimport: begin: (Re)Importing Assets steps: 160
 	reimport: step 37: kenney_spaceEngineLow_000.ogg
 	reimport: step 38: kenney_spaceEngineLarge_000.ogg
 	reimport: step 39: impact_race.ogg
+	reimport: step 40: kenney_engineCircular_000.ogg
 	reimport: step 41: kenney_engineCircular_001.ogg
 	reimport: step 42: kenney_engineCircular_002.ogg
 	reimport: step 43: asphalt_albedo.jpg
@@ -1331,44 +1333,10 @@ import: end
 reimport: end
 update_script_paths_documentation: begin: Updating scripts documentation steps: 13
 	update_script_paths_documentation: step 0: asset_library.gd
-SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:103)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/car_builder.gd:0)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/vehicle.gd:0)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/audio_director.gd:0)
-ERROR: Failed to load script "res://scripts/audio_director.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 1: audio_director.gd
 	update_script_paths_documentation: step 2: camera_rig.gd
 	update_script_paths_documentation: step 3: car_builder.gd
 	update_script_paths_documentation: step 4: car_hero.gd
-SCRIPT ERROR: Parse Error: Function "draw_circle()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:123)
-SCRIPT ERROR: Parse Error: Function "draw_arc()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:125)
-SCRIPT ERROR: Parse Error: Function "draw_arc()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:130)
-SCRIPT ERROR: Parse Error: Function "draw_line()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:139)
-SCRIPT ERROR: Parse Error: Function "draw_line()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:143)
-SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:164)
-SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:174)
-SCRIPT ERROR: Parse Error: Function "draw_rect()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:178)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "front" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/car_hero.gd:103)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/game_ui.gd:0)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/game.gd:0)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
 	update_script_paths_documentation: step 5: game.gd
 	update_script_paths_documentation: step 6: game_ui.gd
 	update_script_paths_documentation: step 7: hud.gd
