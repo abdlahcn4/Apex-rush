@@ -1,10 +1,22 @@
 class_name CarBuilder
 extends RefCounted
 
-## Port of buildCar() from public/js/cars.js.
-## The original extrudes a side-view Shape across the car's width and bolts boxes on
-## for lights, wing, mirrors and wheels. Here the silhouette is a polygon extruded by
-## MeshKit.extrude_profile, and the trim is primitives.
+## Builds the player car from an imported glTF model (Kenney Car Kit, CC0).
+## The bodywork, glass, spoilers and wheels are all authored geometry that ships in
+## res://assets — nothing here is generated from primitives.
+##
+## The public contract is unchanged from the procedural version so ApexVehicle keeps
+## working as-is:  {root, body, wheels[{pivot, spin, front}], tail_mat, wr, spec}
+##
+## Assembly steps per car:
+##   1. instance the glTF and measure it,
+##   2. uniformly scale it so its length matches the physics spec,
+##   3. drop it so the tyre contact patch sits on y = 0,
+##   4. lift each authored wheel mesh out into a pivot(steer) -> spin(roll) rig,
+##   5. bolt emissive lamp lenses + headlight spots onto the authored shell.
+
+const LAMP_RED := Color(1.0, 0.06, 0.10)
+const LAMP_WHITE := Color(1.0, 0.97, 0.90)
 
 const SPECS := {
 	"vortex": {
@@ -81,182 +93,162 @@ static func build(id: String, color: Color, quality := 2) -> Dictionary:
 	body.name = "Body"
 	root.add_child(body)
 
-	var paint := _paint(color, quality)
-	var glass := _glass()
-	var carbon := MeshKit.solid(Color(0.10, 0.11, 0.13), 0.35, 0.6)
-	var black := MeshKit.solid(Color(0.05, 0.05, 0.06), 0.55, 0.2)
-
-	var hl := float(b.L) * 0.5
-	var w := float(b.W)
-
-	# --- main shell: side silhouette extruded across the width
-	var prof := PackedVector2Array([
-		Vector2(-hl, 0.30),
-		Vector2(hl, 0.30),
-		Vector2(hl, float(b.noseY)),
-		Vector2(hl - 0.6, float(b.hoodY)),
-		Vector2(float(b.cabF), float(b.beltY)),
-		Vector2(float(b.roofF), float(b.cabTop) - 0.03),
-		Vector2(float(b.roofB), float(b.cabTop)),
-		Vector2(float(b.cabB), float(b.beltY) + 0.03),
-		Vector2(-hl + 0.2, float(b.tailY)),
-		Vector2(-hl, float(b.tailY) - 0.06),
-	])
-	var shell := MeshInstance3D.new()
-	shell.name = "Shell"
-	shell.mesh = MeshKit.extrude_profile(prof, w - 0.24)
-	shell.material_override = paint
-	body.add_child(shell)
-
-	# --- cabin glass
-	var cab := PackedVector2Array([
-		Vector2(float(b.cabF) + 0.05, float(b.beltY) - 0.02),
-		Vector2(float(b.roofF), float(b.cabTop) - 0.01),
-		Vector2(float(b.roofB), float(b.cabTop)),
-		Vector2(float(b.cabB) - 0.05, float(b.beltY) + 0.02),
-	])
-	var cabin := MeshInstance3D.new()
-	cabin.name = "Cabin"
-	cabin.mesh = MeshKit.extrude_profile(cab, w * 0.78 - 0.2)
-	cabin.material_override = glass
-	body.add_child(cabin)
-
-	# --- painted roof panel
-	var roof_len := maxf(0.3, float(b.roofF) - float(b.roofB))
-	_box(body, Vector3(w * 0.72, 0.05, roof_len),
-		Vector3(0.0, float(b.cabTop) + 0.085, (float(b.roofF) + float(b.roofB)) * 0.5), paint)
-
-	# --- headlights / mirrors / skirts
-	var head_mat := _head_mat()
-	for sx in [-1.0, 1.0]:
-		var lamp := _box(body, Vector3(0.46, 0.09, 0.22),
-			Vector3(sx * w * 0.32, float(b.noseY) - 0.03, hl - 0.01), head_mat)
-		lamp.rotation = Vector3(-0.25, 0.0, 0.0)
-		_box(body, Vector3(0.12, 0.05, 0.3),
-			Vector3(sx * (w * 0.5 + 0.02), float(b.beltY) + 0.12, float(b.cabF) - 0.15), black)
-		_box(body, Vector3(0.2, 0.12, 0.08),
-			Vector3(sx * (w * 0.5 + 0.10), float(b.beltY) + 0.16, float(b.cabF) - 0.15), paint)
-		_box(body, Vector3(0.08, 0.14, float(b.L) * 0.5),
-			Vector3(sx * (w * 0.5 + 0.02), 0.37, 0.0), carbon)
-
-	# --- tail lights (kept as a material reference so braking can brighten them)
-	var tail_mat := StandardMaterial3D.new()
-	tail_mat.albedo_color = Color(0.33, 0.0, 0.02)
-	tail_mat.emission_enabled = true
-	tail_mat.emission = Color(1.0, 0.06, 0.12)
-	tail_mat.emission_energy_multiplier = 0.9
-	_box(body, Vector3(w * 0.86, 0.08, 0.06),
-		Vector3(0.0, float(b.tailY) - 0.17, -hl - 0.12), tail_mat)
-	for sx in [-1.0, 1.0]:
-		_box(body, Vector3(0.4, 0.13, 0.06),
-			Vector3(sx * w * 0.34, float(b.tailY) - 0.2, -hl - 0.13), tail_mat)
-
-	# --- grille + diffuser
-	_box(body, Vector3(w * 0.62, 0.16, 0.1), Vector3(0.0, 0.42, hl + 0.1), black)
-	_box(body, Vector3(w * 0.8, 0.14, 0.2), Vector3(0.0, 0.36, -hl - 0.06), carbon)
-
-	# --- aero
-	var wing := int(s.wing)
-	if wing == 2:
-		var wy := float(b.tailY) + 0.32
-		_box(body, Vector3(w * 0.98, 0.05, 0.42), Vector3(0.0, wy, -hl + 0.32), carbon)
-		for sx2 in [-1.0, 1.0]:
-			_box(body, Vector3(0.05, 0.32, 0.1), Vector3(sx2 * w * 0.28, wy - 0.17, -hl + 0.32), carbon)
-	elif wing == 1:
-		_box(body, Vector3(w * 0.84, 0.05, 0.22), Vector3(0.0, float(b.tailY) + 0.03, -hl + 0.15), carbon)
-
-	# --- wheels (front = +Z)
-	var wr := float(b.wr)
-	var wb := float(b.wb)
-	var tire_mat := MeshKit.solid(Color(0.08, 0.08, 0.09), 0.92)
-	var rim_mat := MeshKit.solid(Color(0.78, 0.80, 0.83), 0.22, 1.0)
-	var seg := 24 if quality >= 2 else 12
+	var tail_mat := _lamp_mat(LAMP_RED)
+	var head_mat := _lamp_mat(LAMP_WHITE)
 	var wheels: Array = []
-	for sx in [-1.0, 1.0]:
-		for sz in [1.0, -1.0]:
-			var pivot := Node3D.new()
-			pivot.name = "Wheel"
-			pivot.position = Vector3(sx * (w * 0.5 - 0.13), wr, sz * wb)
-
-			var spin := Node3D.new()
-			pivot.add_child(spin)
-
-			var tire_mesh := CylinderMesh.new()
-			tire_mesh.top_radius = wr
-			tire_mesh.bottom_radius = wr
-			tire_mesh.height = 0.3
-			tire_mesh.radial_segments = seg
-			var tire := MeshInstance3D.new()
-			tire.mesh = tire_mesh
-			tire.rotation = Vector3(0.0, 0.0, PI * 0.5)
-			tire.material_override = tire_mat
-			spin.add_child(tire)
-
-			var rim_mesh := CylinderMesh.new()
-			rim_mesh.top_radius = wr * 0.68
-			rim_mesh.bottom_radius = wr * 0.68
-			rim_mesh.height = 0.31
-			rim_mesh.radial_segments = seg
-			var rim := MeshInstance3D.new()
-			rim.mesh = rim_mesh
-			rim.rotation = Vector3(0.0, 0.0, PI * 0.5)
-			rim.material_override = rim_mat
-			spin.add_child(rim)
-
-			root.add_child(pivot)
-			wheels.append({"pivot": pivot, "spin": spin, "front": sz > 0.0})
-
-	return {
+	var out := {
 		"root": root,
 		"body": body,
 		"wheels": wheels,
 		"tail_mat": tail_mat,
-		"wr": wr,
+		"head_mat": head_mat,
+		"wr": float(b.wr),
 		"spec": s,
+		"model": "",
+		"lights": [],
 	}
+
+	var model := AssetLibrary.instance(AssetLibrary.CAR_DIR + String(AssetLibrary.CAR_FILES.get(id, "hatchback-sports.glb")))
+	if model == null:
+		push_error("CarBuilder: could not instance imported car for id " + id)
+		return out
+	out["model"] = model.name
+
+	# --- measure the authored model, then scale it to the physics spec length
+	var ext := _bounds(model)
+	if ext.size.z < 0.05 or ext.size.y < 0.05:
+		push_error("CarBuilder: empty bounds for car model " + id)
+		root.add_child(model)
+		return out
+	var factor := clampf(float(b.L) / ext.size.z, 0.2, 8.0)
+	root.scale = Vector3.ONE * factor
+	out["scale"] = factor
+	out["length"] = ext.size.z * factor
+	out["width"] = ext.size.x * factor
+
+	# --- sit the tyres on the road (vehicle.gd owns `body.position`, so the
+	#     offset lives on an inner node it never touches)
+	var fix := Node3D.new()
+	fix.name = "GroundFix"
+	fix.position = Vector3(0.0, -ext.position.y, 0.0)
+	body.remove_child(model)
+	body.add_child(fix)
+	fix.add_child(model)
+
+	# --- wheels: authored meshes -> pivot(steer) / spin(roll)
+	var wheel_radius := 0.0
+	for node in model.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi == null:
+			continue
+		if not mi.name.to_lower().begins_with("wheel"):
+			continue
+		var rel := _relative_to(mi, model)
+		var box := mi.get_aabb()
+		var centre: Vector3 = rel * box.get_center()
+		var pivot := Node3D.new()
+		pivot.name = "WheelPivot"
+		pivot.position = centre + Vector3(0.0, -ext.position.y, 0.0)
+		root.add_child(pivot)
+		var spin := Node3D.new()
+		spin.name = "WheelSpin"
+		pivot.add_child(spin)
+		var holder := mi.get_parent()
+		if holder != null:
+			holder.remove_child(mi)
+		spin.add_child(mi)
+		mi.transform = Transform3D(Basis(), -box.get_center())
+		wheels.append({"pivot": pivot, "spin": spin, "front": centre.z > 0.0})
+		wheel_radius = maxf(wheel_radius, box.size.y * 0.5)
+	out["wr"] = maxf(0.1, wheel_radius * factor)
+
+	# --- lamps: thin emissive lenses sitting on the authored rear/front faces
+	var rear_z := ext.position.z
+	var front_z := ext.position.z + ext.size.z
+	var lamp_w := minf(ext.size.x * 0.30, 0.42)
+	var lamp_h := minf(ext.size.y * 0.09, 0.11)
+	for sx in [-1.0, 1.0]:
+		var tail := _lens(lamp_w, lamp_h, tail_mat)
+		tail.position = Vector3(float(sx) * ext.size.x * 0.28, ext.position.y + ext.size.y * 0.55, rear_z - 0.01)
+		tail.rotation = Vector3(0.0, PI, 0.0)
+		fix.add_child(tail)
+
+		var head := _lens(lamp_w, lamp_h, head_mat)
+		head.position = Vector3(float(sx) * ext.size.x * 0.28, ext.position.y + ext.size.y * 0.60, front_z + 0.01)
+		fix.add_child(head)
+
+		var beam := SpotLight3D.new()
+		beam.light_color = Color(1.0, 0.95, 0.85)
+		beam.light_energy = 3.0
+		beam.spot_range = 42.0
+		beam.spot_angle = 26.0
+		beam.shadow_enabled = false
+		beam.visible = false
+		beam.position = Vector3(float(sx) * ext.size.x * 0.28, ext.position.y + ext.size.y * 0.5, front_z)
+		beam.rotation = Vector3(deg_to_rad(-8.0), PI, 0.0)
+		fix.add_child(beam)
+		(out["lights"] as Array).append(beam)
+
+	return out
+
+
+## Toggle the imported car's headlights (used at night / in the tunnel).
+static func set_headlights(model: Dictionary, on: bool) -> void:
+	if not model.has("lights"):
+		return
+	for n in model.lights:
+		var l := n as SpotLight3D
+		if l != null:
+			l.visible = on
 
 
 # --------------------------------------------------------------------------- #
 # helpers
 # --------------------------------------------------------------------------- #
 
-static func _box(parent: Node3D, size: Vector3, pos: Vector3, mat: Material) -> MeshInstance3D:
+static func _lens(w: float, h: float, mat: Material) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
-	var bm := BoxMesh.new()
-	bm.size = size
-	mi.mesh = bm
+	var quad := QuadMesh.new()
+	quad.size = Vector2(w, h)
+	mi.mesh = quad
 	mi.material_override = mat
-	mi.position = pos
-	parent.add_child(mi)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
 
 
-static func _paint(color: Color, quality: int) -> StandardMaterial3D:
+## Axis-aligned bounds of every authored mesh, expressed in `root`'s local space.
+static func _bounds(root: Node3D) -> AABB:
+	var box := AABB()
+	var first := true
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi == null or mi.mesh == null:
+			continue
+		var space := _relative_to(mi, root) * mi.get_aabb()
+		if first:
+			box = space
+			first = false
+		else:
+			box = box.merge(space)
+	return box
+
+
+static func _relative_to(node: Node3D, ancestor: Node3D) -> Transform3D:
+	var t := Transform3D()
+	var n: Node = node
+	while n != null and n != ancestor:
+		if n is Node3D:
+			t = (n as Node3D).transform * t
+		n = n.get_parent()
+	return t
+
+
+static func _lamp_mat(glow: Color) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
-	m.albedo_color = color
-	m.metallic = 0.55
-	m.roughness = 0.30
-	m.cull_mode = BaseMaterial3D.CULL_DISABLED
-	if quality >= 2:
-		m.clearcoat_enabled = true
-		m.clearcoat = 1.0
-		m.clearcoat_roughness = 0.06
-	return m
-
-
-static func _glass() -> StandardMaterial3D:
-	var m := StandardMaterial3D.new()
-	m.albedo_color = Color(0.043, 0.063, 0.094)
-	m.metallic = 0.9
-	m.roughness = 0.08
-	m.cull_mode = BaseMaterial3D.CULL_DISABLED
-	return m
-
-
-static func _head_mat() -> StandardMaterial3D:
-	var m := StandardMaterial3D.new()
-	m.albedo_color = Color(1.0, 0.98, 0.94)
+	m.albedo_color = glow.darkened(0.75)
 	m.emission_enabled = true
-	m.emission = Color(1.0, 0.95, 0.86)
-	m.emission_energy_multiplier = 1.6
+	m.emission = glow
+	m.emission_energy_multiplier = 0.9
+	m.roughness = 0.25
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
 	return m
