@@ -12,7 +12,6 @@ const VEG_DIR := "res://assets/environment/vegetation/"
 const BLD_DIR := "res://assets/environment/buildings/"
 const SKY_DIR := "res://assets/environment/sky/"
 const CITY_DIR := "res://assets/kenney_city_kit/"
-const CITY_DIR := "res://assets/kenney_city_kit/"
 const TEX_DIR := "res://assets/textures/"
 const AUDIO_DIR := "res://assets/audio/"
 

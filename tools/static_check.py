@@ -145,7 +145,31 @@ for f in hdrs:
 notes.append(f"HDRIs: {len(hdrs)} — {', '.join(sorted(hdrs))}")
 
 # --------------------------------------------------------------------------- #
-# 4. GDScript contracts
+# 4. GDScript compile-error guards (these are the ones the parser check misses)
+# --------------------------------------------------------------------------- #
+for path in gd_files():
+    src = read(path)
+    declared: dict[str, int] = {}
+    for line_no, line in enumerate(src.splitlines(), 1):
+        m = re.match(r"^(?:const|var)\s+([A-Za-z_]\w*)\s*:", line)
+        if not m:
+            continue
+        name = m.group(1)
+        if name in declared:
+            errors.append(
+                f"{os.path.basename(path)}:{line_no}: duplicate top-level '{name}' "
+                f"(first declared on line {declared[name]})"
+            )
+        declared[name] = line_no
+    # ':=' infers a type; inferring from a Variant is a compile error in GDScript 4
+    for line_no, line in enumerate(src.splitlines(), 1):
+        if " as " in line:
+            continue  # an explicit cast gives the type
+        if re.search(r":=\s*\w+\[", line) or re.search(r":=\s*\w+\.get\(", line):
+            warnings.append(f"{os.path.basename(path)}:{line_no}: ':=' from an untyped value")
+
+# --------------------------------------------------------------------------- #
+# 5. GDScript contracts
 # --------------------------------------------------------------------------- #
 classes: dict[str, str] = {}
 for path in gd_files():
@@ -184,7 +208,7 @@ for key in sorted(set(re.findall(r"model\.([a-z_]+)", vehicle))):
         errors.append(f"vehicle.gd reads model.{key} but CarHero does not set it")
 
 # --------------------------------------------------------------------------- #
-# 5. project + export configuration
+# 6. project + export configuration
 # --------------------------------------------------------------------------- #
 cfg_text = read(os.path.join(GODOT, "project.godot"))
 for scene in re.findall(r'run/main_scene="res://([^"]+)"', cfg_text):

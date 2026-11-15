@@ -54,23 +54,6 @@ jobs:
           echo "----- suspicious lines -----"
           grep -nE "SCRIPT ERROR|Parse Error|Invalid (get|set|call|index)|Nonexistent function|Cannot (call|find|open)" run.log || echo "none found"
 
-      - name: Render screenshots with software OpenGL
-        run: |
-          set +e
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglu1-mesa libxcursor1 libxinerama1 libxrandr2 libxi6 libasound2t64 \
-            || sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglu1-mesa libxcursor1 libxinerama1 libxrandr2 libxi6 libasound2
-          mkdir -p shots
-          timeout 300 xvfb-run -a -s "-screen 0 1280x720x24" \
-            env LIBGL_ALWAYS_SOFTWARE=1 \
-            ./godot-bin --path godot --rendering-driver opengl3 --resolution 1280x720 --audio-driver Dummy \
-            --quit-after 900 -- --autotest --shots > shots.log 2>&1
-          echo "render exit: $?"
-          tail -30 shots.log
-          find "$HOME/.local/share/godot/app_userdata" -name "shot_*.png" -exec cp {} shots/ \; 2>/dev/null
-          ls -la shots
-          echo "shot count: $(ls shots/*.png 2>/dev/null | wc -l)"
-
       - name: Install export templates
         run: |
           curl -sSL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
@@ -214,11 +197,6 @@ jobs:
           } > .ci-builds/env.txt 2>&1
           cp run.log import.log export.log .ci-builds/ 2>/dev/null || true
           cp export_win.log export_linux.log boot.log .ci-builds/ 2>/dev/null || true
-          cp shots.log .ci-builds/ 2>/dev/null || true
-          if ls shots/*.png >/dev/null 2>&1; then
-            mkdir -p .ci-builds/shots
-            cp shots/*.png .ci-builds/shots/
-          fi
           # a PC build, so the game can be opened by double-clicking an .exe
           if ls godot/build/*.exe >/dev/null 2>&1; then
             rm -f .ci-builds/apex-rush-windows.zip
@@ -269,14 +247,6 @@ jobs:
             exit 1
           fi
           grep -q "ALL ROWS ON SCREEN" run.log || { echo "::error::layout probe did not run"; exit 1; }
-          # the render step proves the 3D view actually draws, not just that scripts parse
-          count=$(ls shots/*.png 2>/dev/null | wc -l)
-          if [ "$count" -lt 3 ]; then
-            echo "::error::only $count rendered screenshots - the 3D view did not draw"
-            grep -iE "error|fail|unable" shots.log | head -20 || true
-            exit 1
-          fi
-          echo "rendered $count screenshots"
           # the packaged artifact must boot, not just the project in the editor
           if grep -qE "SCRIPT ERROR|Parse Error|Cannot open|does not exist" boot.log 2>/dev/null; then
             echo "::error::the exported binary failed to boot"

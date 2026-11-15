@@ -402,8 +402,9 @@ func _add_paint_row() -> void:
 	var label := _label("PAINT", 16, Color(0.66, 0.72, 0.82))
 	label.custom_minimum_size = Vector2(70.0, 0.0)
 	row.add_child(label)
-	for c in [Color("#2ecc40"), Color("#e63946"), Color("#ffbe0b"), Color("#7b2ff7"),
-			Color("#f1faee"), Color("#111318"), Color("#ff7a18"), Color("#35d3ff")]:
+	var palette: Array[Color] = [Color("#2ecc40"), Color("#e63946"), Color("#ffbe0b"),
+			Color("#7b2ff7"), Color("#f1faee"), Color("#111318"), Color("#ff7a18"), Color("#35d3ff")]
+	for c in palette:
 		var swatch := Button.new()
 		var style := StyleBoxFlat.new()
 		style.bg_color = c
@@ -416,7 +417,7 @@ func _add_paint_row() -> void:
 		swatch.add_theme_stylebox_override("pressed", style)
 		swatch.custom_minimum_size = Vector2(38.0, 26.0)
 		swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var col := c
+		var col: Color = c
 		swatch.pressed.connect(func() -> void: _set_paint(col))
 		row.add_child(swatch)
 	_vbox.add_child(row)
