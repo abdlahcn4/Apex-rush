@@ -655,10 +655,14 @@ func _probe_menu_touch() -> void:
 	# exactly the path Android uses, and it reaches Node._input on every device.
 	ui.debug_input_events = 0
 	ui.debug_trace = true
+	# Platform input arrives in screen space and the engine scales it into viewport
+	# space, so the probe has to express the point the same way a finger would.
+	var screen_point := get_viewport().get_screen_transform() * point
+	print("[autotest] probe injects screen=%s for viewport=%s" % [str(screen_point), str(point)])
 	for pressed in [true, false]:
 		var ev := InputEventScreenTouch.new()
 		ev.index = 0
-		ev.position = point
+		ev.position = screen_point
 		ev.pressed = pressed
 		Input.parse_input_event(ev)
 		Input.flush_buffered_events()
