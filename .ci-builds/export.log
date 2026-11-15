@@ -138,6 +138,46 @@ ADDING: resources.arsc
 	export: step 1: Adding files...
 Loading resource: res://scenes/main.tscn
 Loading resource: res://scripts/game.gd
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:431)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "inner" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:431)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:432)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "outer" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:432)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:449)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "lat" variable because the value doesn't have a set type.
+          at: GDScript::reload (res://scripts/game.gd:449)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:456)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:457)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:458)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:459)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:460)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:461)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:462)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:463)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:464)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:469)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:470)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:473)
+SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
+          at: GDScript::reload (res://scripts/game.gd:474)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)
 	export: step 103: Aligning APK...
 	export: step 104: Signing debug APK...
 Starting signing of the APK binary using /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
