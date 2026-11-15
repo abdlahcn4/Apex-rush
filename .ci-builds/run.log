@@ -19,9 +19,9 @@ WARNING: Adding 'WheelRearR' as child to 'Spin_WheelRearR' will make owner 'CarC
 [autotest] probe build=v3
 [autotest] emulate_mouse_from_touch=true
 [autotest] layout check: main screen offscreen_buttons=0
-[autotest] probe injects screen=(15.04, 32.51) for viewport=(300.8, 370.2)
-[autotest] tap probe: button 'GARAGE  ·  Vortex GT' rect=[P: (78.8, 331.2), S: (444.0, 78.0)] events_seen=4 presses=1 screen='GARAGE'
-[autotest] layout check: screen='GARAGE' panel=[P: (44.8, 43.2), S: (522.0, 692.0)] offscreen_buttons=0
+[autotest] probe injects screen=(15.04, 32.045) for viewport=(300.8, 360.9)
+[autotest] tap probe: button 'GARAGE  ·  Vortex GT' rect=[P: (78.8, 323.4), S: (444.0, 75.0)] events_seen=4 presses=1 screen='GARAGE'
+[autotest] layout check: screen='GARAGE' panel=[P: (44.8, 38.4), S: (545.0, 1337.0)] offscreen_buttons=3
 [autotest] tap probe result: MENU IS TAPPABLE
 WARNING: Adding 'WheelFrontL' as child to 'Spin_WheelFrontL' will make owner 'CarConcept' inconsistent. Consider unsetting the owner beforehand.
      at: add_child (scene/main/node.cpp:1664)
@@ -43,8 +43,8 @@ WARNING: Adding 'WheelRearR' as child to 'Spin_WheelRearR' will make owner 'CarC
 [autotest] map ridge_road     points=24 theme_keys=21 night=false
 [autotest] drive probe: gas_at=(1139.2, 540.0) throttle=1.00 released=0.00 steer=-1.00
 [autotest] drive probe result: ON-SCREEN PADS RESPOND TO TOUCH
-[autotest] layout check: PAUSED panel=[P: (44.8, 43.2), S: (512.0, 633.6)] offscreen_buttons=0
-[autotest] layout result: ALL ROWS ON SCREEN
+[autotest] layout check: PAUSED panel=[P: (44.8, 38.4), S: (545.0, 1337.0)] offscreen_buttons=0
+[autotest] layout result: ROWS OFF SCREEN
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
 ERROR: 9 resources still in use at exit (run with --verbose for details).
