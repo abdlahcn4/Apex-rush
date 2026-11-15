@@ -138,6 +138,10 @@ ADDING: resources.arsc
 	export: step 1: Adding files...
 Loading resource: res://scenes/main.tscn
 Loading resource: res://scripts/game.gd
+SCRIPT ERROR: Parse Error: Function "_build_ground" has the same name as a previously declared function.
+          at: GDScript::reload (res://scripts/game.gd:358)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:3022)
 	export: step 103: Aligning APK...
 	export: step 104: Signing debug APK...
 Starting signing of the APK binary using /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
