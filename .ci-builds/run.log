@@ -1,13 +1,15 @@
 Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 
-SCRIPT ERROR: Parse Error: Cannot infer the type of "yaw" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/track.gd:445)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/game.gd:0)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Compilation failed".
-   at: load (modules/gdscript/gdscript.cpp:3022)
-SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
-          at: _build_world (res://scripts/game.gd:198)
+ERROR: Condition "p_child->data.parent != this" is true.
+   at: remove_child (scene/main/node.cpp:1687)
+WARNING: Adding 'wheel-front-right' as child to 'WheelSpin' will make owner 'hatchback-sports' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'wheel-front-left' as child to 'WheelSpin' will make owner 'hatchback-sports' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'wheel-back-right' as child to 'WheelSpin' will make owner 'hatchback-sports' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
+WARNING: Adding 'wheel-back-left' as child to 'WheelSpin' will make owner 'hatchback-sports' inconsistent. Consider unsetting the owner beforehand.
+     at: add_child (scene/main/node.cpp:1664)
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
 ERROR: 3 resources still in use at exit (run with --verbose for details).
