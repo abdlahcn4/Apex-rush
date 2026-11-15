@@ -62,6 +62,7 @@ func _ready() -> void:
 	if "--autotest" in OS.get_cmdline_user_args():
 		_start_race(map_id, car_id)
 		_report_autotest()
+		_probe_menu_touch()
 
 
 # --------------------------------------------------------------------------- #
@@ -142,6 +143,8 @@ func _start_race(next_map: String, next_car: String) -> void:
 	total_time = 0.0
 	last_s = -1.0
 	ui.show_race()
+	if touch != null:
+		touch.set_active(true)
 	if hud != null:
 		hud.set_title(String(map_def.get("name", "APEX RUSH")).to_upper())
 		hud.toast(String(map_def.get("name", "")) + " — GET READY", 1.6)
@@ -174,12 +177,16 @@ func _pause() -> void:
 	if not racing or paused:
 		return
 	paused = true
+	if touch != null:
+		touch.set_active(false)
 	ui.show_pause()
 
 
 func _resume() -> void:
 	paused = false
 	ui.show_race()
+	if touch != null:
+		touch.set_active(true)
 
 
 # --------------------------------------------------------------------------- #
@@ -351,6 +358,10 @@ func _setup_hud() -> void:
 	touch = TouchControls.new()
 	touch.name = "TouchControls"
 	hud.add_child(touch)
+	touch.pause_pressed.connect(_pause)
+	touch.camera_pressed.connect(_cycle_camera)
+	touch.reset_pressed.connect(_reset_car)
+	touch.set_active(false)  # hidden until the countdown starts
 	hud.set_race(lap, LAPS_TOTAL, lap_time, best_lap)
 
 
@@ -430,6 +441,8 @@ func _track_progress() -> void:
 
 func _finish() -> void:
 	racing = false
+	if touch != null:
+		touch.set_active(false)
 	if hud != null:
 		hud.toast("FINISH", 2.0)
 	ui.show_results(LAPS_TOTAL, total_time, best_lap)
@@ -606,3 +619,43 @@ func _report_autotest() -> void:
 			String(m.get("id", "")), (m.get("points", []) as Array).size(), theme.size(),
 			str(theme.get("night", false)),
 		])
+
+
+## Pushes a synthetic finger tap at a real menu button and checks the screen changed.
+## This is the regression test for "the menu renders but no tap does anything", which is
+## what happens when touch-to-mouse emulation is switched off.
+func _probe_menu_touch() -> void:
+	ui.show_main()
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	var buttons := ui.find_children("*", "Button", true, false)
+	if buttons.size() < 2:
+		print("[autotest] TAP PROBE FAILED: menu has no buttons")
+		return
+	var target := buttons[1] as Button
+	var rect := target.get_global_rect()
+	var point := rect.get_center()
+	print("[autotest] tap probe: button '%s' rect=%s visible=%s" % [
+		target.text, str(rect), str(target.is_visible_in_tree()),
+	])
+
+	var down := InputEventScreenTouch.new()
+	down.index = 0
+	down.position = point
+	down.pressed = true
+	Input.parse_input_event(down)
+	await get_tree().process_frame
+
+	var up := InputEventScreenTouch.new()
+	up.index = 0
+	up.position = point
+	up.pressed = false
+	Input.parse_input_event(up)
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	var screen := String(ui._title.text)
+	print("[autotest] tap probe result: screen='%s' -> %s" % [
+		screen, "TAPS WORK" if screen == "GARAGE" else "TAPS ARE NOT REACHING BUTTONS",
+	])

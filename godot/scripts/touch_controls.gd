@@ -1,11 +1,19 @@
 class_name TouchControls
 extends Control
 
-## On-screen buttons for the Android build. Drawn procedurally (no textures) so the
-## project stays asset-free, and multi-touch aware so gas + steering work together.
+## On-screen driving controls for the phone build: steering pads, throttle, brake,
+## handbrake, nitro, plus camera / reset / pause actions. Multi-touch aware, so you can
+## hold throttle and steer at the same time. Drawn with Control primitives so it needs
+## no textures and stays crisp at any resolution.
+
+signal pause_pressed
+signal camera_pressed
+signal reset_pressed
+
+const ACTION_BUTTONS := ["pause", "camera", "reset"]
 
 var _buttons: Array = []      # [{name: String, rect: Rect2, label: String}]
-var _owners: Dictionary = {}  # touch index -> button name
+var _owners: Dictionary = {}  # pointer index -> button name
 
 var _steer := 0.0
 var _throttle := 0.0
@@ -13,29 +21,37 @@ var _brake := 0.0
 var _hand := false
 var _nitro := false
 
+var _active := false
+var _saw_touch := false
+
 
 func _ready() -> void:
-	mouse_filter = Control.MOUSE_FILTER_STOP
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	visible = DisplayServer.is_touchscreen_available()
 	resized.connect(_layout)
 	_layout()
+	set_active(_is_mobile())
+	set_process(true)
 
 
-func _layout() -> void:
-	var w := size.x
-	var h := size.y
-	if w < 10.0 or h < 10.0:
-		return
-	_buttons = [
-		{"name": "left", "rect": Rect2(w * 0.03, h * 0.64, w * 0.13, h * 0.28), "label": "<"},
-		{"name": "right", "rect": Rect2(w * 0.18, h * 0.64, w * 0.13, h * 0.28), "label": ">"},
-		{"name": "gas", "rect": Rect2(w * 0.80, h * 0.60, w * 0.17, h * 0.32), "label": "GAS"},
-		{"name": "brake", "rect": Rect2(w * 0.62, h * 0.70, w * 0.16, h * 0.22), "label": "BRK"},
-		{"name": "hand", "rect": Rect2(w * 0.62, h * 0.52, w * 0.16, h * 0.14), "label": "HAND"},
-		{"name": "nitro", "rect": Rect2(w * 0.80, h * 0.42, w * 0.17, h * 0.14), "label": "NOS"},
-	]
-	queue_redraw()
+func _process(_delta: float) -> void:
+	# Some Android builds only report a touchscreen after the first touch, so keep
+	# checking until it shows up rather than staying hidden forever.
+	if not _active and _is_mobile():
+		set_active(true)
+
+
+func _is_mobile() -> bool:
+	return DisplayServer.is_touchscreen_available() or OS.has_feature("mobile") or OS.has_feature("android")
+
+
+func set_active(on: bool) -> void:
+	_active = on
+	visible = on
+	# An inactive layer must not eat taps meant for the menu behind it.
+	mouse_filter = Control.MOUSE_FILTER_STOP if on else Control.MOUSE_FILTER_IGNORE
+	if not on:
+		_owners.clear()
+		_refresh()
 
 
 # --- read by game.gd ------------------------------------------------------- #
@@ -59,16 +75,41 @@ func nitro() -> bool:
 	return _nitro
 
 
+# --- layout --------------------------------------------------------------- #
+func _layout() -> void:
+	var w := size.x
+	var h := size.y
+	if w < 10.0 or h < 10.0:
+		return
+	_buttons = [
+		# steering
+		{"name": "left", "rect": Rect2(w * 0.02, h * 0.58, w * 0.15, h * 0.34), "label": "<"},
+		{"name": "right", "rect": Rect2(w * 0.18, h * 0.58, w * 0.15, h * 0.34), "label": ">"},
+		# pedals
+		{"name": "gas", "rect": Rect2(w * 0.80, h * 0.56, w * 0.18, h * 0.38), "label": "GAS"},
+		{"name": "brake", "rect": Rect2(w * 0.62, h * 0.68, w * 0.16, h * 0.26), "label": "BRK"},
+		{"name": "hand", "rect": Rect2(w * 0.62, h * 0.50, w * 0.16, h * 0.15), "label": "HAND"},
+		{"name": "nitro", "rect": Rect2(w * 0.80, h * 0.40, w * 0.18, h * 0.14), "label": "NOS"},
+		# actions along the top edge, out of the way of driving
+		{"name": "pause", "rect": Rect2(w * 0.925, h * 0.03, w * 0.06, h * 0.11), "label": "II"},
+		{"name": "camera", "rect": Rect2(w * 0.855, h * 0.03, w * 0.06, h * 0.11), "label": "CAM"},
+		{"name": "reset", "rect": Rect2(w * 0.785, h * 0.03, w * 0.06, h * 0.11), "label": "RST"},
+	]
+	queue_redraw()
+
+
 # --- input ---------------------------------------------------------------- #
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		if touch.pressed:
+			_saw_touch = true
 			_press(touch.index, touch.position)
 		else:
 			_release(touch.index)
 	elif event is InputEventScreenDrag:
 		var drag := event as InputEventScreenDrag
+		_saw_touch = true
 		if _owners.has(drag.index):
 			var hit := _hit(drag.position)
 			if hit != String(_owners[drag.index]):
@@ -76,6 +117,10 @@ func _gui_input(event: InputEvent) -> void:
 				if not hit.is_empty():
 					_press(drag.index, drag.position)
 	elif event is InputEventMouseButton:
+		# On a phone the touch stream already handled this; the emulated mouse event
+		# that Android also sends would register every tap twice.
+		if _saw_touch or OS.has_feature("mobile"):
+			return
 		var mb := event as InputEventMouseButton
 		if mb.button_index == MOUSE_BUTTON_LEFT:
 			if mb.pressed:
@@ -87,6 +132,15 @@ func _gui_input(event: InputEvent) -> void:
 func _press(index: int, pos: Vector2) -> void:
 	var hit := _hit(pos)
 	if hit.is_empty():
+		return
+	if ACTION_BUTTONS.has(hit):
+		match hit:
+			"pause":
+				pause_pressed.emit()
+			"camera":
+				camera_pressed.emit()
+			"reset":
+				reset_pressed.emit()
 		return
 	_owners[index] = hit
 	_refresh()
@@ -100,7 +154,9 @@ func _release(index: int) -> void:
 func _hit(pos: Vector2) -> String:
 	for b in _buttons:
 		var r: Rect2 = b.rect
-		if r.has_point(pos):
+		# generous touch slop, especially for the small action buttons
+		var pad := 10.0 if ACTION_BUTTONS.has(String(b.name)) else 0.0
+		if r.grow(pad).has_point(pos):
 			return String(b.name)
 	return ""
 
@@ -134,12 +190,20 @@ func _draw() -> void:
 	var labels := _owners.values()
 	for b in _buttons:
 		var r: Rect2 = b.rect
-		var pressed := labels.has(String(b.name))
-		var fill := Color(1.0, 0.55, 0.15, 0.55) if pressed else Color(1, 1, 1, 0.18)
+		var name := String(b.name)
+		var pressed := labels.has(name)
+		var action := ACTION_BUTTONS.has(name)
+		var fill := Color(1, 1, 1, 0.14)
+		if pressed:
+			fill = Color(1.0, 0.55, 0.15, 0.6)
+		elif action:
+			fill = Color(0.08, 0.10, 0.16, 0.55)
 		draw_rect(r, fill, true)
-		draw_rect(r, Color(1, 1, 1, 0.35), false, 2.0)
-		var fs := int(minf(r.size.y * 0.26, 30.0))
-		var baseline := r.position.y + r.size.y * 0.5 + fs * 0.35
+		draw_rect(r, Color(1, 1, 1, 0.32), false, 2.0)
+		var fs := int(minf(r.size.y * 0.30, 30.0))
+		if action:
+			fs = int(minf(r.size.x * 0.30, 20.0))
+		var baseline := r.position.y + r.size.y * 0.5 + float(fs) * 0.35
 		if font != null:
 			draw_string(font, Vector2(r.position.x, baseline), String(b.label),
-				HORIZONTAL_ALIGNMENT_CENTER, r.size.x, fs, Color(1, 1, 1, 0.9))
+				HORIZONTAL_ALIGNMENT_CENTER, r.size.x, fs, Color(1, 1, 1, 0.92))

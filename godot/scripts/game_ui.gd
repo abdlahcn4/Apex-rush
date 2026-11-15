@@ -54,7 +54,7 @@ func _ready() -> void:
 	root.add_child(centre)
 
 	_panel = PanelContainer.new()
-	_panel.custom_minimum_size = Vector2(660.0, 0.0)
+	_panel.custom_minimum_size = Vector2(600.0, 0.0)
 	centre.add_child(_panel)
 
 	var style := StyleBoxFlat.new()
@@ -269,9 +269,9 @@ func _add_stat(key: String, value: String) -> void:
 func _add_button(text: String, action: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
-	b.custom_minimum_size = Vector2(560.0, 58.0)
+	b.custom_minimum_size = Vector2(560.0, 76.0)
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	b.add_theme_font_size_override("font_size", 24)
+	b.add_theme_font_size_override("font_size", 26)
 	b.add_theme_color_override("font_color", INK)
 	b.add_theme_color_override("font_hover_color", Color(1, 1, 1))
 	b.add_theme_color_override("font_pressed_color", ACCENT)
