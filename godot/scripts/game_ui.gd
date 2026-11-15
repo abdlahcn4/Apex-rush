@@ -578,6 +578,18 @@ func _candidates(pos: Vector2) -> Array:
 	return out
 
 
+## Every button on the current screen, including the ones nested in rows such as the
+## garage paint swatches.
+func _buttons_in(node: Node) -> Array:
+	var out: Array = []
+	for child in node.get_children():
+		if child is Button:
+			out.append(child)
+		elif child is Container:
+			out.append_array(_buttons_in(child))
+	return out
+
+
 func _activate_at(pos: Vector2) -> void:
 	if _vbox == null:
 		return
@@ -585,8 +597,7 @@ func _activate_at(pos: Vector2) -> void:
 	if now - _last_activate_ms < 220:
 		return
 	for point in _candidates(pos):
-		for child in _vbox.get_children():
-			var b := child as Button
+		for b in _buttons_in(_vbox):
 			if b == null or not b.is_visible_in_tree():
 				continue
 			# a little slop so a slightly-off conversion still lands on a finger target
