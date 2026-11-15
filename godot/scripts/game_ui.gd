@@ -31,6 +31,11 @@ var _toast: Label
 var _hint: Label
 var _toast_time := 0.0
 
+var _press_pos := Vector2.ZERO
+var _press_index := -1
+var _touch_seen := false
+var _last_activate_ms := -1000
+
 
 func _ready() -> void:
 	layer = 20
@@ -45,7 +50,7 @@ func _ready() -> void:
 	_dim = ColorRect.new()
 	_dim.color = Color(0.01, 0.02, 0.04, 0.78)
 	_dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(_dim)
 
 	var centre := CenterContainer.new()
@@ -231,6 +236,67 @@ func _notify_left_race() -> void:
 		left_race.emit()
 
 
+## The menu is driven from here rather than from Control._gui_input: a finger tap is
+## delivered to Node._input on every platform, so this cannot be broken by touch-to-mouse
+## emulation, canvas-layer ordering or an invisible full-screen Control on top.
+func _input(event: InputEvent) -> void:
+	if _panel == null or not _panel.visible:
+		return
+	if event is InputEventScreenTouch:
+		_touch_seen = true
+		var touch := event as InputEventScreenTouch
+		if touch.pressed:
+			_press_pos = touch.position
+			_press_index = touch.index
+			return
+		if _press_index >= 0 and touch.index != _press_index:
+			return
+		if _press_index >= 0 and touch.position.distance_to(_press_pos) > 90.0:
+			_press_index = -1
+			return  # a drag, not a tap
+		_press_index = -1
+		_activate_at(touch.position)
+	elif event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index != MOUSE_BUTTON_LEFT:
+			return
+		if _touch_seen:
+			return  # the emulated copy of a touch we already handled
+		if mb.pressed:
+			_press_pos = mb.position
+			_press_index = -2
+			return
+		if _press_index == -2:
+			_press_index = -1
+			_activate_at(mb.position)
+
+
+func _activate_at(pos: Vector2) -> void:
+	if _vbox == null:
+		return
+	var now := Time.get_ticks_msec()
+	if now - _last_activate_ms < 220:
+		return
+	for child in _vbox.get_children():
+		var b := child as Button
+		if b == null or not b.is_visible_in_tree():
+			continue
+		if b.get_global_rect().has_point(pos):
+			_last_activate_ms = now
+			_flash(b)
+			var audio := get_tree().root.find_child("Audio", true, false)
+			if audio is AudioDirector:
+				(audio as AudioDirector).play_ui()
+			b.pressed.emit()
+			return
+
+
+func _flash(b: Button) -> void:
+	b.modulate = Color(1.6, 1.35, 1.05)
+	var tween := create_tween()
+	tween.tween_property(b, "modulate", Color(1, 1, 1), 0.2)
+
+
 func _on_race() -> void:
 	race_requested.emit(selected_map, selected_car)
 
@@ -296,11 +362,9 @@ func _add_button(text: String, action: Callable) -> Button:
 	b.add_theme_stylebox_override("focus", hover)
 	b.add_theme_stylebox_override("pressed", hover)
 	b.pressed.connect(action)
-	b.mouse_entered.connect(func() -> void:
-		var audio := get_tree().root.find_child("Audio", true, false)
-		if audio is AudioDirector:
-			(audio as AudioDirector).play_ui()
-	)
+	# Hit-testing is done in _input below, so the menu works from a raw finger tap on
+	# any device without relying on the engine's mouse-emulation pipeline.
+	b.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_vbox.add_child(b)
 	return b
 
