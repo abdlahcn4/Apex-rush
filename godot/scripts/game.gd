@@ -334,7 +334,7 @@ func _build_vegetation() -> void:
 		var model_name := String(item[0])
 		var count := int(item[1])
 		var scale_hint := float(item[2])
-		var mesh := AssetLibrary.first_mesh(AssetLibrary.VEG_DIR + model_name + ".glb")
+		var mesh := AssetLibrary.first_mesh_in_file(AssetLibrary.VEG_DIR + model_name + ".glb")
 		if mesh == null:
 			continue
 		var mat := AssetLibrary.first_mesh_material(AssetLibrary.VEG_DIR + model_name + ".glb")

@@ -161,6 +161,17 @@ for path in gd_files():
                 f"(first declared on line {declared[name]})"
             )
         declared[name] = line_no
+    funcs: dict[str, int] = {}
+    for line_no, line in enumerate(src.splitlines(), 1):
+        m = re.match(r"^(?:static )?func (\w+)\(", line)
+        if not m:
+            continue
+        if m.group(1) in funcs:
+            errors.append(
+                f"{os.path.basename(path)}:{line_no}: duplicate function '{m.group(1)}' "
+                f"(first defined on line {funcs[m.group(1)]})"
+            )
+        funcs[m.group(1)] = line_no
     # ':=' infers a type; inferring from a Variant is a compile error in GDScript 4
     for line_no, line in enumerate(src.splitlines(), 1):
         if " as " in line:

@@ -171,7 +171,7 @@ static func sky(name: String) -> Texture2D:
 
 ## First mesh inside an imported glTF file, so vegetation and buildings can be instanced
 ## through a MultiMesh instead of costing one node each.
-static func first_mesh(path: String) -> Mesh:
+static func first_mesh_in_file(path: String) -> Mesh:
 	var scene := instance(path)
 	if scene == null:
 		return null
