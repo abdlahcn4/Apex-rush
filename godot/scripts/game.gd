@@ -629,6 +629,19 @@ func _run_autotest() -> void:
 	await _probe_drive_touch()
 
 
+## A row that hangs outside the viewport cannot be tapped, so count those.
+func _count_offscreen_buttons(ui: CanvasLayer) -> int:
+	var vp := get_viewport().get_visible_rect().grow(-2.0)
+	var off := 0
+	for node in ui.find_children("*", "Button", true, false):
+		var b := node as Button
+		if b == null or not b.is_visible_in_tree():
+			continue
+		if not vp.encloses(b.get_global_rect()):
+			off += 1
+	return off
+
+
 ## Same trick as the menu probe, but aimed at the on-screen driving pads: a finger on GAS
 ## must raise the throttle and releasing must drop it again.
 func _inject_touch(index: int, viewport_pos: Vector2, pressed: bool) -> void:
@@ -690,6 +703,8 @@ func _probe_menu_touch() -> void:
 	if buttons.size() < 2:
 		print("[autotest] TAP PROBE FAILED: menu has no buttons")
 		return
+	var main_fit := _count_offscreen_buttons(ui)
+	print("[autotest] layout check: main screen offscreen_buttons=%d" % main_fit)
 	var target := buttons[1] as Button
 	var target_label := String(target.text)   # the button is freed when the screen changes
 	var rect := target.get_global_rect()
@@ -734,6 +749,13 @@ func _probe_menu_touch() -> void:
 			str(point), after, hits,
 			"HIT-TESTING WORKS, only headless delivery is unavailable" if after == "GARAGE" else "HIT-TESTING IS BROKEN",
 		])
+	var garage_fit := _count_offscreen_buttons(ui)
+	print("[autotest] layout check: screen='%s' panel=%s offscreen_buttons=%d" % [
+		String(ui._title.text), str(ui._panel.get_global_rect()), garage_fit,
+	])
+	print("[autotest] layout result: %s" % (
+		"ALL ROWS ON SCREEN" if main_fit == 0 and garage_fit == 0 else "ROWS OFF SCREEN"
+	))
 	print("[autotest] tap probe result: %s" % (
 		"MENU IS TAPPABLE" if hits > 0 and screen == "GARAGE" else "MENU DOES NOT RESPOND TO CLICKS"
 	))

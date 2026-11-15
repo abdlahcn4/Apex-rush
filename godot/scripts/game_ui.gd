@@ -35,6 +35,9 @@ var _press_pos := Vector2.ZERO
 var _press_index := -1
 var _touch_seen := false
 var _last_activate_ms := -1000
+# row metrics chosen per screen so every row stays inside a 1280x720 viewport
+var _row_h := 76.0
+var _row_font := 26
 var debug_input_events := 0
 var debug_trace := false
 
@@ -138,6 +141,7 @@ func show_main() -> void:
 	_hint.visible = true
 	_title.text = "APEX RUSH"
 	_sub.text = "Real cars. Real circuits. Real sound."
+	_plan_rows(4)
 	_clear()
 	_add_button("RACE", _on_race)
 	_add_button("GARAGE  ·  " + _car_name(selected_car), show_garage)
@@ -150,6 +154,7 @@ func show_garage() -> void:
 	_notify_left_race()
 	_title.text = "GARAGE"
 	_sub.text = "Pick your car — every class handles differently"
+	_plan_rows(cars.size() + 1)
 	_clear()
 	for car in cars:
 		var id := String(car.get("id", ""))
@@ -167,6 +172,7 @@ func show_maps() -> void:
 	_notify_left_race()
 	_title.text = "CIRCUIT"
 	_sub.text = "Five locations, each with its own light, surface and skyline"
+	_plan_rows(maps.size() + 1)
 	_clear()
 	for m in maps:
 		var id := String(m.get("id", ""))
@@ -354,6 +360,19 @@ func _set_panel_visible(on: bool) -> void:
 	_panel.visible = on
 
 
+## Picks a row height that keeps the whole list on screen. With a fixed 76 px row the
+## garage (6 cars + BACK) overflowed a 720 px tall viewport and its last rows could not be
+## tapped on a phone.
+func _plan_rows(count: int) -> void:
+	const AVAILABLE := 536.0
+	const SEPARATION := 12.0
+	var h := 76.0
+	if count > 0:
+		h = (AVAILABLE - SEPARATION * float(count - 1)) / float(count)
+	_row_h = clampf(h, 46.0, 76.0)
+	_row_font = int(clampf(_row_h * 0.34, 17.0, 26.0))
+
+
 func _clear() -> void:
 	for child in _vbox.get_children():
 		if child == _title or child == _sub:
@@ -383,9 +402,9 @@ func _add_stat(key: String, value: String) -> void:
 func _add_button(text: String, action: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
-	b.custom_minimum_size = Vector2(560.0, 76.0)
+	b.custom_minimum_size = Vector2(560.0, _row_h)
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	b.add_theme_font_size_override("font_size", 26)
+	b.add_theme_font_size_override("font_size", _row_font)
 	b.add_theme_color_override("font_color", INK)
 	b.add_theme_color_override("font_hover_color", Color(1, 1, 1))
 	b.add_theme_color_override("font_pressed_color", ACCENT)

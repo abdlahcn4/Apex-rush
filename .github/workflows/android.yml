@@ -167,6 +167,11 @@ jobs:
           fi
           grep -q "MENU IS TAPPABLE" run.log || { echo "::error::menu tap probe did not run"; exit 1; }
           grep -q "PADS RESPOND TO TOUCH" run.log || { echo "::error::driving pad probe did not run"; exit 1; }
+          if grep -q "ROWS OFF SCREEN" run.log; then
+            echo "::error::menu rows fall outside the viewport - build rejected"
+            exit 1
+          fi
+          grep -q "ALL ROWS ON SCREEN" run.log || { echo "::error::layout probe did not run"; exit 1; }
           echo "headless log clean, menu and pads respond to touch"
 
       - name: Upload APK
