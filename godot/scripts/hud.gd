@@ -104,6 +104,19 @@ func _on_draw() -> void:
 	_draw_toast(s, size)
 
 
+func _draw_timing(s: float) -> void:
+	var w := 296.0 * s
+	var h := 104.0 * s
+	var pos := Vector2(26.0 * s, 24.0 * s)
+	_round_rect(Rect2(pos, Vector2(w, h)), 10.0 * s, PANEL, PANEL_EDGE, 1.5 * s)
+	_text(pos + Vector2(18.0 * s, 28.0 * s), _title_text, 15.0 * s, Color(1, 1, 1, 0.66))
+	_text(pos + Vector2(18.0 * s, 62.0 * s), "LAP %d / %d" % [_lap, _laps_total], 24.0 * s, INK)
+	_text(pos + Vector2(w - 18.0 * s - _width(_clock(_lap_time), 24.0 * s), 62.0 * s),
+		_clock(_lap_time), 24.0 * s, ACCENT)
+	_text(pos + Vector2(18.0 * s, 88.0 * s), "BEST  " + _clock(_best), 15.0 * s,
+		Color(0.78, 0.83, 0.92, 0.9))
+
+
 ## One instrument dial: track, lit sweep, tick marks, needle and a centre readout.
 func _dial(centre: Vector2, radius: float, value01: float, col: Color, width: float,
 		red_from: float, redline: Color) -> void:
