@@ -579,3 +579,30 @@ func _report_autotest() -> void:
 		str(audio != null and audio.engine != null and audio.engine.stream != null),
 		str(audio != null and audio.skid != null and audio.skid.stream != null),
 	])
+
+	# --- drive it: 10 simulated seconds of throttle + steer + nitro
+	var probe := {
+		"throttle": 1.0, "brake": 0.0, "steer": 0.12, "analog": false,
+		"handbrake": false, "nitro": true,
+	}
+	var start_pos := Vector3(player.x, 0.0, player.z)
+	for i in range(600):
+		player.update_physics(1.0 / 60.0, probe, track, false)
+	var travelled := Vector3(player.x, 0.0, player.z).distance_to(start_pos)
+	print("[autotest] drove 10s: %.1f km/h gear=%s rpm=%.0f travelled=%.0fm drift=%.2f nitro=%.2f" % [
+		absf(player.vF) * 3.6, player.gear, player.rpm, travelled, player.drift, player.nitro_charge,
+	])
+
+	var chassis := model.get("root", null)
+	if chassis is Node3D:
+		var box := AssetLibrary.bounds(chassis as Node3D)
+		print("[autotest] chassis bounds %.2f x %.2f x %.2f, base_y=%.3f" % [
+			box.size.x, box.size.y, box.size.z, box.position.y,
+		])
+
+	for m in maps:
+		var theme: Dictionary = m.get("theme", {})
+		print("[autotest] map %-14s points=%d theme_keys=%d night=%s" % [
+			String(m.get("id", "")), (m.get("points", []) as Array).size(), theme.size(),
+			str(theme.get("night", false)),
+		])
