@@ -1,6 +1,27 @@
 Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 
-SCRIPT ERROR: Parse Error: Function "_build_ground" has the same name as a previously declared function.
-          at: GDScript::reload (res://scripts/game.gd:358)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
-   at: load (modules/gdscript/gdscript.cpp:3022)
+[autotest] probe build=v3
+[autotest] emulate_mouse_from_touch=true
+[autotest] layout check: main screen offscreen_buttons=0
+[autotest] probe injects screen=(32.0, 34.1) for viewport=(640.0, 402.0)
+[autotest] tap probe: button 'GARAGE  ·  Vortex GT' rect=[P: (360.0, 364.0), S: (560.0, 76.0)] events_seen=4 presses=1 screen='GARAGE'
+[autotest] layout check: screen='GARAGE' panel=[P: (326.0, 2.0), S: (628.0, 716.0)] offscreen_buttons=0
+[autotest] tap probe result: MENU IS TAPPABLE
+[autotest] circuit=Sunset Ring samples=1527 length=3053.7m
+[autotest] car=vortex model=hatchback-sports scale=1.579 length=4.50m width=2.05m wheel_radius=0.474m wheels=4 lights=2
+[autotest] props: 8 nodes under world, audio engine=true skid=true
+[autotest] drove 10s: 82.0 km/h gear=2 rpm=2687 travelled=239m drift=0.13 nitro=0.02
+[autotest] chassis bounds 1.30 x 1.10 x 2.87, base_y=0.000
+[autotest] map sunset_ring    points=15 theme_keys=13 night=false
+[autotest] map harbour_night  points=24 theme_keys=13 night=true
+[autotest] map dune_pass      points=24 theme_keys=13 night=false
+[autotest] map cedar_forest   points=24 theme_keys=13 night=false
+[autotest] map ridge_road     points=24 theme_keys=13 night=false
+[autotest] drive probe: gas_at=(1139.2, 540.0) throttle=1.00 released=0.00 steer=-1.00
+[autotest] drive probe result: ON-SCREEN PADS RESPOND TO TOUCH
+[autotest] layout check: PAUSED panel=[P: (326.0, 78.0), S: (628.0, 564.0)] offscreen_buttons=0
+[autotest] layout result: ALL ROWS ON SCREEN
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2378)
+ERROR: 5 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
