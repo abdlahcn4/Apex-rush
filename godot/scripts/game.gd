@@ -216,6 +216,7 @@ func _build_world() -> void:
 	_build_environment()
 	ground = _build_ground()
 	track.build(world, quality)
+	_build_infrastructure()
 	_build_vegetation()
 	_build_city()
 	_spawn_player()
@@ -267,21 +268,28 @@ func _build_environment() -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = 1.05 if night else 0.92
+	# a lower exposure keeps the tarmac and the sky from clipping, so the orange glow of a
+	# sunset reads as atmosphere instead of a wash
+	env.tonemap_exposure = float(theme.get("exposure", 0.80 if not night else 1.0))
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = float(theme.get("ambient", 1.0)) * 0.62
+	env.ambient_light_energy = float(theme.get("ambient", 1.0)) * 0.72
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.fog_enabled = true
-	env.fog_light_color = Color(String(theme.get("fog", "#f0a878")))
-	env.fog_density = float(theme.get("fog_density", 0.00035))
-	env.fog_sun_scatter = 0.08
+	# desaturate the haze toward the horizon grey: pure orange fog is what tinted the
+	# whole frame and the car's paint
+	env.fog_light_color = Color(String(theme.get("fog", "#c8b8b0"))).lerp(Color(0.70, 0.74, 0.82), 0.35)
+	env.fog_density = float(theme.get("fog_density", 0.00022))
+	env.fog_sun_scatter = 0.05
 	env.glow_enabled = true
-	env.glow_intensity = 0.7 if night else 0.16
-	env.glow_bloom = 0.08 if night else 0.02
+	env.glow_intensity = 0.55 if night else 0.10
+	env.glow_bloom = 0.06 if night else 0.015
+	env.glow_hdr_threshold = 1.15
 	env.ssao_enabled = false
-	env.adjustment_enabled = night
-	if night:
-		env.adjustment_brightness = 1.08
-		env.adjustment_contrast = 1.06
+	# gentle grade on every map so the five circuits share one look
+	env.adjustment_enabled = true
+	env.adjustment_brightness = 1.0
+	env.adjustment_contrast = 1.04 if not night else 1.08
+	env.adjustment_saturation = 0.94 if not night else 1.05
 
 	var world_env := WorldEnvironment.new()
 	world_env.name = "WorldEnvironment"
@@ -290,16 +298,198 @@ func _build_environment() -> void:
 
 	var sun := DirectionalLight3D.new()
 	sun.name = "Sun"
-	sun.light_color = Color(String(theme.get("sun", "#ffc78e")))
+	# pull the sun toward neutral: a saturated orange key light is what made every surface
+	# (road, car, stands) read as "too orange"
+	sun.light_color = Color(String(theme.get("sun", "#ffd9c0"))).lerp(Color(1.0, 0.97, 0.93), 0.45)
 	# theme values were authored against the old over-bright setup; scale them down so the
 	# ACES curve keeps detail instead of clipping the road and the sky to white
 	sun.light_energy = float(theme.get("sun_energy", 2.0)) * 0.58
-	sun.shadow_enabled = not night
+	sun.shadow_enabled = true
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-	sun.directional_shadow_max_distance = 260.0
+	sun.directional_shadow_max_distance = 220.0
+	sun.directional_shadow_blend_splits = true
+	sun.shadow_blur = 1.4
+	sun.shadow_bias = 0.04
+	sun.shadow_normal_bias = 1.2
 	var rot: Array = theme.get("sun_rot", [-14.0, 150.0, 0.0])
 	sun.rotation_degrees = Vector3(float(rot[0]), float(rot[1]), float(rot[2]))
 	world.add_child(sun)
+
+	# sky-bounce fill, no shadow: keeps the shaded side of the car and the barriers from
+	# going flat black under a low sun
+	var fill := DirectionalLight3D.new()
+	fill.name = "SkyFill"
+	fill.light_color = Color(0.55, 0.68, 0.92)
+	fill.light_energy = 0.22 if not night else 0.32
+	fill.shadow_enabled = false
+	fill.rotation_degrees = Vector3(-58.0, float(rot[1]) + 168.0, 0.0)
+	world.add_child(fill)
+
+
+## --------------------------------------------------------------------------- #
+## circuit infrastructure
+## --------------------------------------------------------------------------- #
+
+var _infra: Dictionary = {}
+
+
+func _queue_prop(model: String, xf: Transform3D) -> void:
+	if not _infra.has(model):
+		_infra[model] = []
+	(_infra[model] as Array).append(xf)
+
+
+## Builds one MultiMesh per imported prop: dense trackside detail for the cost of a
+## handful of draw calls. Only authored Kenney racing-kit models are used.
+func _flush_props() -> void:
+	for model in _infra.keys():
+		var xforms: Array = _infra[model]
+		if xforms.is_empty():
+			continue
+		var path := AssetLibrary.PROP_DIR + String(model) + ".glb"
+		var mesh := AssetLibrary.first_mesh_in_file(path)
+		if mesh == null:
+			push_error("infrastructure: missing prop " + path)
+			continue
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = mesh
+		mm.instance_count = xforms.size()
+		for i in range(xforms.size()):
+			mm.set_instance_transform(i, xforms[i])
+		var inst := MultiMeshInstance3D.new()
+		inst.name = "Prop_" + String(model)
+		inst.multimesh = mm
+		var tall := String(model).contains("grand") or String(model).contains("pits") or String(model).begins_with("banner") or String(model).begins_with("light") or String(model).begins_with("pylon")
+		inst.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if tall else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		world.add_child(inst)
+	_infra.clear()
+
+
+var _prop_len: Dictionary = {}
+
+
+## Authored length of a prop along its local Z, so continuous runs of barrier can be
+## tiled edge to edge instead of leaving gaps between copies.
+func _prop_length(model: String) -> float:
+	if _prop_len.has(model):
+		return float(_prop_len[model])
+	var mesh := AssetLibrary.first_mesh_in_file(AssetLibrary.PROP_DIR + model + ".glb")
+	var length := 4.0
+	if mesh != null:
+		var box := mesh.get_aabb()
+		length = maxf(1.0, maxf(box.size.z, box.size.x))
+	_prop_len[model] = length
+	return length
+
+
+## Tiles one prop continuously around the lap at a lateral offset.
+func _tile(model: String, lat: float, scale := 1.0, yaw_add := 0.0) -> void:
+	var step := _prop_length(model) * scale * 0.96
+	_ring(model, maxf(2.0, step), lat, scale, yaw_add)
+
+
+## Tiles two props alternately (red / white barrier panels).
+func _tile_alt(a: String, b: String, lat: float, scale := 1.0) -> void:
+	var step := _prop_length(a) * scale * 0.96
+	var sd := 0.0
+	var flip := false
+	while sd < track.length:
+		_at(a if flip else b, sd, lat, scale)
+		flip = not flip
+		sd += maxf(2.0, step)
+
+
+## Places a prop every `step` metres around the lap at a lateral offset.
+func _ring(model: String, step: float, lat: float, scale: float, yaw_add := 0.0) -> void:
+	var sd := 0.0
+	var total := track.length
+	while sd < total:
+		var p := track.point_at(sd, lat)
+		var yaw := atan2(float(p.tx), float(p.tz)) + yaw_add
+		var xf := Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * scale), Vector3(float(p.x), 0.0, float(p.z)))
+		_queue_prop(model, xf)
+		sd += step
+
+
+## One or more props at a specific point along the lap.
+func _at(model: String, sd: float, lat: float, scale: float, yaw_add := 0.0) -> void:
+	var p := track.point_at(sd, lat)
+	var yaw := atan2(float(p.tx), float(p.tz)) + yaw_add
+	var xf := Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * scale), Vector3(float(p.x), 0.0, float(p.z)))
+	_queue_prop(model, xf)
+
+
+func _build_infrastructure() -> void:
+	if track == null:
+		return
+	var theme := _theme()
+	var kind := String(theme.get("infra", "circuit"))
+	var night := bool(theme.get("night", false))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(map_id + "_infra")
+	var inner := ROAD_HALF + 1.6
+	var outer := ROAD_HALF + 1.6
+
+	# --- continuous barriers on both sides ---------------------------------- #
+	if kind == "mountain":
+		_tile("rail", inner, 1.0)
+		_tile("rail", -outer, 1.0)
+	elif kind == "desert":
+		_tile("railDouble", -outer, 1.0)
+		_tile_alt("barrierRed", "barrierWhite", inner, 1.0)
+	else:
+		_tile_alt("barrierRed", "barrierWhite", inner, 1.0)
+		_tile_alt("barrierWhite", "barrierRed", -outer, 1.0)
+
+	# --- start-finish architecture ------------------------------------------ #
+	var gs_models := ["grandStandCovered", "grandStand", "grandStandAwning", "grandStandRound"]
+	var gi := 0
+	for cluster in [-34.0, 26.0, 96.0]:
+		var lat := -(ROAD_HALF + 21.0)
+		_at(gs_models[gi % gs_models.size()], float(cluster), lat, 1.0, PI)
+		_at("grandStandCoveredRound" if gi % 2 == 0 else "grandStand", float(cluster) + 46.0, lat - 8.0, 1.0, PI)
+		gi += 1
+
+	# pit lane: garages, offices, paddock tents, pit wall
+	for i in range(4):
+		_at("pitsGarage", -58.0 + float(i) * 17.0, -(ROAD_HALF + 8.0), 1.0)
+	_at("pitsOffice", -74.0, -(ROAD_HALF + 12.0), 1.0)
+	_at("pitsOfficeRoof", -74.0, -(ROAD_HALF + 12.0), 1.0)
+	_at("pitsOffice", 12.0, -(ROAD_HALF + 12.0), 1.0)
+	_at("tentLong", -90.0, -(ROAD_HALF + 20.0), 1.0)
+	_at("tentLong", -90.0, -(ROAD_HALF + 30.0), 1.0)
+	_at("tent", -104.0, -(ROAD_HALF + 24.0), 1.0)
+	_at("tentClosed", -104.0, -(ROAD_HALF + 34.0), 1.0)
+	_tile("fenceStraight", -(ROAD_HALF + 4.2), 1.0)
+
+	# --- sponsorship / signage depth ---------------------------------------- #
+	var sd2 := 20.0
+	while sd2 < track.length:
+		_at("bannerTowerRed" if int(sd2) % 240 < 120 else "bannerTowerGreen", sd2, ROAD_HALF + 20.0, 1.0)
+		_at("billboard" if int(sd2) % 120 < 60 else "billboardLow", sd2 + 40.0, -(ROAD_HALF + 34.0), 1.0, PI)
+		sd2 += 120.0
+	for i in range(6):
+		_at("flagCheckers", -20.0 + float(i) * 12.0, -(ROAD_HALF + 15.0), 1.0)
+	_at("pylon", -8.0, -(ROAD_HALF + 26.0), 1.0)
+	_at("overheadLights", 0.0, 0.0, 1.0)
+
+	# --- floodlighting ------------------------------------------------------ #
+	if night or kind == "urban":
+		_ring("lightPostLarge", 58.0, outer + 3.0, 1.0)
+		_ring("lightPostLarge", 74.0, -(outer + 3.0), 1.0)
+	elif kind == "circuit":
+		_ring("lightPostModern", 130.0, outer + 6.0, 1.0)
+
+	# --- corner furniture: tyre stacks read as racing, not decoration ------- #
+	var corners := [0.18, 0.42, 0.63, 0.86]
+	for f in corners:
+		var sd3 := float(f) * track.length
+		_at("lightColored", sd3, inner + 4.0, 1.0)
+		_at("lightColored", sd3 + 14.0, inner + 4.0, 1.0)
+		_at("fenceCurved", sd3, -(outer + 2.0), 1.0)
+
+	_flush_props()
 
 
 ## Circuit dressing rules: what grows, how much, and which imported models.

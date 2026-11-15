@@ -39,6 +39,8 @@ var _last_activate_ms := -1000
 var _showroom: SubViewport
 var _showroom_container: SubViewportContainer
 var _showroom_car: Node3D
+var _show_cam: Camera3D
+var _showcase_shift := Vector2.ZERO
 var _showroom_spin: Node3D
 var _paint := Color("#2ecc40")
 var paint_color := Color("#2ecc40")
@@ -47,6 +49,7 @@ var quality := 2
 var master_db := 0.0
 # row metrics chosen per screen so every row stays inside a 1280x720 viewport
 var _row_h := 76.0
+var _last_rows := 4
 var _row_font := 26
 var debug_input_events := 0
 var debug_trace := false
@@ -62,20 +65,18 @@ func _ready() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(root)
 
+	# The menu is a two-column composition: buttons own the left column, the 3D car owns
+	# the right one. A soft scrim sits under the buttons only, so the car is never covered.
 	_dim = ColorRect.new()
-	_dim.color = Color(0.01, 0.02, 0.04, 0.78)
-	_dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_dim.name = "Scrim"
+	_dim.color = Color(0.02, 0.03, 0.05, 0.55)
 	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(_dim)
 
-	var centre := CenterContainer.new()
-	centre.set_anchors_preset(Control.PRESET_FULL_RECT)
-	centre.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(centre)
-
 	_panel = PanelContainer.new()
-	_panel.custom_minimum_size = Vector2(600.0, 0.0)
-	centre.add_child(_panel)
+	_panel.name = "MenuPanel"
+	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(_panel)
 
 	var style := StyleBoxFlat.new()
 	style.bg_color = PANEL_BG
@@ -156,49 +157,122 @@ func _build_showroom(root: Control) -> void:
 	container.add_child(vp)
 	_showroom = vp
 
-	var env := Environment.new()
-	var hdri := AssetLibrary.sky("urban_street_01_1k")
+	# A neutral photo studio, not a street panorama: coloured foliage in an HDRI is what
+	# turned the paint into green and gold noise. Grey gradient + soft boxes only.
+	var studio := ProceduralSkyMaterial.new()
+	studio.sky_top_color = Color(0.055, 0.062, 0.075)
+	studio.sky_horizon_color = Color(0.20, 0.21, 0.235)
+	studio.sky_curve = 0.28
+	studio.ground_horizon_color = Color(0.11, 0.115, 0.13)
+	studio.ground_bottom_color = Color(0.02, 0.022, 0.028)
+	studio.ground_curve = 0.12
 	var sky := Sky.new()
-	if hdri != null:
-		var pano := PanoramaSkyMaterial.new()
-		pano.panorama = hdri
-		sky.sky_material = pano
-	else:
-		sky.sky_material = ProceduralSkyMaterial.new()
+	sky.sky_material = studio
+	sky.radiance_size = Sky.RADIANCE_SIZE_256
+	var env := Environment.new()
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.75
+	env.ambient_light_energy = 0.55
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = 0.95
+	env.tonemap_exposure = 1.0
 	env.glow_enabled = true
-	env.glow_intensity = 0.25
+	env.glow_intensity = 0.12
+	env.glow_bloom = 0.03
 	var world_env := WorldEnvironment.new()
 	world_env.environment = env
 	vp.add_child(world_env)
 
+	# three-point rig: warm key, cool fill, hard white kicker along the roofline
 	var key := DirectionalLight3D.new()
-	key.light_color = Color(1.0, 0.96, 0.9)
-	key.light_energy = 1.5
-	key.rotation_degrees = Vector3(-34.0, 148.0, 0.0)
+	key.light_color = Color(1.0, 0.95, 0.88)
+	key.light_energy = 1.35
+	key.rotation_degrees = Vector3(-32.0, 138.0, 0.0)
 	key.shadow_enabled = true
+	key.shadow_bias = 0.03
 	vp.add_child(key)
 
+	var fill := DirectionalLight3D.new()
+	fill.light_color = Color(0.62, 0.76, 1.0)
+	fill.light_energy = 0.55
+	fill.rotation_degrees = Vector3(-12.0, -55.0, 0.0)
+	vp.add_child(fill)
+
 	var rim := DirectionalLight3D.new()
-	rim.light_color = Color(0.45, 0.7, 1.0)
-	rim.light_energy = 0.9
-	rim.rotation_degrees = Vector3(-20.0, -40.0, 0.0)
+	rim.light_color = Color(1.0, 0.98, 0.95)
+	rim.light_energy = 1.1
+	rim.rotation_degrees = Vector3(-58.0, 24.0, 0.0)
+	rim.shadow_enabled = false
 	vp.add_child(rim)
 
 	var cam := Camera3D.new()
-	cam.position = Vector3(4.6, 1.9, 6.2)
-	cam.fov = 42.0
+	cam.position = Vector3(4.9, 1.75, 5.9)
+	cam.fov = 40.0
 	vp.add_child(cam)
-	cam.look_at(Vector3(0.0, 0.55, 0.0), Vector3.UP)
+	_show_cam = cam
+	cam.look_at(Vector3(0.0, 0.62, 0.0), Vector3.UP)
 
 	_showroom_spin = Node3D.new()
 	vp.add_child(_showroom_spin)
 	_refresh_showroom_car()
+	_layout()
+	get_viewport().size_changed.connect(_layout)
+
+
+## Two-column composition that survives any aspect ratio: buttons left, car right in
+## landscape; car above, buttons below in portrait. Nothing overlaps at any size.
+func _layout() -> void:
+	var vp := get_viewport().get_visible_rect().size
+	if vp.x < 64.0 or vp.y < 64.0 or _panel == null:
+		return
+	var landscape := vp.x >= vp.y * 1.2
+	var margin := clampf(vp.x * 0.035, 12.0, 56.0)
+	if landscape:
+		var panel_w := clampf(vp.x * 0.40, 330.0, 590.0)
+		var panel_h := clampf(vp.y * 0.88, 320.0, 660.0)
+		_panel.size = Vector2(panel_w, panel_h)
+		_panel.position = Vector2(margin, (vp.y - panel_h) * 0.5)
+		_dim.size = Vector2(panel_w + margin * 2.0, vp.y)
+		_dim.position = Vector2.ZERO
+		_dim.color = Color(0.015, 0.02, 0.035, 0.62)
+		_showcase_shift = Vector2(panel_w * 0.55, 0.0)
+	else:
+		var panel_h := vp.y * 0.58
+		_panel.size = Vector2(vp.x - margin * 2.0, panel_h)
+		_panel.position = Vector2(margin, vp.y - panel_h - margin * 0.6)
+		_dim.size = Vector2(vp.x, panel_h + margin * 2.2)
+		_dim.position = Vector2(0.0, vp.y - panel_h - margin * 1.6)
+		_dim.color = Color(0.015, 0.02, 0.035, 0.62)
+		_showcase_shift = Vector2(0.0, panel_h * 0.62)
+	_apply_showcase_framing()
+	_fit_rows()
+
+
+## Keep the car inside the showcase half by aiming the camera off-centre.
+func _apply_showcase_framing() -> void:
+	if _show_cam == null:
+		return
+	var target := Vector3(0.0, 0.62, 0.0) - Vector3(_showcase_shift.x, _showcase_shift.y, 0.0) * 0.009
+	_show_cam.look_at(target, Vector3.UP)
+
+
+## Rows shrink with the panel so every button stays on screen on a phone.
+func _fit_rows() -> void:
+	if _vbox == null or _panel == null:
+		return
+	_plan_rows(_last_rows)
+	for b in _buttons_in(_vbox):
+		b.custom_minimum_size = Vector2(0.0, _row_h)
+		b.add_theme_font_size_override("font_size", _row_font)
+
+
+func _transition_in() -> void:
+	if _panel == null:
+		return
+	_panel.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(_panel, "modulate:a", 1.0, 0.18).set_trans(Tween.TRANS_QUAD)
 
 
 func _refresh_showroom_car() -> void:
@@ -526,6 +600,9 @@ func _input(event: InputEvent) -> void:
 		print("[tap] %s pos=%s down=%s press_index=%d touch_seen=%s" % [
 			kind, str(where), str(down), _press_index, str(_touch_seen),
 		])
+	if event is InputEventMouseMotion:
+		_update_hover((event as InputEventMouseMotion).position)
+		return
 	if event is InputEventScreenTouch:
 		_touch_seen = true
 		var touch := event as InputEventScreenTouch
@@ -635,17 +712,21 @@ func _set_panel_visible(on: bool) -> void:
 ## garage (6 cars + BACK) overflowed a 720 px tall viewport and its last rows could not be
 ## tapped on a phone.
 func _plan_rows(count: int) -> void:
-	# measured: the panel adds 222 px around the list at 1280x720, leaving ~490 usable
-	const AVAILABLE := 484.0
 	const SEPARATION := 12.0
+	_last_rows = maxi(1, count)
+	# the list gets whatever the panel has left after the title block and padding
+	var available := 484.0
+	if _panel != null and _panel.size.y > 0.0:
+		available = maxf(210.0, _panel.size.y - 205.0)
 	var h := 76.0
 	if count > 0:
-		h = (AVAILABLE - SEPARATION * float(count - 1)) / float(count)
-	_row_h = clampf(h, 46.0, 76.0)
-	_row_font = int(clampf(_row_h * 0.34, 17.0, 26.0))
+		h = (available - SEPARATION * float(count - 1)) / float(count)
+	_row_h = clampf(h, 34.0, 76.0)
+	_row_font = int(clampf(_row_h * 0.36, 13.0, 26.0))
 
 
 func _clear() -> void:
+	_transition_in()
 	for child in _vbox.get_children():
 		if child == _title or child == _sub:
 			continue
@@ -671,10 +752,30 @@ func _add_stat(key: String, value: String) -> void:
 	_vbox.add_child(row)
 
 
+func _set_hovered(b: Button, on: bool) -> void:
+	if b == null:
+		return
+	var state := "hover" if on else "normal"
+	b.add_theme_stylebox_override("normal", b.get_theme_stylebox(state))
+	b.add_theme_color_override("font_color", Color(1, 1, 1) if on else INK)
+
+
+## Hover state for the mouse: the buttons ignore native input (taps are hit-tested in
+## _input), so the hover look is applied here instead of from the theme engine.
+func _update_hover(pos: Vector2) -> void:
+	if _vbox == null or not _panel.visible:
+		return
+	for b in _buttons_in(_vbox):
+		if b == null:
+			continue
+		_set_hovered(b, b.is_visible_in_tree() and b.get_global_rect().has_point(pos))
+
+
 func _add_button(text: String, action: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
-	b.custom_minimum_size = Vector2(560.0, _row_h)
+	b.custom_minimum_size = Vector2(0.0, _row_h)
+	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	b.add_theme_font_size_override("font_size", _row_font)
 	b.add_theme_color_override("font_color", INK)

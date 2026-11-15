@@ -91,103 +91,106 @@ func toast(text: String, secs := 1.2) -> void:
 
 func _on_draw() -> void:
 	var size := _panel.size
-	if size.x < 32.0:
+	if size.x < 32.0 or size.y < 32.0:
 		return
-	var s := minf(size.x / 1280.0, size.y / 720.0)
+	# one scale for the whole dashboard, with a floor so a small window stays legible
+	var s := clampf(minf(size.x / 1280.0, size.y / 720.0), 0.42, 2.2)
+	var radius := clampf(size.y * 0.135, 54.0 * s, 112.0 * s)
+	var bottom := size.y - 34.0 * s
+	_draw_speedo(s, Vector2(52.0 * s + radius, bottom - radius), radius)
+	_draw_tacho(s, Vector2(size.x - 52.0 * s - radius - 26.0 * s, bottom - radius), radius)
+	_draw_nitro(s, size, radius)
 	_draw_timing(s)
-	_draw_speedo(s, size)
-	_draw_nitro(s, size)
 	_draw_toast(s, size)
 
 
-func _draw_timing(s: float) -> void:
-	var w := 290.0 * s
-	var h := 104.0 * s
-	var pos := Vector2(26.0 * s, 24.0 * s)
-	_round_rect(Rect2(pos, Vector2(w, h)), 12.0 * s, PANEL, PANEL_EDGE, 2.0 * s)
-
-	_text(pos + Vector2(18.0 * s, 30.0 * s), _title_text, 17.0 * s, Color(1, 1, 1, 0.72))
-	var lap_text := "LAP %d / %d" % [_lap, _laps_total]
-	_text(pos + Vector2(18.0 * s, 62.0 * s), lap_text, 26.0 * s, INK)
-	_text(pos + Vector2(w - 18.0 * s - _width(_clock(_lap_time), 26.0 * s), 62.0 * s),
-		_clock(_lap_time), 26.0 * s, ACCENT)
-	_text(pos + Vector2(18.0 * s, 88.0 * s), "BEST  " + _clock(_best), 16.0 * s, Color(0.75, 0.8, 0.9, 0.9))
-
-
-func _draw_speedo(s: float, size: Vector2) -> void:
-	var radius := 104.0 * s
-	var centre := Vector2(190.0 * s, size.y - 150.0 * s)
+## One instrument dial: track, lit sweep, tick marks, needle and a centre readout.
+func _dial(centre: Vector2, radius: float, value01: float, col: Color, width: float,
+		red_from: float, redline: Color) -> void:
 	var start := deg_to_rad(140.0)
 	var sweep := deg_to_rad(260.0)
+	_panel.draw_circle(centre, radius + 13.0 * (width / 12.0), PANEL)
+	_panel.draw_arc(centre, radius, start, start + sweep, 72, TRACK_BG, width, true)
+	if red_from < 1.0:
+		_panel.draw_arc(centre, radius, start + sweep * red_from, start + sweep, 24,
+			Color(redline.r, redline.g, redline.b, 0.45), width, true)
+	if value01 > 0.01:
+		_panel.draw_arc(centre, radius, start, start + sweep * value01, 72, col, width, true)
+	for i in range(11):
+		var a := start + sweep * (float(i) / 10.0)
+		var dir := Vector2(cos(a), sin(a))
+		var long: bool = int(i) % 5 == 0
+		_panel.draw_line(centre + dir * (radius - (16.0 if long else 9.0) * (width / 12.0)),
+			centre + dir * (radius - 4.0 * (width / 12.0)),
+			Color(1, 1, 1, 0.45 if long else 0.22), (2.2 if long else 1.4) * (width / 12.0), true)
+	var na := start + sweep * value01
+	_panel.draw_line(centre, centre + Vector2(cos(na), sin(na)) * (radius - 6.0 * (width / 12.0)),
+		redline if value01 > red_from else ACCENT_HOT, 3.0 * (width / 12.0), true)
+	_panel.draw_circle(centre, 4.5 * (width / 12.0), Color(0.9, 0.92, 0.96))
 
-	_panel.draw_circle(centre, radius + 16.0 * s, PANEL)
-	# unlit track
-	_panel.draw_arc(centre, radius, start, start + sweep, 64, TRACK_BG, 13.0 * s, true)
-	# lit arc, colour shifts to red near the top of the range
-	var lit_end := start + sweep * _needle
-	if _needle > 0.02:
-		var col := ACCENT.lerp(ACCENT_HOT, _needle)
-		_panel.draw_arc(centre, radius, start, lit_end, 64, col, 13.0 * s, true)
-	# tick marks
-	var ticks := 10
-	for i in range(ticks + 1):
-		var a := start + sweep * (float(i) / float(ticks))
-		var inner := radius - 18.0 * s
-		var outer := radius - 10.0 * s
-		var p1 := centre + Vector2(cos(a), sin(a)) * inner
-		var p2 := centre + Vector2(cos(a), sin(a)) * outer
-		_panel.draw_line(p1, p2, Color(1, 1, 1, 0.35), 2.0 * s, true)
-	# needle
-	var na := start + sweep * _needle
-	var tip := centre + Vector2(cos(na), sin(na)) * (radius - 6.0 * s)
-	_panel.draw_line(centre, tip, ACCENT_HOT, 3.0 * s, true)
 
-	var speed_text := str(int(round(_smooth_kmh)))
-	var speed_size := 54.0 * s
-	var tw := _width(speed_text, speed_size)
-	_text(centre + Vector2(-tw * 0.5, 12.0 * s), speed_text, speed_size, INK)
+func _draw_speedo(s: float, centre: Vector2, radius: float) -> void:
+	var value := clampf(_smooth_kmh / _max_kmh, 0.0, 1.0)
+	_dial(centre, radius, value, ACCENT.lerp(ACCENT_HOT, value), 12.0 * s, 1.2, ACCENT_HOT)
+	var text := str(int(round(_smooth_kmh)))
+	var px := radius * 0.62
+	_text(centre + Vector2(-_width(text, px) * 0.5, px * 0.22), text, px, INK)
 	var unit := "KM/H"
-	_text(centre + Vector2(-_width(unit, 16.0 * s) * 0.5, 36.0 * s), unit, 16.0 * s, Color(1, 1, 1, 0.55))
+	_text(centre + Vector2(-_width(unit, radius * 0.17) * 0.5, radius * 0.38), unit, radius * 0.17,
+		Color(1, 1, 1, 0.55))
 
-	# gear badge
-	var badge := Rect2(centre + Vector2(radius + 18.0 * s, -26.0 * s), Vector2(54.0 * s, 54.0 * s))
-	_round_rect(badge, 10.0 * s, Color(0.06, 0.07, 0.1, 0.85), PANEL_EDGE, 2.0 * s)
-	var gw := _width(_gear, 30.0 * s)
-	_text(badge.position + Vector2((badge.size.x - gw) * 0.5, 36.0 * s), _gear, 30.0 * s, CYAN)
 
-	# rpm strip under the clock: 20 segments, shift light at the end
-	var strip_w := 300.0 * s
-	var strip_pos := Vector2(centre.x - strip_w * 0.5, size.y - 44.0 * s)
-	var seg_gap := 3.0 * s
-	var seg_w := (strip_w - seg_gap * 19.0) / 20.0
-	var rpm01 := clampf((_smooth_rpm - 800.0) / 6800.0, 0.0, 1.0)
-	_panel.draw_rect(Rect2(strip_pos, Vector2(strip_w, 12.0 * s)), Color(1, 1, 1, 0.06), true)
-	for i in range(20):
-		var lit := rpm01 * 20.0 > float(i) + 0.35
-		var col := CYAN
-		if i >= 16:
-			col = ACCENT_HOT
-		elif i >= 12:
-			col = ACCENT
-		if not lit:
+func _draw_tacho(s: float, centre: Vector2, radius: float) -> void:
+	var redline_rpm := 6800.0
+	var max_rpm := 8000.0
+	var value := clampf(_smooth_rpm / max_rpm, 0.0, 1.0)
+	var in_red := _smooth_rpm >= redline_rpm
+	var needle_col := ACCENT_HOT if in_red else CYAN
+	_dial(centre, radius, value, needle_col, 12.0 * s, redline_rpm / max_rpm, ACCENT_HOT)
+	# rpm readout and gear under it
+	var rpm_text := str(int(round(_smooth_rpm / 100.0) * 100))
+	var px := radius * 0.42
+	_text(centre + Vector2(-_width(rpm_text, px) * 0.5, px * 0.1), rpm_text, px, INK)
+	var unit := "RPM"
+	_text(centre + Vector2(-_width(unit, radius * 0.15) * 0.5, radius * 0.26), unit, radius * 0.15,
+		Color(1, 1, 1, 0.5))
+	var badge := Rect2(centre + Vector2(-radius * 0.26, radius * 0.4), Vector2(radius * 0.52, radius * 0.4))
+	_round_rect(badge, 6.0 * s, Color(0.06, 0.07, 0.1, 0.9), PANEL_EDGE, 1.5 * s)
+	var gp := radius * 0.3
+	_text(badge.position + Vector2((badge.size.x - _width(_gear, gp)) * 0.5, badge.size.y * 0.78),
+		_gear, gp, needle_col)
+	# shift light bar above the dial
+	var bar_w := radius * 1.5
+	var bar_pos := centre + Vector2(-bar_w * 0.5, -radius - 26.0 * s)
+	var fill := clampf((_smooth_rpm - 7600.0) / 400.0, 0.0, 1.0)
+	var pulse := 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.018)
+	_round_rect(Rect2(bar_pos, Vector2(bar_w, 7.0 * s)), 3.0 * s, Color(1, 1, 1, 0.08), PANEL_EDGE, 0.0)
+	if fill > 0.0:
+		_round_rect(Rect2(bar_pos, Vector2(bar_w * fill, 7.0 * s)), 3.0 * s,
+			Color(1.0, 0.24, 0.10, pulse), Color(0, 0, 0, 0), 0.0)
+
+
+func _draw_nitro(s: float, size: Vector2, radius: float) -> void:
+	var segments := 10
+	var bar_w := 14.0 * s
+	var bar_h := radius * 1.5
+	var pos := Vector2(size.x - 30.0 * s, size.y - 34.0 * s - bar_h)
+	var gap := 3.0 * s
+	var seg_h := (bar_h - gap * float(segments - 1)) / float(segments)
+	var lit := int(round(_nitro * float(segments)))
+	for i in range(segments):
+		var y := pos.y + bar_h - float(i + 1) * seg_h - float(i) * gap
+		var on: bool = int(i) < lit
+		var col := Color(0.25, 0.85, 1.0)
+		if _nitro_on:
+			col = Color(0.65, 0.98, 1.0)
+		if not on:
 			col = Color(1, 1, 1, 0.10)
-		_panel.draw_rect(Rect2(strip_pos + Vector2(float(i) * (seg_w + seg_gap), 0.0), Vector2(seg_w, 12.0 * s)), col, true)
-	if rpm01 > 0.93:
-		# shift light flash
-		var pulse := 0.55 + 0.45 * sin(Time.get_ticks_msec() * 0.02)
-		_panel.draw_rect(Rect2(strip_pos + Vector2(0, -18.0 * s), Vector2(strip_w, 6.0 * s)), Color(1.0, 0.2, 0.1, pulse), true)
-
-
-func _draw_nitro(s: float, size: Vector2) -> void:
-	var w := 210.0 * s
-	var h := 18.0 * s
-	var pos := Vector2(size.x - w - 34.0 * s, size.y - 60.0 * s)
-	_text(pos + Vector2(0.0, -8.0 * s), "NITRO", 15.0 * s, Color(1, 1, 1, 0.6))
-	_round_rect(Rect2(pos, Vector2(w, h)), 6.0 * s, Color(1, 1, 1, 0.10), PANEL_EDGE, 1.0 * s)
-	var fill := Color(0.25, 0.8, 1.0) if not _nitro_on else Color(0.55, 0.95, 1.0)
-	_round_rect(Rect2(pos + Vector2(2.0 * s, 2.0 * s), Vector2((w - 4.0 * s) * _nitro, h - 4.0 * s)), 4.0 * s, fill, Color(0, 0, 0, 0), 0.0)
+		_round_rect(Rect2(Vector2(pos.x, y), Vector2(bar_w, seg_h)), 2.0 * s, col, Color(0, 0, 0, 0), 0.0)
 	if _nitro_on:
-		_text(pos + Vector2(w + 10.0 * s, 15.0 * s), "BOOST", 15.0 * s, Color(0.55, 0.95, 1.0))
+		var label := "BOOST"
+		_text(pos + Vector2(-bar_w - _width(label, 12.0 * s) - 6.0 * s, bar_h * 0.5), label,
+			12.0 * s, Color(0.6, 0.98, 1.0))
 
 
 func _draw_toast(s: float, size: Vector2) -> void:

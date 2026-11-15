@@ -71,15 +71,15 @@
       "theme": {
         "sky_top": "#2c5d9e",
         "sky_horizon": "#ffb070",
-        "fog": "#f0a878",
-        "sun": "#ffc78e",
-        "sun_energy": 2.0,
+        "fog": "#cbb5a8",
+        "sun": "#ffd6b8",
+        "sun_energy": 1.9,
         "sun_rot": [
           -14,
           150,
           0
         ],
-        "fog_density": 0.00035,
+        "fog_density": 0.0002,
         "ground": "grass",
         "vegetation": 1.0,
         "urban": 0.55,
@@ -93,7 +93,9 @@
         "sky_hdri": "kloppenheim_02_puresky_1k",
         "veg": "circuit",
         "city": "none",
-        "road_kind": "asphalt"
+        "road_kind": "asphalt",
+        "sky_energy": 0.9,
+        "exposure": 0.8
       },
       "validated": true
     },
@@ -204,20 +206,20 @@
       "theme": {
         "sky_top": "#070c1e",
         "sky_horizon": "#243a63",
-        "fog": "#101a30",
-        "sun": "#8fb4ff",
-        "sun_energy": 0.45,
+        "fog": "#2a3346",
+        "sun": "#8fa8d8",
+        "sun_energy": 0.55,
         "sun_rot": [
           -32,
           205,
           0
         ],
-        "fog_density": 0.0011,
+        "fog_density": 0.0003,
         "ground": "concrete",
         "vegetation": 0.25,
         "urban": 1.0,
         "night": true,
-        "ambient": 0.55,
+        "ambient": 0.9,
         "ground_tint": [
           0.62,
           0.66,
@@ -229,7 +231,8 @@
         "city_count": 110,
         "city_height": 3.2,
         "road_kind": "wet_asphalt",
-        "sky_energy": 0.55
+        "sky_energy": 0.55,
+        "exposure": 1.0
       },
       "validated": false
     },
@@ -340,20 +343,20 @@
       "theme": {
         "sky_top": "#3f7fb8",
         "sky_horizon": "#f6d9a0",
-        "fog": "#e8cf9c",
-        "sun": "#fff0c8",
-        "sun_energy": 2.6,
+        "fog": "#d9c4a6",
+        "sun": "#ffe3c2",
+        "sun_energy": 2.1,
         "sun_rot": [
           -52,
           120,
           0
         ],
-        "fog_density": 0.00022,
+        "fog_density": 0.00026,
         "ground": "gravel",
         "vegetation": 0.12,
         "urban": 0.08,
         "night": false,
-        "ambient": 1.15,
+        "ambient": 1.05,
         "ground_tint": [
           1.0,
           0.84,
@@ -363,7 +366,8 @@
         "veg": "desert",
         "city": "none",
         "road_kind": "asphalt",
-        "sky_energy": 1.15
+        "sky_energy": 1.0,
+        "exposure": 0.78
       },
       "validated": true
     },
@@ -474,20 +478,20 @@
       "theme": {
         "sky_top": "#4d7fa8",
         "sky_horizon": "#bfd7c9",
-        "fog": "#b9cbb8",
-        "sun": "#ffeccf",
-        "sun_energy": 1.7,
+        "fog": "#bcc4bd",
+        "sun": "#f2e6cf",
+        "sun_energy": 1.5,
         "sun_rot": [
           -22,
           86,
           0
         ],
-        "fog_density": 0.0009,
+        "fog_density": 0.00034,
         "ground": "grass",
         "vegetation": 2.2,
         "urban": 0.05,
         "night": false,
-        "ambient": 0.9,
+        "ambient": 1.1,
         "ground_tint": [
           0.72,
           0.86,
@@ -497,7 +501,8 @@
         "veg": "forest",
         "city": "none",
         "road_kind": "asphalt",
-        "sky_energy": 0.9
+        "sky_energy": 0.85,
+        "exposure": 0.82
       },
       "validated": false
     },
@@ -608,20 +613,20 @@
       "theme": {
         "sky_top": "#5b7f9e",
         "sky_horizon": "#d9c9b4",
-        "fog": "#c8bda8",
-        "sun": "#fff2d8",
-        "sun_energy": 1.9,
+        "fog": "#c2c6c9",
+        "sun": "#e9e2d6",
+        "sun_energy": 1.4,
         "sun_rot": [
           -30,
           300,
           0
         ],
-        "fog_density": 0.0014,
+        "fog_density": 0.0003,
         "ground": "gravel",
         "vegetation": 1.3,
         "urban": 0.0,
         "night": false,
-        "ambient": 0.85,
+        "ambient": 1.0,
         "ground_tint": [
           0.82,
           0.8,
@@ -633,7 +638,8 @@
         "city_count": 26,
         "city_height": 1.4,
         "road_kind": "asphalt",
-        "sky_energy": 0.8
+        "sky_energy": 0.8,
+        "exposure": 0.84
       },
       "validated": false
     }

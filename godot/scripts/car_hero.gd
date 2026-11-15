@@ -174,27 +174,39 @@ static func _restyle_one(name_key: String, src: StandardMaterial3D, paint: Color
 		var m := _copy_base(src)
 		var shade := paint
 		if key.contains("paint 2"):
-			shade = paint.darkened(0.22)
+			shade = paint.darkened(0.16)
 		if key.contains("pearl"):
-			shade = paint.lightened(0.12)
+			shade = paint.lightened(0.10)
+		elif key.contains("graphite"):
+			shade = paint.darkened(0.62)
 		m.albedo_color = shade
 		m.albedo_texture = null
-		m.metallic = 0.92
-		m.roughness = 0.16
+		# The authored paint ships metallic 1.0 (the glTF default) plus a panel-detail
+		# normal map. Fully metallic paint mirrors the HDRI, and the normal map stipples
+		# that mirror into coloured noise. Automotive paint is a dielectric tinted base
+		# under a clearcoat, so: low metalness, mid roughness, strong clearcoat, no normal
+		# perturbation on the panels.
+		m.metallic = 0.28
+		m.roughness = 0.36
+		m.metallic_specular = 0.52
+		m.normal_enabled = false
+		m.ao_enabled = true
 		m.clearcoat_enabled = true
 		m.clearcoat = 1.0
-		m.clearcoat_roughness = 0.08
-		m.rim_enabled = true
-		m.rim = 0.4
-		m.rim_tint = 0.6
+		m.clearcoat_roughness = 0.16
+		m.rim_enabled = false
 		(out["paint_materials"] as Array).append(m)
 		return m
 
 	if key.contains("glass"):
 		var m := _copy_base(src)
-		m.albedo_color = Color(0.06, 0.09, 0.12, 0.34)
+		m.albedo_color = Color(0.05, 0.07, 0.09, 0.42)
 		m.metallic = 0.0
-		m.roughness = 0.04
+		m.metallic_specular = 0.6
+		m.roughness = 0.03
+		m.clearcoat_enabled = true
+		m.clearcoat = 1.0
+		m.clearcoat_roughness = 0.02
 		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		m.blend_mode = BaseMaterial3D.BLEND_MODE_MIX
 		m.cull_mode = BaseMaterial3D.CULL_DISABLED
@@ -211,9 +223,12 @@ static func _restyle_one(name_key: String, src: StandardMaterial3D, paint: Color
 
 	if key.contains("rim"):
 		var m := _copy_base(src)
-		m.metallic = 0.95
-		m.roughness = 0.22
-		m.albedo_color = Color(0.72, 0.74, 0.78)
+		m.metallic = 0.86
+		m.roughness = 0.31
+		m.albedo_color = Color(0.26, 0.27, 0.30)
+		m.clearcoat_enabled = true
+		m.clearcoat = 0.5
+		m.clearcoat_roughness = 0.2
 		return m
 	if key.contains("tire") or key.contains("tyre"):
 		var m := _copy_base(src)
@@ -222,8 +237,8 @@ static func _restyle_one(name_key: String, src: StandardMaterial3D, paint: Color
 		return m
 	if key.contains("disc"):
 		var m := _copy_base(src)
-		m.metallic = 0.88
-		m.roughness = 0.45
+		m.metallic = 0.72
+		m.roughness = 0.58
 		return m
 	if key.contains("brake"):
 		var m := _copy_base(src)
@@ -232,19 +247,43 @@ static func _restyle_one(name_key: String, src: StandardMaterial3D, paint: Color
 		return m
 	if key.contains("mirror"):
 		var m := _copy_base(src)
-		m.metallic = 1.0
-		m.roughness = 0.03
+		m.metallic = 0.9
+		m.roughness = 0.06
+		m.albedo_color = Color(0.78, 0.80, 0.84)
 		return m
-	if key.contains("interior") or key.contains("seat") or key.contains("dash") or key.contains("floormat"):
+	if key.contains("dash"):
+		# instrument glow is the one authored emissive worth keeping
 		var m := _copy_base(src)
-		m.roughness = maxf(0.42, src.roughness)
+		m.roughness = maxf(0.45, src.roughness)
+		m.emission_enabled = true
+		m.emission = Color(1.0, 0.36, 0.06)
+		m.emission_energy_multiplier = 0.55
 		return m
-	return null
+	if key.contains("interior") or key.contains("seat") or key.contains("floormat"):
+		var m := _copy_base(src)
+		m.roughness = maxf(0.55, src.roughness)
+		m.metallic = minf(0.2, src.metallic)
+		return m
+	if key.contains("brake"):
+		var m := _copy_base(src)
+		m.metallic = 0.35
+		m.roughness = 0.42
+		return m
+	# everything else keeps its authored texture set but loses the stray emissive: the
+	# source file marks rims, hardware and badges as emissive with factor 1.0, which
+	# blown out into the bloom pass and produced the gold speckle
+	return _copy_base(src)
 
 
 static func _copy_base(src: StandardMaterial3D) -> StandardMaterial3D:
 	var m := src.duplicate() as StandardMaterial3D
 	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	# nothing on a car body emits light except the lamps, which are built separately
+	m.emission_enabled = false
+	m.emission = Color.BLACK
+	m.emission_texture = null
+	m.emission_energy_multiplier = 0.0
+	m.rim_enabled = false
 	return m
 
 
