@@ -423,73 +423,72 @@ func _at(model: String, sd: float, lat: float, scale: float, yaw_add := 0.0) -> 
 func _build_infrastructure() -> void:
 	if track == null:
 		return
+	# track.gd already places the barrier line, the pit boxes, the grandstands, the light
+	# posts, the billboards and the start-line flags. This is the second layer that turns
+	# those into a circuit: gantries, paddock, pit wall, spectator advertising, corner
+	# furniture and the guardrails the road circuits need.
 	var theme := _theme()
 	var kind := String(theme.get("infra", "circuit"))
 	var night := bool(theme.get("night", false))
-	var rng := RandomNumberGenerator.new()
-	rng.seed = hash(map_id + "_infra")
-	var inner := ROAD_HALF + 1.6
-	var outer := ROAD_HALF + 1.6
+	var wall := ApexTrack.WALL
+	var start := 0.0
 
-	# --- continuous barriers on both sides ---------------------------------- #
+	# --- gantries over the track ------------------------------------------- #
+	var sd := 40.0
+	var flip := false
+	while sd < track.length * 0.98:
+		_queue_scaled("bannerTowerRed" if flip else "bannerTowerGreen", sd, wall + 9.0, 9.0)
+		flip = not flip
+		sd += 175.0
+	_queue_scaled("overheadLights", 6.0, 0.0, 7.5)
+
+	# --- paddock behind the pit boxes --------------------------------------- #
+	_queue_scaled("tentLong", -78.0, wall + 21.0, 4.2)
+	_queue_scaled("tentLong", -78.0, wall + 32.0, 4.2)
+	_queue_scaled("tent", -96.0, wall + 26.0, 3.6)
+	_queue_scaled("tentClosed", -96.0, wall + 36.0, 3.6)
+	_queue_scaled("pitsOfficeRoof", 64.0, wall + 13.0, 6.5)
+
+	# --- pit wall along the start straight ---------------------------------- #
+	var pit_lat := wall + 1.4
+	var pit_len := 96.0
+	var fence_scale := AssetLibrary.height_scale(AssetLibrary.PROP_DIR + "fenceStraight.glb", 2.0)
+	var step := _prop_length("fenceStraight") * fence_scale * 0.96
+	var sd2 := -6.0
+	while sd2 < pit_len:
+		_at("fenceStraight", sd2, pit_lat, fence_scale)
+		sd2 += step
+
+	# --- spectator-side advertising, opposite the track billboards ---------- #
+	var sd3 := 130.0
+	while sd3 < track.length * 0.98:
+		_queue_scaled("billboardLow", sd3, -(wall + 12.0), 6.0, PI)
+		sd3 += 240.0
+
+	# --- corner furniture --------------------------------------------------- #
+	for f in [0.18, 0.42, 0.63, 0.86]:
+		var corner := float(f) * track.length
+		_queue_scaled("fenceCurved", corner, -(wall + 2.2), 2.0)
+		_queue_scaled("fenceCurved", corner + 13.0, -(wall + 2.2), 2.0)
+		_queue_scaled("lightColored", corner + 5.0, wall + 3.4, 3.0)
+
+	# --- guardrails for the road circuits ----------------------------------- #
 	if kind == "mountain":
-		_tile("rail", inner, 1.0)
-		_tile("rail", -outer, 1.0)
+		var rail_scale := AssetLibrary.height_scale(AssetLibrary.PROP_DIR + "rail.glb", 1.1)
+		_tile("rail", wall + 1.1, rail_scale)
+		_tile("rail", -(wall + 1.1), rail_scale)
 	elif kind == "desert":
-		_tile("railDouble", -outer, 1.0)
-		_tile_alt("barrierRed", "barrierWhite", inner, 1.0)
-	else:
-		_tile_alt("barrierRed", "barrierWhite", inner, 1.0)
-		_tile_alt("barrierWhite", "barrierRed", -outer, 1.0)
-
-	# --- start-finish architecture ------------------------------------------ #
-	var gs_models := ["grandStandCovered", "grandStand", "grandStandAwning", "grandStandRound"]
-	var gi := 0
-	for cluster in [-34.0, 26.0, 96.0]:
-		var lat := -(ROAD_HALF + 21.0)
-		_at(gs_models[gi % gs_models.size()], float(cluster), lat, 1.0, PI)
-		_at("grandStandCoveredRound" if gi % 2 == 0 else "grandStand", float(cluster) + 46.0, lat - 8.0, 1.0, PI)
-		gi += 1
-
-	# pit lane: garages, offices, paddock tents, pit wall
-	for i in range(4):
-		_at("pitsGarage", -58.0 + float(i) * 17.0, -(ROAD_HALF + 8.0), 1.0)
-	_at("pitsOffice", -74.0, -(ROAD_HALF + 12.0), 1.0)
-	_at("pitsOfficeRoof", -74.0, -(ROAD_HALF + 12.0), 1.0)
-	_at("pitsOffice", 12.0, -(ROAD_HALF + 12.0), 1.0)
-	_at("tentLong", -90.0, -(ROAD_HALF + 20.0), 1.0)
-	_at("tentLong", -90.0, -(ROAD_HALF + 30.0), 1.0)
-	_at("tent", -104.0, -(ROAD_HALF + 24.0), 1.0)
-	_at("tentClosed", -104.0, -(ROAD_HALF + 34.0), 1.0)
-	_tile("fenceStraight", -(ROAD_HALF + 4.2), 1.0)
-
-	# --- sponsorship / signage depth ---------------------------------------- #
-	var sd2 := 20.0
-	while sd2 < track.length:
-		_at("bannerTowerRed" if int(sd2) % 240 < 120 else "bannerTowerGreen", sd2, ROAD_HALF + 20.0, 1.0)
-		_at("billboard" if int(sd2) % 120 < 60 else "billboardLow", sd2 + 40.0, -(ROAD_HALF + 34.0), 1.0, PI)
-		sd2 += 120.0
-	for i in range(6):
-		_at("flagCheckers", -20.0 + float(i) * 12.0, -(ROAD_HALF + 15.0), 1.0)
-	_at("pylon", -8.0, -(ROAD_HALF + 26.0), 1.0)
-	_at("overheadLights", 0.0, 0.0, 1.0)
-
-	# --- floodlighting ------------------------------------------------------ #
-	if night or kind == "urban":
-		_ring("lightPostLarge", 58.0, outer + 3.0, 1.0)
-		_ring("lightPostLarge", 74.0, -(outer + 3.0), 1.0)
-	elif kind == "circuit":
-		_ring("lightPostModern", 130.0, outer + 6.0, 1.0)
-
-	# --- corner furniture: tyre stacks read as racing, not decoration ------- #
-	var corners := [0.18, 0.42, 0.63, 0.86]
-	for f in corners:
-		var sd3 := float(f) * track.length
-		_at("lightColored", sd3, inner + 4.0, 1.0)
-		_at("lightColored", sd3 + 14.0, inner + 4.0, 1.0)
-		_at("fenceCurved", sd3, -(outer + 2.0), 1.0)
+		var rail2_scale := AssetLibrary.height_scale(AssetLibrary.PROP_DIR + "railDouble.glb", 1.1)
+		_tile("railDouble", wall + 1.1, rail2_scale)
+		_tile("railDouble", -(wall + 1.1), rail2_scale)
 
 	_flush_props()
+
+
+## Places a prop sized by its real-world height instead of an arbitrary scale factor.
+func _queue_scaled(model: String, sd: float, lat: float, height_m: float, yaw_add := 0.0) -> void:
+	var path := AssetLibrary.PROP_DIR + model + ".glb"
+	_at(model, sd, lat, AssetLibrary.height_scale(path, height_m), yaw_add)
 
 
 ## Circuit dressing rules: what grows, how much, and which imported models.
