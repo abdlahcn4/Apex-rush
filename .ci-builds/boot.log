@@ -1,42 +1,12 @@
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:431)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "inner" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:431)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:432)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "outer" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:432)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:449)
-SCRIPT ERROR: Parse Error: Cannot infer the type of "lat" variable because the value doesn't have a set type.
-          at: GDScript::reload (res://scripts/game.gd:449)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:456)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:457)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:458)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:459)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:460)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:461)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:462)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:463)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:464)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:469)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:470)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:473)
-SCRIPT ERROR: Parse Error: Identifier "ROAD_HALF" not declared in the current scope.
-          at: GDScript::reload (res://scripts/game.gd:474)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Parse error".
+SCRIPT ERROR: Parse Error: Function "_draw_timing()" not found in base self.
+          at: GDScript::reload (res://scripts/hud.gd:103)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scripts/game.gd:0)
+ERROR: Failed to load script "res://scripts/game.gd" with error "Compilation failed".
    at: load (modules/gdscript/gdscript.cpp:3022)
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+     at: cleanup (core/object/object.cpp:2378)
+ERROR: 9 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:614)
 Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
 
