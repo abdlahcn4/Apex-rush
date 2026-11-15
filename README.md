@@ -60,3 +60,25 @@ A real Godot 4 port has been started in [`godot/`](godot/README.md): a playable 
 the Sunset Ring circuit, the Vortex GT, the original arcade drift physics, chase camera and HUD.
 
 Open `godot/project.godot` in Godot 4.3+ and press F5.
+
+## Controls
+
+Desktop and phone share one build; the on-screen pads only appear on a device that reports
+a touchscreen.
+
+| Action | Keyboard | Touch |
+|---|---|---|
+| Accelerate | `W` / `Up` | GAS pad |
+| Brake / reverse | `S` / `Down` | BRK pad |
+| Steer | `A` `D` / `Left` `Right` | `<` `>` pads |
+| Handbrake | `Space` | HAND pad |
+| Nitro | `Shift` | NOS pad |
+| Pause | `Esc` / `P` | `II` button |
+| Camera mode | `C` | CAM button |
+| Reset car | `R` | RST button |
+| Mute | `M` | - |
+| **Orbit the camera 360 degrees** | drag with the left mouse button | drag anywhere that is not a pad |
+
+The camera eases back behind the car 2.5 s after you let go of a drag, and all of its
+motion (position, distance, height, look target, field of view) is filtered so high speed
+does not make it vibrate.

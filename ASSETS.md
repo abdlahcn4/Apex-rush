@@ -17,15 +17,19 @@ comes from **GitHub-hosted mirrors of CC0 packs**, and every licence was checked
 | Racing Kit (32 road pieces, 44 track props, 4 race cars) | Kenney | CC0 1.0 | `github.com/rakesh-ranj/lane-dash` (`assets/kenney_racing_kit`) |
 | Sci-fi engine loops (5 `.ogg`) | Kenney | CC0 1.0 | `github.com/OmniTender-Systems/game-audio-assets` |
 | Impact / UI sound effects (`.wav`) | Wyzowl SFX Kit | CC0 1.0 | `github.com/wyzowl/sfx-kit` |
-| Asphalt / concrete / grass / gravel / road textures (`.webp`) | ambientCG | CC0 1.0 | `github.com/fabien-michel/sweethome3d-textures-ambientcg` (previews) |
+| Asphalt / concrete / grass / gravel PBR sets (albedo + normal + roughness) | ambientCG | CC0 1.0 | `github.com/petroulacl/fps-buildings-env-kit` (`environment/ground-textures/ambientcg`, 2K JPG sets) |
 
 CC0 1.0 requires no attribution; it is recorded here anyway so the provenance is auditable.
 
 ### Known limitations, stated plainly
 
-- The ambientCG files are the **preview-resolution** derivatives (~512 px), not the 1K/2K
-  PBR sets. Full-resolution downloads were not reachable. They tile correctly and are
-  deliberately sized for a mid-range phone, but they are not 4K scan quality.
+- The ambientCG textures are the **real 2048 px PBR sets** (Asphalt021, Concrete012,
+  Grass004, Ground037, each with Colour, NormalGL and Roughness), downscaled to 1024 and
+  re-encoded as JPEG for the mobile build. They are scans, not previews.
+- The first build shipped ambientCG **catalogue preview sheets** by mistake: single images
+  containing 40 labelled tiles. Tiled as a surface they produced the white grid and the
+  mirrored "Asphalt" lettering that was visible on the road. Those files have been deleted
+  and are replaced by the per-material sets above.
 - No HDRI skybox could be obtained: every GitHub-hosted `.hdr` found (Blender demo
   environments) is a **Git LFS pointer**, and LFS media is not reachable from this sandbox.
   The sky is therefore Godot's built-in `ProceduralSkyMaterial` (engine atmosphere shader,
