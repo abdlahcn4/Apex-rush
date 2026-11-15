@@ -115,6 +115,60 @@ jobs:
           echo "windows export exit: $?"
           tail -30 export_win.log
           ls -la godot/build || true
+          # the zip must explain itself if the game still fails to start on a PC
+          printf '@echo off\r\ncd /d "%%~dp0"\r\necho Starting Apex Rush (OpenGL) with full diagnostics...\r\necho.\r\napex-rush.exe --verbose\r\necho.\r\necho ------------------------------------------------------------\r\necho Exit code: %%errorlevel%%\r\necho If the game closed, copy the text above and send it back.\r\necho A log is also written to: %%APPDATA%%\\Godot\\app_userdata\\Apex Rush - Godot Slice\\logs\\godot.log\r\necho ------------------------------------------------------------\r\npause\r\n' > godot/build/run-windows.bat
+          printf '@echo off\r\ncd /d "%%~dp0"\r\necho Starting Apex Rush with the Vulkan (Forward+) renderer...\r\ncd /d "%%~dp0"\r\napex-rush.exe --rendering-method forward_plus --verbose\r\necho.\r\necho Exit code: %%errorlevel%%\r\npause\r\n' > godot/build/run-forward-plus.bat
+          cat > godot/build/READ-ME-FIRST.txt <<'TXT'
+APEX RUSH - Windows build
+=========================
+
+1. Extract the whole zip to a normal folder (not inside the zip preview).
+2. Double-click apex-rush.exe
+
+If the window closes immediately, double-click run-windows.bat instead.
+It keeps a console open and prints exactly why the game stopped, and gives
+you a log file to send back:
+
+  %APPDATA%\Godot\app_userdata\Apex Rush - Godot Slice\logs\godot.log
+
+Controls
+--------
+W / Up ......... accelerate
+S / Down ....... brake, then reverse
+A D / Left Right  steer
+Space .......... handbrake
+Shift .......... nitro
+Esc or P ....... pause
+R .............. reset car
+C .............. camera
+L / M .......... audio
+
+This build uses the OpenGL renderer for maximum compatibility.
+On a machine with a good GPU, run-forward-plus.bat switches to Vulkan.
+
+Requires 64-bit Windows 10 or newer.
+TXT
+          ls -la godot/build
+
+      - name: Export Linux build and boot the exported binary
+        run: |
+          set +e
+          for preset in "Linux" "Linux/X11"; do
+            if [ ! -f godot/build/apex-rush.x86_64 ]; then
+              ./godot-bin --headless --path godot --export-release "$preset" "$PWD/godot/build/apex-rush.x86_64" >> export_linux.log 2>&1
+              echo "linux export with preset '$preset' exit: $?"
+            fi
+          done
+          tail -5 export_linux.log
+          if [ -f godot/build/apex-rush.x86_64 ]; then
+            chmod +x godot/build/apex-rush.x86_64
+            timeout 90 ./godot/build/apex-rush.x86_64 --headless --quit-after 180 > boot.log 2>&1
+            echo "exported binary boot exit: $?"
+            cat boot.log
+          else
+            echo "no linux binary produced" > boot.log
+            cat boot.log
+          fi
 
       - name: Publish APK and logs to branch
         if: always()
@@ -142,11 +196,11 @@ jobs:
             find "$PWD" -name "*.apk" -size +1k 2>/dev/null | head
           } > .ci-builds/env.txt 2>&1
           cp run.log import.log export.log .ci-builds/ 2>/dev/null || true
-          cp export_win.log .ci-builds/ 2>/dev/null || true
+          cp export_win.log export_linux.log boot.log .ci-builds/ 2>/dev/null || true
           # a PC build, so the game can be opened by double-clicking an .exe
           if ls godot/build/*.exe >/dev/null 2>&1; then
             rm -f .ci-builds/apex-rush-windows.zip
-            ( cd godot/build && zip -q -9 "$OLDPWD/.ci-builds/apex-rush-windows.zip" apex-rush.exe )
+            ( cd godot/build && zip -q -9 "$OLDPWD/.ci-builds/apex-rush-windows.zip" apex-rush.exe run-windows.bat run-forward-plus.bat READ-ME-FIRST.txt )
             size=$(stat -c%s .ci-builds/apex-rush-windows.zip)
             echo "windows zip size: $size"
             if [ "$size" -ge 90000000 ]; then
@@ -193,6 +247,11 @@ jobs:
             exit 1
           fi
           grep -q "ALL ROWS ON SCREEN" run.log || { echo "::error::layout probe did not run"; exit 1; }
+          # the packaged artifact must boot, not just the project in the editor
+          if grep -qE "SCRIPT ERROR|Parse Error|Cannot open|does not exist" boot.log 2>/dev/null; then
+            echo "::error::the exported binary failed to boot"
+            exit 1
+          fi
           echo "headless log clean, menu and pads respond to touch"
 
       - name: Upload APK

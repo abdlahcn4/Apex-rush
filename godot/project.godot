@@ -19,9 +19,15 @@ window/stretch/mode="canvas_items"
 
 [rendering]
 
-renderer/rendering_method="forward_plus"
-; phones: GLES3 so the APK runs on devices without Vulkan
+; OpenGL for every platform. Forward+ needs a working Vulkan driver, and on Windows a
+; missing or broken Vulkan driver makes the window close instantly with no message -
+; which is exactly what happened on the player's PC. GL compatibility also has an ANGLE
+; (D3D11) fallback, so it starts on almost any machine. Pass
+; --rendering-method forward_plus on the command line to opt into Vulkan.
+renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+; try ANGLE when native OpenGL is unavailable (Windows)
+gl_compatibility/fallback_to_angle=true
 anti_aliasing/quality/msaa_3d=2
 ; required by the Android exporter (Godot refuses to export without it)
 textures/vram_compression/import_etc2_astc=true
