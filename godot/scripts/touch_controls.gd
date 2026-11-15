@@ -26,6 +26,9 @@ var _saw_touch := false
 
 
 func _ready() -> void:
+	# On a phone the emulated mouse copy of a touch can arrive first; ignore it from the
+	# very beginning so a finger is never duplicated as a stuck mouse press.
+	_saw_touch = OS.has_feature("mobile") or OS.has_feature("android")
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	resized.connect(_layout)
 	_layout()
@@ -114,6 +117,10 @@ func _input(event: InputEvent) -> void:
 		var touch := event as InputEventScreenTouch
 		if touch.pressed:
 			_saw_touch = true
+			# Drop any press the emulated mouse registered before this touch arrived,
+			# otherwise the matching release would free the finger but not the puppet.
+			if _owners.erase(-1):
+				_refresh()
 			_press(touch.index, touch.position)
 		else:
 			_release(touch.index)
