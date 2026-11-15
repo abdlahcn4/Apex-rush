@@ -310,9 +310,7 @@ reimport: begin: (Re)Importing Assets steps: 132
 	reimport: step 18: flagCheckers_checkers.png
 	reimport: step 19: asphalt.webp
 	reimport: step 20: kenney_spaceEngineLow_000.ogg
-	reimport: step 21: kenney_engineCircular_000.ogg
 	reimport: step 22: kenney_engineCircular_001.ogg
-	reimport: step 23: kenney_engineCircular_002.ogg
 	reimport: step 24: kenney_spaceEngineLarge_000.ogg
 	reimport: step 25: colormap.png
 	reimport: step 26: colormap.png
