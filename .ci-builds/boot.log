@@ -1,9 +1,3 @@
-SCRIPT ERROR: Parse Error: Function "_draw_timing()" not found in base self.
-          at: GDScript::reload (res://scripts/hud.gd:103)
-SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
-          at: GDScript::reload (res://scripts/game.gd:0)
-ERROR: Failed to load script "res://scripts/game.gd" with error "Compilation failed".
-   at: load (modules/gdscript/gdscript.cpp:3022)
 WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
      at: cleanup (core/object/object.cpp:2378)
 ERROR: 9 resources still in use at exit (run with --verbose for details).
