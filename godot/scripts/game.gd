@@ -650,6 +650,10 @@ func _probe_menu_touch() -> void:
 		hits += 1
 	)
 
+	# A headless window never receives a mouse-enter, so the viewport considers the
+	# pointer outside itself and drops every GUI event. Tell it the pointer is inside.
+	get_viewport().notification(Viewport.NOTIFICATION_VP_MOUSE_ENTER)
+
 	# hover first, then click: a real finger produces motion before the contact
 	var move := InputEventMouseMotion.new()
 	move.position = point
@@ -669,8 +673,8 @@ func _probe_menu_touch() -> void:
 
 	var screen := String(ui._title.text)
 	var hovered := get_viewport().gui_get_hovered_control()
-	print("[autotest] tap probe: button '%s' rect=%s presses=%d hovered=%s screen='%s'" % [
-		target.text, str(rect), hits, str(hovered), screen,
+	print("[autotest] tap probe: button '%s' rect=%s viewport=%s presses=%d hovered=%s screen='%s'" % [
+		target.text, str(rect), str(get_viewport().get_visible_rect()), hits, str(hovered), screen,
 	])
 	print("[autotest] tap probe result: %s" % (
 		"MENU IS TAPPABLE" if hits > 0 and screen == "GARAGE" else "MENU DOES NOT RESPOND TO CLICKS"
