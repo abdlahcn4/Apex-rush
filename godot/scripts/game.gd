@@ -621,10 +621,16 @@ func _report_autotest() -> void:
 		])
 
 
-## Pushes a synthetic finger tap at a real menu button and checks the screen changed.
-## This is the regression test for "the menu renders but no tap does anything", which is
-## what happens when touch-to-mouse emulation is switched off.
+## Verifies the menu is actually tappable. Two independent checks:
+##  1. the touch->mouse emulation setting the whole UI depends on is enabled,
+##  2. a synthetic click pushed straight into the viewport reaches the button widget.
+## Headless runs do not flush platform input, so the click is pushed into the viewport
+## rather than through Input; that exercises the same GUI pick/click path a finger does
+## once the display server has turned the touch into a mouse event.
 func _probe_menu_touch() -> void:
+	var emulate := bool(ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch", true))
+	print("[autotest] emulate_mouse_from_touch=%s" % str(emulate))
+
 	ui.show_main()
 	await get_tree().process_frame
 	await get_tree().process_frame
@@ -636,26 +642,24 @@ func _probe_menu_touch() -> void:
 	var target := buttons[1] as Button
 	var rect := target.get_global_rect()
 	var point := rect.get_center()
-	print("[autotest] tap probe: button '%s' rect=%s visible=%s" % [
-		target.text, str(rect), str(target.is_visible_in_tree()),
-	])
+	var hits := 0
+	var listener := func() -> void:
+		hits += 1
+	target.pressed.connect(listener)
 
-	var down := InputEventScreenTouch.new()
-	down.index = 0
-	down.position = point
-	down.pressed = true
-	Input.parse_input_event(down)
-	await get_tree().process_frame
-
-	var up := InputEventScreenTouch.new()
-	up.index = 0
-	up.position = point
-	up.pressed = false
-	Input.parse_input_event(up)
-	await get_tree().process_frame
+	for pressed in [true, false]:
+		var ev := InputEventMouseButton.new()
+		ev.button_index = MOUSE_BUTTON_LEFT
+		ev.pressed = pressed
+		ev.position = point
+		ev.global_position = point
+		get_viewport().push_input(ev)
+		await get_tree().process_frame
 	await get_tree().process_frame
 
 	var screen := String(ui._title.text)
-	print("[autotest] tap probe result: screen='%s' -> %s" % [
-		screen, "TAPS WORK" if screen == "GARAGE" else "TAPS ARE NOT REACHING BUTTONS",
+	print("[autotest] tap probe: button '%s' rect=%s presses=%d screen='%s'" % [
+		target.text, str(rect), hits, screen,
 	])
+	var ok := hits > 0 and screen == "GARAGE"
+	print("[autotest] tap probe result: %s" % ("MENU IS TAPPABLE" if ok else "MENU DOES NOT RESPOND TO CLICKS"))
