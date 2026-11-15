@@ -91,14 +91,14 @@ func update(v: ApexVehicle, dt: float) -> void:
 		engine.volume_db = lerpf(engine.volume_db, target_db, blend)
 
 	if skid != null:
-		var load := clampf(v.drift, 0.0, 1.0)
+		var slip := clampf(v.drift, 0.0, 1.0)
 		if v.hand and absf(v.vF) > 6.0:
-			load = maxf(load, 0.75)
+			slip = maxf(slip, 0.75)
 		var target_db := SKID_SILENT
-		if load > 0.18:
-			target_db = lerpf(-26.0, -10.0, load)
+		if slip > 0.18:
+			target_db = lerpf(-26.0, -10.0, slip)
 		skid.volume_db = lerpf(skid.volume_db, target_db, minf(1.0, dt * 8.0))
-		skid.pitch_scale = lerpf(1.15, 1.75, load)
+		skid.pitch_scale = lerpf(1.15, 1.75, slip)
 
 	if v.gear != _last_gear:
 		if _last_gear != "" and v.gear != "N" and v.gear != "R" and shift != null:

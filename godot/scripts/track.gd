@@ -442,7 +442,7 @@ func _build_scenery(root: Node3D, quality: int) -> void:
 				var z := centre.y + (rng.randf() - 0.5) * 340.0
 				if dist_to_road(x, z) < 52.0:
 					continue
-				var yaw := floor(rng.randf() * 4.0) * 0.4
+				var yaw := floorf(rng.randf() * 4.0) * 0.4
 				spots.append({
 					"xform": Transform3D(Basis(Vector3.UP, yaw), Vector3(x, 0.0, z)),
 					"scale": scale * (0.75 + rng.randf() * 0.7),

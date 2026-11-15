@@ -152,6 +152,16 @@ jobs:
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
+      # Runs last and on purpose: the logs are already on the branch by now, but a
+      # build that produced GDScript errors must never be presented as a good APK.
+      - name: Verify headless log is clean
+        run: |
+          if grep -nE "SCRIPT ERROR|Parse Error|Nonexistent function|Invalid call" run.log; then
+            echo "::error::GDScript errors in the headless run - build rejected"
+            exit 1
+          fi
+          echo "headless log clean"
+
       - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v4
