@@ -24,11 +24,151 @@ first_scan_filesystem: begin: Project initialization steps: 5
 	first_scan_filesystem: step 4: Initializing plugins...
 	first_scan_filesystem: step 5: Starting file scan...
 first_scan_filesystem: end
-ERROR: Cannot export project with preset "Android" due to configuration errors:
+export: begin: Exporting for Android steps: 105
+Exporting for Android...
+- debug build: true
+- export path: /home/runner/work/Apex-rush/Apex-rush/godot/build/apex-rush-debug.apk
+- export format: 0
+- sign build: true
+- gradle build enabled: false
+- apk expansion enabled: false
+- enabled abis: arm64-v8a
+- export filter: 0
+- include filter: 
+- exclude filter: build/*
+Loading regular icon from 
+- falling back to project icon: 
+ERROR: No project icon specified. Please specify one in the Project Settings under Application -> Config -> Icon
+   at: load_icon_refs (platform/android/export/export_plugin.cpp:1743)
+Loading adaptive foreground icon from 
+- falling back to using the regular icon
+0 param: --xr_mode_regular
+1 param: --xr-mode
+2 param: off
+3 param: --fullscreen
+Starting legacy build system...
+	export: step 0: Creating APK...
+ADDING: classes.dex
+ADDING: classes2.dex
+ADDING: classes3.dex
+ADDING: classes4.dex
+ADDING: lib/arm64-v8a/libc++_shared.so
+ADDING: lib/arm64-v8a/libgodot_android.so
+ADDING: DebugProbesKt.bin
+ADDING: kotlin/annotation/annotation.kotlin_builtins
+ADDING: kotlin/collections/collections.kotlin_builtins
+ADDING: kotlin/coroutines/coroutines.kotlin_builtins
+ADDING: kotlin/internal/internal.kotlin_builtins
+ADDING: kotlin/kotlin.kotlin_builtins
+ADDING: kotlin/ranges/ranges.kotlin_builtins
+ADDING: kotlin/reflect/reflect.kotlin_builtins
+ADDING: AndroidManifest.xml
+ADDING: res/anim-v21/fragment_fast_out_extra_slow_in.xml
+ADDING: res/animator/fragment_close_enter.xml
+ADDING: res/animator/fragment_close_exit.xml
+ADDING: res/animator/fragment_fade_enter.xml
+ADDING: res/animator/fragment_fade_exit.xml
+ADDING: res/animator/fragment_open_enter.xml
+ADDING: res/animator/fragment_open_exit.xml
+ADDING: res/drawable-hdpi-v4/notification_bg_low_normal.9.png
+ADDING: res/drawable-hdpi-v4/notification_bg_low_pressed.9.png
+ADDING: res/drawable-hdpi-v4/notification_bg_normal.9.png
+ADDING: res/drawable-hdpi-v4/notification_bg_normal_pressed.9.png
+ADDING: res/drawable-hdpi-v4/notify_panel_notification_icon_bg.png
+ADDING: res/drawable-mdpi-v4/notification_bg_low_normal.9.png
+ADDING: res/drawable-mdpi-v4/notification_bg_low_pressed.9.png
+ADDING: res/drawable-mdpi-v4/notification_bg_normal.9.png
+ADDING: res/drawable-mdpi-v4/notification_bg_normal_pressed.9.png
+ADDING: res/drawable-mdpi-v4/notify_panel_notification_icon_bg.png
+ADDING: res/drawable-v21/notification_action_background.xml
+ADDING: res/drawable-v23/compat_splash_screen.xml
+ADDING: res/drawable-v23/compat_splash_screen_no_icon_background.xml
+ADDING: res/drawable-xhdpi-v4/notification_bg_low_normal.9.png
+ADDING: res/drawable-xhdpi-v4/notification_bg_low_pressed.9.png
+ADDING: res/drawable-xhdpi-v4/notification_bg_normal.9.png
+ADDING: res/drawable-xhdpi-v4/notification_bg_normal_pressed.9.png
+ADDING: res/drawable-xhdpi-v4/notify_panel_notification_icon_bg.png
+ADDING: res/drawable/compat_splash_screen.xml
+ADDING: res/drawable/compat_splash_screen_no_icon_background.xml
+ADDING: res/drawable/icon_background.xml
+ADDING: res/drawable/notification_bg.xml
+ADDING: res/drawable/notification_bg_low.xml
+ADDING: res/drawable/notification_icon_background.xml
+ADDING: res/drawable/notification_tile_bg.xml
+ADDING: res/layout-v21/notification_action.xml
+ADDING: res/layout-v21/notification_action_tombstone.xml
+ADDING: res/layout-v21/notification_template_custom_big.xml
+ADDING: res/layout-v21/notification_template_icon_group.xml
+ADDING: res/layout-v22/snackbar.xml
+ADDING: res/layout/custom_dialog.xml
+ADDING: res/layout/downloading_expansion.xml
+ADDING: res/layout/godot_app_layout.xml
+ADDING: res/layout/notification_template_part_chronometer.xml
+ADDING: res/layout/notification_template_part_time.xml
+ADDING: res/layout/snackbar.xml
+ADDING: res/layout/splash_screen_view.xml
+ADDING: res/layout/status_bar_ongoing_event_progress_bar.xml
+ADDING: res/mipmap-anydpi-v26/icon.xml
+ADDING: res/mipmap-hdpi-v4/icon.png
+ADDING: res/mipmap-hdpi-v4/icon_background.png
+ADDING: res/mipmap-hdpi-v4/icon_foreground.png
+ADDING: res/mipmap-hdpi-v4/icon_monochrome.png
+ADDING: res/mipmap-mdpi-v4/icon.png
+ADDING: res/mipmap-mdpi-v4/icon_background.png
+ADDING: res/mipmap-mdpi-v4/icon_foreground.png
+ADDING: res/mipmap-mdpi-v4/icon_monochrome.png
+ADDING: res/mipmap-xhdpi-v4/icon.png
+ADDING: res/mipmap-xhdpi-v4/icon_background.png
+ADDING: res/mipmap-xhdpi-v4/icon_foreground.png
+ADDING: res/mipmap-xhdpi-v4/icon_monochrome.png
+ADDING: res/mipmap-xxhdpi-v4/icon.png
+ADDING: res/mipmap-xxhdpi-v4/icon_background.png
+ADDING: res/mipmap-xxhdpi-v4/icon_foreground.png
+ADDING: res/mipmap-xxhdpi-v4/icon_monochrome.png
+ADDING: res/mipmap-xxxhdpi-v4/icon.png
+ADDING: res/mipmap-xxxhdpi-v4/icon_background.png
+ADDING: res/mipmap-xxxhdpi-v4/icon_foreground.png
+ADDING: res/mipmap-xxxhdpi-v4/icon_monochrome.png
+ADDING: res/mipmap/icon.png
+ADDING: res/mipmap/icon_background.png
+ADDING: res/mipmap/icon_foreground.png
+ADDING: res/mipmap/icon_monochrome.png
+ADDING: res/xml/godot_provider_paths.xml
+ADDING: resources.arsc
+	export: step 1: Adding files...
+Loading resource: res://scenes/main.tscn
+Loading resource: res://scripts/game.gd
+	export: step 103: Aligning APK...
+	export: step 104: Signing debug APK...
+Starting signing of the APK binary using /usr/local/lib/android/sdk/build-tools/34.0.0/apksigner
+Signing debug binary using: 
+/usr/local/lib/android/sdk/build-tools/34.0.0/apksigner sign --verbose --ks /home/runner/debug.keystore --ks-pass pass:android --ks-key-alias androiddebugkey /home/runner/work/Apex-rush/Apex-rush/godot/build/apex-rush-debug.apk
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by org.conscrypt.NativeLibraryUtil in an unnamed module (file:/usr/local/lib/android/sdk/build-tools/34.0.0/lib/apksigner.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
 
-   at: _fs_changed (editor/editor_node.cpp:1087)
-ERROR: Project export for preset "Android" failed.
-   at: _fs_changed (editor/editor_node.cpp:1103)
+Signed
+
+	export: step 105: Verifying APK...
+Verifying signed build using: 
+/usr/local/lib/android/sdk/build-tools/34.0.0/apksigner verify --verbose /home/runner/work/Apex-rush/Apex-rush/godot/build/apex-rush-debug.apk
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by org.conscrypt.NativeLibraryUtil in an unnamed module (file:/usr/local/lib/android/sdk/build-tools/34.0.0/lib/apksigner.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Verifies
+Verified using v1 scheme (JAR signing): true
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+
+Successfully completed signing build.
+export: end
 loading_editor_layout: begin: Loading editor steps: 5
 	loading_editor_layout: step 0: Loading editor layout...
 loading_editor_layout: end
