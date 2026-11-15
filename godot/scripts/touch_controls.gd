@@ -50,6 +50,8 @@ func set_active(on: bool) -> void:
 	# An inactive layer must not eat taps meant for the menu behind it.
 	# never take part in GUI picking; tap handling is done in _input
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if on and _buttons.is_empty():
+		_layout()
 	if not on:
 		_owners.clear()
 		_refresh()
@@ -78,8 +80,13 @@ func nitro() -> bool:
 
 # --- layout --------------------------------------------------------------- #
 func _layout() -> void:
-	var w := size.x
-	var h := size.y
+	# On the first frames (and in headless runs) the Control can still be 0x0, so fall
+	# back to the viewport: the pads are anchored full-rect, so the two agree.
+	var basis := size
+	if basis.x < 10.0 or basis.y < 10.0:
+		basis = get_viewport_rect().size
+	var w := basis.x
+	var h := basis.y
 	if w < 10.0 or h < 10.0:
 		return
 	_buttons = [
